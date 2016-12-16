@@ -1,0 +1,1 @@
+{"version":3,"sources":["index.js"],"names":[],"mappings":";;AAAA;;AAEA,oBAAQ,IAAR,CAAa,UAAU,IAAV,EAAgB;AAC3B,UAAQ,GAAR,CAAY,QAAZ,EAAqB,IAArB,EAD2B;CAAhB,CAAb","file":"index-compiled.js","sourcesContent":["import { create, remove, update, query } from './services/users'\n\nquery().then(function (data) {\n  console.log(\"data: \",data)\n})\n"]}

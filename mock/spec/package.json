@@ -1,0 +1,26 @@
+{
+  "name": "raml-mock-server",
+  "version": "0.0.1",
+  "description": "API Description for Web App",
+  "main": "api.raml",
+  "private": true,
+  "scripts": {
+    "apidoc": "raml2html -i api.raml -o api.html -t doc_template/template.nunjucks",
+    "start": "live-server --port=7100 --host=localhost --watch=api.raml --entry-file=api.html --mount=/deps:./node_modules -q",
+    "mock": "osprey-mock-service -f api.raml -p 7000"
+  },
+  "devDependencies": {
+    "bootstrap": "^3.3.6",
+    "highlight.js": "^9.4.0",
+    "jquery": "^2.2.4",
+    "raml2html": "^2.4.0",
+    "watchman": "^0.1.8",
+    "live-server": "^1.0.0",
+    "osprey-mock-service": "^0.1.0"
+  },
+  "engines": {
+    "node": ">=4.2.4"
+  },
+  "authors": ["moocss <moocss@gmail.com> (https://github.com/moocss)"],
+  "license": "MIT"
+}
