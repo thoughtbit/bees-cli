@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "A simple CLI for serve and build web app, support JSON pattern config.",
   "bin": {
-    "bee": "./bin/bee.js"
+    "bee": "./bin/bee"
   },
   "keywords": [
     "bee",

@@ -24,7 +24,7 @@ function realGetConfig (fileName, env = 'development') {
 }
 
 module.exports = function () {
-  return realGetConfig('.roadhogrc', process.env.NODE_ENV)
+  return realGetConfig('.config', process.env.NODE_ENV)
 }
 
 module.exports.realGetConfig = realGetConfig
