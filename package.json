@@ -52,8 +52,11 @@
     "fs-extra": "^1.0.0",
     "glob": "^7.1.1",
     "gzip-size": "^3.0.0",
-    "http-proxy-middleware": "^0.17.3",
+    "html-webpack-plugin": "2.24.0",
+    "http-proxy-middleware": "0.17.2",
     "json-loader": "^0.5.4",
+    "sass-loader": "^4.1.0",
+    "node-sass": "^4.1.0",
     "less": "^2.7.1",
     "less-loader": "^2.2.3",
     "path-exists": "^3.0.0",
@@ -65,9 +68,14 @@
     "strip-json-comments": "^2.0.1",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
+
+    "eslint-loader": "^1.5.0",
+    "eventsource-polyfill": "^0.9.6",
+    "express": "^4.14.0",
+    "serve-favicon": "^2.3.2",
     "webpack": "^1.14.0",
-    "webpack-dev-server": "^1.16.2",
-    "webpack-merge": "^0.14.1"
+    "webpack-merge": "^0.14.1",
+    "webpack-dev-server": "^1.16.2"
   },
   "devDependencies": {
     "eslint": "^3.12.2",

@@ -1,17 +1,13 @@
-const autoprefixer = require('autoprefixer')
 const webpack = require('webpack')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const autoprefixer = require('autoprefixer')
 const paths = require('./paths')
-const getEntry = require('../utils/getEntry')
-const getConfig = require('../utils/getConfig')
-const getCSSLoaders = require('../utils/getCSSLoaders')
+const getEntry = require('./../utils/getEntry')
+const getConfig = require('./../utils/getConfig')
 
 const config = getConfig()
-const publicPath = config.publicPath || '/'
-const cssLoaders = getCSSLoaders()
+const publicPath = '/'
 
 module.exports = {
-  bail: true,
   entry: getEntry(),
   output: {
     path: paths.appBuild,
@@ -22,8 +18,7 @@ module.exports = {
     extensions: ['.js', '.json', '.jsx', '.ts', 'tsx', '']
   },
   resolveLoader: {
-    root: paths.ownNodeModules,
-    moduleTemplates: ['*-loader']
+    root: paths.ownNodeModules
   },
   module: {
     loaders: [
@@ -32,8 +27,7 @@ module.exports = {
           /\.html$/,
           /\.(js|jsx)$/,
           /\.css$/,
-          /\.json$/,
-          /\.svg$/
+          /\.json$/
         ],
         loader: 'url',
         query: {
@@ -47,28 +41,28 @@ module.exports = {
         loader: 'babel'
       },
       {
-        test: /\.(css|less)$/,
-        exclude: /node_modules/,
-        loader: ExtractTextPlugin.extract(
-          'style',
-          cssLoaders.own
-        )
-      },
-      {
-        test: /\.(css|less)$/,
-        include: /node_modules/,
-        loader: ExtractTextPlugin.extract(
-          'style',
-          cssLoaders.nodeModules
-        )
-      },
-      {
         test: /\.html$/,
         loader: 'file?name=[name].[ext]'
       },
       {
         test: /\.json$/,
         loader: 'json'
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+        loader: 'url',
+        query: {
+          limit: 10000,
+          name: 'static/[name].[hash:8].[ext]'
+        }
+      },
+      {
+        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+        loader: 'url',
+        query: {
+          limit: 10000,
+          name: 'static/[name].[hash:8].[ext]'
+        }
       },
       {
         test: /\.svg$/,
@@ -107,23 +101,7 @@ module.exports = {
       'process.env': {
         'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
       }
-    }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        screw_ie8: true, // React doesn't support IE8
-        warnings: false
-      },
-      mangle: {
-        screw_ie8: true
-      },
-      output: {
-        comments: false,
-        screw_ie8: true
-      }
-    }),
-    new ExtractTextPlugin('[name].css')
+    })
   ],
   node: {
     fs: 'empty',

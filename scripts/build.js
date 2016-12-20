@@ -9,7 +9,7 @@ const webpack = require('webpack')
 const recursive = require('recursive-readdir')
 const stripAnsi = require('strip-ansi')
 const paths = require('../config/paths')
-const config = require('../config/webpack.config.prod')
+const webpackConfig = require('../config/webpack.prod.config')
 
 // Input: /User/dan/app/build/static/js/main.82be8.js
 // Output: /static/js/main.js
@@ -103,7 +103,7 @@ function printErrors (summary, errors) {
 // Create the production build and print the deployment instructions.
 function build (previousSizeMap) {
   console.log('Creating an optimized production build...')
-  webpack(config).run((err, stats) => {
+  webpack(webpackConfig).run((err, stats) => {
     if (err) {
       printErrors('Failed to compile.', [err])
       process.exit(1)

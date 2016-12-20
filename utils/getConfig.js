@@ -3,10 +3,10 @@ const pathExists = require('path-exists')
 const fs = require('fs')
 const explain = require('explain-error')
 const stripJsonComments = require('strip-json-comments')
-const paths = require('../config/paths')
+const getPath = require('./../utils/getPath')
 
 function realGetConfig (fileName, env = 'development') {
-  const configPath = paths.resolveApp(fileName)
+  const configPath = getPath.resolveApp(fileName)
   if (pathExists.sync(configPath)) {
     try {
       const result = JSON.parse(stripJsonComments(fs.readFileSync(configPath, 'utf-8')))
@@ -24,7 +24,7 @@ function realGetConfig (fileName, env = 'development') {
 }
 
 module.exports = function () {
-  return realGetConfig('.config', process.env.NODE_ENV)
+  return realGetConfig('.beerc', process.env.NODE_ENV)
 }
 
 module.exports.realGetConfig = realGetConfig

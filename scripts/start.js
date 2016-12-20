@@ -11,9 +11,9 @@ const historyApiFallback = require('connect-history-api-fallback')
 // const httpProxyMiddleware = require('http-proxy-middleware');
 const WebpackDevServer = require('webpack-dev-server')
 const chalk = require('chalk')
-const config = require('../config/webpack.config.dev')
-const paths = require('../config/paths')
-const getConfig = require('../utils/getConfig')
+const config = require('./../config/webpack.dev.config')
+const paths = require('./../config/paths')
+const getConfig = require('./../utils/getConfig')
 
 const DEFAULT_PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 8000
 const isInteractive = process.stdout.isTTY
