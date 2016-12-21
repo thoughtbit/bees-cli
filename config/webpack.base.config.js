@@ -43,6 +43,10 @@ module.exports = {
         }
       },
       {
+        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+        loader: 'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
+      },
+      {
         test: /\.(js|jsx)$/,
         include: paths.appSrc,
         loader: 'babel'
