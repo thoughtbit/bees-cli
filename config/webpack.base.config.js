@@ -15,7 +15,12 @@ module.exports = {
     publicPath: publicPath
   },
   resolve: {
-    extensions: ['.js', '.json', '.jsx', '.ts', 'tsx', '']
+    extensions: ['.js', '.json', '.jsx', '.ts', 'tsx', ''],
+    alias: {
+      'src': paths.resolveApp('./../src'),
+      'assets': paths.resolveApp('./../src/assets'),
+      'components': paths.resolveApp('./../src/components')
+    }
   },
   resolveLoader: {
     root: paths.ownNodeModules
@@ -27,7 +32,9 @@ module.exports = {
           /\.html$/,
           /\.(js|jsx)$/,
           /\.css$/,
-          /\.json$/
+          /\.json$/,
+          /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+          /\.(woff2?|eot|ttf|otf)(\?.*)?$/
         ],
         loader: 'url',
         query: {
@@ -49,22 +56,6 @@ module.exports = {
         loader: 'json'
       },
       {
-        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        loader: 'url',
-        query: {
-          limit: 10000,
-          name: 'static/[name].[hash:8].[ext]'
-        }
-      },
-      {
-        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-        loader: 'url',
-        query: {
-          limit: 10000,
-          name: 'static/[name].[hash:8].[ext]'
-        }
-      },
-      {
         test: /\.svg$/,
         loader: 'file',
         query: {
@@ -76,9 +67,8 @@ module.exports = {
   babel: {
     presets: [
       require.resolve('babel-preset-es2015'),
-      require.resolve('babel-preset-react'),
       require.resolve('babel-preset-stage-0')
-    ],
+    ].concat(config.extraBabelPresets || []),
     plugins: [
       require.resolve('babel-plugin-add-module-exports')
     ].concat(config.extraBabelPlugins || []),

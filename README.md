@@ -37,15 +37,32 @@ $ bee build
 - 格式为 `JSON`，允许注释
 - 布尔类型的配置项默认值均为 `false`
 
-默认配置：
+.beerc 默认配置：
 
 ```json
 {
   "entry": "src/index.js",
-  "disableCSSModules": false,
-  "less": false,
   "publicPath": "/",
+  "extraBabelPresets": [],
   "extraBabelPlugins": [],
+  "autoprefixer": null,
+  "proxy": null,
+  "env": null
+}
+```
+
+.beerc 的 React开发配置：
+
+```json
+{
+  "entry": "src/index.js",
+  "publicPath": "/",
+  "extraBabelPresets": [
+    "react"
+  ],
+  "extraBabelPlugins": [
+    "transform-runtime"
+  ],
   "autoprefixer": null,
   "proxy": null,
   "env": null

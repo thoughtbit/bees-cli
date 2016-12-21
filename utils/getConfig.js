@@ -3,10 +3,10 @@ const pathExists = require('path-exists')
 const fs = require('fs')
 const explain = require('explain-error')
 const stripJsonComments = require('strip-json-comments')
-const getPath = require('./../utils/getPath')
+const paths = require('../config/paths')
 
 function realGetConfig (fileName, env = 'development') {
-  const configPath = getPath.resolveApp(fileName)
+  const configPath = paths.resolveApp(fileName)
   if (pathExists.sync(configPath)) {
     try {
       const result = JSON.parse(stripJsonComments(fs.readFileSync(configPath, 'utf-8')))

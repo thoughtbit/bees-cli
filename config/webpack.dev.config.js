@@ -18,8 +18,6 @@ module.exports = merge(baseWebpackConfig, {
     babelrc: false
   },
   plugins: [
-    // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
-    new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
     new CaseSensitivePathsPlugin(),

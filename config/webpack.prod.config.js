@@ -22,6 +22,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     })
   },
   plugins: [
+    // 按引用频度来排序 ID，以便达到减少文件大小的效果
     new webpack.optimize.OccurrenceOrderPlugin(),
     // 排除相似的或相同的，避免在最终生成的文件中出现重复的模块。
     new webpack.optimize.DedupePlugin(),
@@ -38,10 +39,8 @@ const webpackConfig = merge(baseWebpackConfig, {
         screw_ie8: true
       }
     }),
-    // 按引用频度来排序 ID，以便达到减少文件大小的效果
-    new webpack.optimize.OccurenceOrderPlugin(),
     // extract css into its own file
-    new ExtractTextPlugin(paths.getPath.assetsPath(paths.assetsSubDirectory, '[name].css')),
+    new ExtractTextPlugin('[name].css'),
     // 公用的模块分开打包
     // split vendor js into its own file
     new webpack.optimize.CommonsChunkPlugin({
