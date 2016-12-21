@@ -12,7 +12,7 @@ Bee 是 [create-react-app](https://github.com/facebookincubator/create-react-app
 Prerequisites: [Node.js](https://nodejs.org/en/) (>=6.2, 7.x preferred) and [Git](https://git-scm.com/).
 
 ``` bash
-$ npm install -g bee-cli
+$ npm install -g bees-cli
 ```
 
 ### 使用
