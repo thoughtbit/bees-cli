@@ -4,7 +4,12 @@ const webpack = require('webpack')
 const merge = require('webpack-merge')
 const baseWebpackConfig = require('./webpack.base.config')
 const paths = require('./paths')
+const getConfig = require('./../utils/getConfig')
 const cssLoaders = require('../utils/getCSSLoaders')
+
+const config = getConfig()
+
+console.log('loaders:', cssLoaders.styleLoaders({ sourceMap: config.cssSourceMap }))
 
 module.exports = merge(baseWebpackConfig, {
   devtool: 'cheap-module-source-map',
@@ -12,7 +17,7 @@ module.exports = merge(baseWebpackConfig, {
     pathinfo: true
   },
   module: {
-    loaders: cssLoaders.styleLoaders({ sourceMap: paths.cssSourceMap })
+    loaders: cssLoaders.styleLoaders({ sourceMap: config.cssSourceMap })
   },
   babel: {
     babelrc: false

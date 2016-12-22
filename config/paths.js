@@ -18,10 +18,6 @@ module.exports = {
   appPackageJson: resolveApp('package.json'),
   appNodeModules: resolveApp('node_modules'),
   ownNodeModules: resolveOwn('../node_modules'),
-  productionSourceMap: true,
-  productionGzip: false,
-  productionGzipExtensions: ['js', 'css'],
-  cssSourceMap: false,
   appDirectory,
   resolveApp,
   resolveOwn

@@ -1,7 +1,9 @@
+const os = require('os')
 const path = require('path')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const UglifyJsParallelPlugin = require('webpack-uglify-parallel')
 const baseWebpackConfig = require('./webpack.base.config')
 const paths = require('./paths')
 const getConfig = require('../utils/getConfig')
@@ -17,7 +19,7 @@ const webpackConfig = merge(baseWebpackConfig, {
   },
   module: {
     loaders: cssLoaders.styleLoaders({
-      sourceMap: paths.productionSourceMap,
+      sourceMap: config.cssSourceMap,
       extract: true
     })
   },
@@ -26,7 +28,8 @@ const webpackConfig = merge(baseWebpackConfig, {
     new webpack.optimize.OccurrenceOrderPlugin(),
     // 排除相似的或相同的，避免在最终生成的文件中出现重复的模块。
     new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin({
+    new UglifyJsParallelPlugin({
+      workers: os.cpus().length,
       compress: {
         screw_ie8: true, // React doesn't support IE8
         warnings: false
@@ -35,9 +38,11 @@ const webpackConfig = merge(baseWebpackConfig, {
         screw_ie8: true
       },
       output: {
+        ascii_only: true,
         comments: false,
         screw_ie8: true
-      }
+      },
+      sourceMap: false
     }),
     // extract css into its own file
     new ExtractTextPlugin('[name].css'),
@@ -65,22 +70,27 @@ const webpackConfig = merge(baseWebpackConfig, {
   ]
 })
 
-if (paths.productionGzip) {
+if (config.isGzip) {
+  const gzipExtensions = config.gzipExtensions || ['js', 'css']
   const CompressionWebpackPlugin = require('compression-webpack-plugin')
-
   webpackConfig.plugins.push(
     new CompressionWebpackPlugin({
       asset: '[path].gz[query]',
       algorithm: 'gzip',
       test: new RegExp(
         '\\.(' +
-        paths.productionGzipExtensions.join('|') +
+        gzipExtensions.join('|') +
         ')$'
       ),
       threshold: 10240,
       minRatio: 0.8
     })
   )
+}
+
+if (config.analyze) {
+  const Visualizer = require('webpack-visualizer-plugin')
+  webpackConfig.plugins.push(new Visualizer())
 }
 
 module.exports = webpackConfig

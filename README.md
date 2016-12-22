@@ -45,6 +45,11 @@ $ bee build
   "publicPath": "/",
   "extraBabelPresets": [],
   "extraBabelPlugins": [],
+  "disableCSSModules": false,
+  "cssSourceMap": false,
+  "isGzip": false,
+  "gzipExtensions": ["js", "css"],
+  "isVisualizer": false,
   "autoprefixer": null,
   "proxy": null,
   "env": null
@@ -65,6 +70,16 @@ $ bee build
   ],
   "autoprefixer": null,
   "proxy": null,
-  "env": null
+  "env": {
+    "development": {
+      "cssSourceMap": false
+    },
+    "production": {
+      "cssSourceMap": true,
+      "isGzip": true,
+      "gzipExtensions": ["js", "css"],
+      "analyze": true
+    }
+  }
 }
 ```
