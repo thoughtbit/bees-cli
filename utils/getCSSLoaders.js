@@ -4,6 +4,9 @@ exports.cssLoaders = function (options) {
   options = options || {}
   // generate loader string to be used with extract text plugin
   function generateLoaders (loaders) {
+    // if (options.postcss) {
+    //   loaders.splice(1, 0, 'postcss')
+    // }
     const sourceLoader = loaders.map(function (loader) {
       let extraParamChar
       if (/\?/.test(loader)) {

@@ -9,7 +9,32 @@ const webpack = require('webpack')
 const recursive = require('recursive-readdir')
 const stripAnsi = require('strip-ansi')
 const paths = require('../config/paths')
-const webpackConfig = require('../config/webpack.prod.config')
+const getConfig = require('../utils/getConfig')
+const config = require('../config/webpack.prod.config')(argv)
+
+try {
+  getConfig(process.env.NODE_ENV)
+} catch (e) {
+  console.log(chalk.red('Failed to parse .beerc config.'))
+  console.log()
+  console.log(e.message)
+  process.exit(1)
+}
+
+const argv = require('yargs')
+  .usage('Usage: bee build [options]')
+  .option('debug', {
+    type: 'boolean',
+    describe: 'Build with compress',
+    default: false
+  })
+  .option('watch', {
+    type: 'boolean',
+    describe: 'Watch file changes and rebuild',
+    default: false
+  })
+  .help('h')
+  .argv
 
 // Input: /User/dan/app/build/static/js/main.82be8.js
 // Output: /static/js/main.js
@@ -100,26 +125,39 @@ function printErrors (summary, errors) {
   })
 }
 
+function doneHandler (previousSizeMap, err, stats) {
+  if (err) {
+    printErrors('Failed to compile.', [err])
+    process.exit(1)
+  }
+
+  if (stats.compilation.errors.length) {
+    printErrors('Failed to compile.', stats.compilation.errors)
+    process.exit(1)
+  }
+
+  console.log(chalk.green('Compiled successfully.'))
+  console.log()
+
+  console.log('File sizes after gzip:')
+  console.log()
+  printFileSizes(stats, previousSizeMap)
+  console.log()
+}
+
 // Create the production build and print the deployment instructions.
 function build (previousSizeMap) {
-  console.log('Creating an optimized production build...')
-  webpack(webpackConfig).run((err, stats) => {
-    if (err) {
-      printErrors('Failed to compile.', [err])
-      process.exit(1)
-    }
+  if (argv.debug) {
+    console.log('Creating an development build without compress...')
+  } else {
+    console.log('Creating an optimized production build...')
+  }
 
-    if (stats.compilation.errors.length) {
-      printErrors('Failed to compile.', stats.compilation.errors)
-      process.exit(1)
-    }
-
-    console.log(chalk.green('Compiled successfully.'))
-    console.log()
-
-    console.log('File sizes after gzip:')
-    console.log()
-    printFileSizes(stats, previousSizeMap)
-    console.log()
-  })
+  const compiler = webpack(config)
+  const done = doneHandler.bind(null, previousSizeMap)
+  if (argv.watch) {
+    compiler.watch(200, done)
+  } else {
+    compiler.run(done)
+  }
 }

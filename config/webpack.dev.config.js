@@ -9,8 +9,6 @@ const cssLoaders = require('../utils/getCSSLoaders')
 
 const config = getConfig()
 
-console.log('loaders:', cssLoaders.styleLoaders({ sourceMap: config.cssSourceMap }))
-
 module.exports = merge(baseWebpackConfig, {
   devtool: 'cheap-module-source-map',
   output: {

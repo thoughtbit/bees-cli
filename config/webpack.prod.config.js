@@ -5,7 +5,6 @@ const merge = require('webpack-merge')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const UglifyJsParallelPlugin = require('webpack-uglify-parallel')
 const baseWebpackConfig = require('./webpack.base.config')
-const paths = require('./paths')
 const getConfig = require('../utils/getConfig')
 const cssLoaders = require('../utils/getCSSLoaders')
 
