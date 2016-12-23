@@ -10,7 +10,7 @@ const recursive = require('recursive-readdir')
 const stripAnsi = require('strip-ansi')
 const paths = require('../config/paths')
 const getConfig = require('../utils/getConfig')
-const config = require('../config/webpack.prod.config')(argv)
+const config = require('../config/webpack.prod.config')
 
 try {
   getConfig(process.env.NODE_ENV)
@@ -35,6 +35,7 @@ const argv = require('yargs')
   })
   .help('h')
   .argv
+
 
 // Input: /User/dan/app/build/static/js/main.82be8.js
 // Output: /static/js/main.js
