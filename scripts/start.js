@@ -113,14 +113,21 @@ function addMiddleware (devServer) {
 }
 
 function runDevServer (host, port, protocol) {
+  // Run DEV server for hot-reloading
   const devServer = new WebpackDevServer(compiler, {
     compress: true,
     clientLogLevel: 'none',
     contentBase: paths.appPublic,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Expose-Headers': 'SourceMap,X-SourceMap'
+    },
     hot: true,
     publicPath: config.output.publicPath,
     quiet: true,
     watchOptions: {
+      aggregateTimeout: 300,
+      poll: false,
       ignored: /node_modules/
     },
     https: protocol === 'https',
