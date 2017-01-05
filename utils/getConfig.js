@@ -22,7 +22,7 @@ function getConfig (configFile) {
   const jsConfig = paths.resolveApp(`${configFile}.js`)
 
   if (fs.existsSync(rcConfig)) {
-    return parseJSON(stripJsonComments(fs.readFileSync(rcConfig, 'utf-8')), './beerc')
+    return parseJSON(stripJsonComments(fs.readFileSync(rcConfig, 'utf-8')), `./${configFile}`)
   } else if (fs.existsSync(jsConfig)) {
     return require(jsConfig)
   } else {

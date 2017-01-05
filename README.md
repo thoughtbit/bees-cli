@@ -33,9 +33,10 @@ $ bee build
 
 关于配置的一些基本概念：
 
-- 配置存于 `.beerc` 文件中
-- 格式为 `JSON`，允许注释
-- 布尔类型的配置项默认值均为 `false`
+* 配置存于 `.beerc` 文件中（如果你不喜欢 JSON 配置，可以用 `.beerc.js` 以 JS 的方式编写，支持 ES6）
+* 格式为 `JSON`，允许注释
+* 布尔类型的配置项默认值均为 `false`
+* 支持通过 `webpack.config.js` 以编码的方式进行配置，但不推荐，因为 roadhog 本身的 major 或 minor 升级可能会引起兼容问题。使用时会给予警告⚠️⚠️⚠️， 。（`webpack.config.js` 本身的编写支持 ES6，会通过 babal-register 做一层转换。）
 
 .beerc 默认配置：
 
