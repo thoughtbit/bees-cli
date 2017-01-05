@@ -91,6 +91,15 @@ $ bee build
 }
 ```
 
+package.json 的 React开发配置：
+
+```json
+{
+  "babel-preset-react": "",
+  "babel-plugin-transform-runtime": ""
+}
+```
+
 ### entry
 
 指定 webpack 入口文件，支持 [glob](https://github.com/isaacs/node-glob) 格式。
@@ -199,14 +208,14 @@ $ bee build
 - `HOST`, 默认 localhost
 - `HTTPS`，是否开启 https，默认关闭
 
-比如，使用 3000 端口开启服务器可以这样：
+比如，使用 12306 端口开启服务器可以这样：
 
 ```bash
 // OS X, Linux
-$ PORT=3000 bee server
+$ PORT=12306 bee server
 
 // Windows (cmd.exe)
-$ set PORT=3000&&bee server
+$ set PORT=12306&&bee server
 ```
 
 ## 命令行参数

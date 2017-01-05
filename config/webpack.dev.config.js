@@ -31,8 +31,8 @@ const webpackConfig = merge(baseWebpackConfig, {
 if (config.multipage) {
   webpackConfig.plugins.push(
     // 公用的模块分开打包
-    // new webpack.optimize.CommonsChunkPlugin('common', 'common.js'),
-    new webpack.optimize.CommonsChunkPlugin({ name: 'common' }),
+    // new webpack.optimize.CommonsChunkPlugin('common', 'common.js')
+    new webpack.optimize.CommonsChunkPlugin({ name: 'common' })
   )
 }
 
