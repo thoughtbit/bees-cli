@@ -13,7 +13,7 @@ const WebpackDevServer = require('webpack-dev-server')
 const chalk = require('chalk')
 const paths = require('../config/paths')
 const getConfig = require('../utils/getConfig')
-const config = require('../config/webpack.dev.config')
+const applyWebpackConfig = require('../utils/applyWebpackConfig')
 
 const DEFAULT_PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 8000
 const isInteractive = process.stdout.isTTY
@@ -39,6 +39,11 @@ try {
   process.exit(1)
 }
 
+const config = applyWebpackConfig(
+  require('../config/webpack.dev.config'),
+  process.env.NODE_ENV
+)
+
 function setupCompiler (host, port, protocol) {
   compiler = webpack(config)
 
@@ -58,6 +63,8 @@ function setupCompiler (host, port, protocol) {
     const messages = formatWebpackMessages(stats.toJson({}, true))
     const isSuccessful = !messages.errors.length && !messages.warnings.length
     const showInstructions = isSuccessful && (isInteractive || isFirstCompile)
+
+    applyWebpackConfig.warnIfExists()
 
     if (isSuccessful) {
       console.log(chalk.green('Compiled successfully!'))

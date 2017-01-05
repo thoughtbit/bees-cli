@@ -51,6 +51,9 @@ $ bee build
   "gzipExtensions": ["js", "css"],
   "isVisualizer": false,
   "autoprefixer": null,
+  "externals": null,
+  "multipage": false,
+  "define": null,
   "proxy": null,
   "env": null
 }
@@ -69,6 +72,9 @@ $ bee build
     "transform-runtime"
   ],
   "autoprefixer": null,
+  "externals": null,
+  "multipage": true,
+  "define": null,
   "proxy": null,
   "env": {
     "development": {
@@ -140,6 +146,18 @@ $ bee build
 
 如果要做数据 mock，可以考虑和 [json-server](https://github.com/typicode/json-server) 或者 [mock-server](https://github.com/thoughtbit/mock-server) 结合使用，把 `/api` 代理到 json-server 或者 mock-server 启动的端口。
 
+### externals
+
+配置 webpack 的 [externals](http://webpack.github.io/docs/configuration.html#externals) 属性。
+
+### multipage
+
+配置是否多页应用。多页应用会自动提取公共部分为 common.js 和 common.css 。
+
+### define
+
+配置 webpack 的 [DefinePlugin](http://webpack.github.io/docs/list-of-plugins.html#defineplugin) 插件，define 的值会自动做 `JSON.stringify` 处理。
+
 ### analyze
 在生产环境下开启 Visualizer
 
@@ -201,3 +219,6 @@ Options:
   --open  Open url in browser after started            [boolean] [default: true]
   -h      Show help                                                    [boolean]
 ```
+
+## 使用 `public` 目录
+我们约定 `public` 目录下的文件会在 server 和 build 时被自动 copy 到输出目录（默认是 `./dist`）下。所以可以在这里存放 favicon, iconfont, html, html 里引用的图片等。

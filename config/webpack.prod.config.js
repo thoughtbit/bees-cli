@@ -44,11 +44,16 @@ const webpackConfig = merge(baseWebpackConfig, {
       sourceMap: false
     }),
     // extract css into its own file
-    new ExtractTextPlugin('[name].css'),
+    new ExtractTextPlugin('[name].css')
+  ]
+})
+
+if (config.multipage) {
+  webpackConfig.plugins.push(
     // 公用的模块分开打包
     // split vendor js into its own file
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
+      name: 'common',
       minChunks: function (module, count) {
         // any required modules inside node_modules are extracted to vendor
         return (
@@ -64,10 +69,10 @@ const webpackConfig = merge(baseWebpackConfig, {
     // prevent vendor hash from being updated whenever app bundle is updated
     new webpack.optimize.CommonsChunkPlugin({
       name: 'manifest',
-      chunks: ['vendor']
+      chunks: ['common']
     })
-  ]
-})
+  )
+}
 
 if (config.isGzip) {
   const gzipExtensions = config.gzipExtensions || ['js', 'css']

@@ -1,8 +1,11 @@
+const fs = require('fs')
 const webpack = require('webpack')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const autoprefixer = require('autoprefixer')
 const paths = require('./paths')
 const getEntry = require('./../utils/getEntry')
 const getConfig = require('./../utils/getConfig')
+const normalizeDefine = require('../utils/normalizeDefine')
 
 const config = getConfig()
 const publicPath = '/'
@@ -96,7 +99,15 @@ module.exports = {
         'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
       }
     })
-  ],
+  ].concat(
+    !fs.existsSync(paths.appPublic) ? [] : new CopyWebpackPlugin([{
+      from: paths.appPublic,
+      to: paths.appBuild
+    }])
+  ).concat(
+    !config.define ? [] : new webpack.DefinePlugin(normalizeDefine(config.define))
+  ),
+  externals: config.externals,
   node: {
     fs: 'empty',
     net: 'empty',

@@ -9,7 +9,7 @@ const cssLoaders = require('../utils/getCSSLoaders')
 
 const config = getConfig()
 
-module.exports = merge(baseWebpackConfig, {
+const webpackConfig = merge(baseWebpackConfig, {
   devtool: 'cheap-module-source-map',
   output: {
     pathinfo: true
@@ -27,3 +27,13 @@ module.exports = merge(baseWebpackConfig, {
     new WatchMissingNodeModulesPlugin(paths.appNodeModules)
   ]
 })
+
+if (config.multipage) {
+  webpackConfig.plugins.push(
+    // 公用的模块分开打包
+    // new webpack.optimize.CommonsChunkPlugin('common', 'common.js'),
+    new webpack.optimize.CommonsChunkPlugin({ name: 'common' }),
+  )
+}
+
+module.exports = webpackConfig
