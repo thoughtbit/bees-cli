@@ -48,8 +48,6 @@ $ bee build
   "extraBabelPlugins": [],
   "disableCSSModules": false,
   "cssSourceMap": false,
-  "isGzip": false,
-  "gzipExtensions": ["js", "css"],
   "isVisualizer": false,
   "autoprefixer": null,
   "externals": null,
@@ -83,8 +81,6 @@ $ bee build
     },
     "production": {
       "cssSourceMap": true,
-      "isGzip": true,
-      "gzipExtensions": ["js", "css"],
       "analyze": true
     }
   }
@@ -220,14 +216,29 @@ $ set PORT=12306&&bee server
 
 ## 命令行参数
 
-### server
+### bee server
 
 ```bash
+$ bee server -h
 Usage: bee server [options]
 
 Options:
   --open  Open url in browser after started            [boolean] [default: true]
   -h      Show help                                                    [boolean]
+```
+
+### bee build
+
+```bash
+$ bee build -h
+Usage: bee build [options]
+
+Options:
+  --debug            Build with compress              [boolean] [default: false]
+  --watch, -w        Watch file changes and rebuild   [boolean] [default: false]
+  --output-path, -o  Specify output path                [string] [default: null]
+                                                      [boolean] [default: false]
+  -h                 Show help                                         [boolean]
 ```
 
 ## 使用 `public` 目录

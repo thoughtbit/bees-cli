@@ -1,6 +1,6 @@
 {
   "name": "bees-cli",
-  "version": "0.4.8",
+  "version": "0.5.0",
   "description": "A simple CLI for serve and build web app, support JSON pattern config.",
   "bin": {
     "bee": "./bin/bee"
@@ -25,8 +25,8 @@
     ".eslintrc"
   ],
   "scripts": {
-    "start": "node ./scripts/start.js",
-    "build": "node ./scripts/build.js",
+    "start": "node ./lib/cli/start.js",
+    "build": "node ./lib/cli/build.js",
     "lint": "eslint --ext .js scripts config utils bin",
     "test": "mocha test/**/*-test.js --no-timeouts",
     "precommit": "npm run lint",
@@ -41,7 +41,6 @@
     "babel-preset-stage-0": "^6.16.0",
     "case-sensitive-paths-webpack-plugin": "^1.1.4",
     "chalk": "^1.1.3",
-    "compression-webpack-plugin": "^0.3.2",
     "connect-history-api-fallback": "^1.3.0",
     "copy-webpack-plugin": "^4.0.1",
     "cross-spawn": "^5.0.1",
@@ -78,7 +77,7 @@
     "webpack": "^1.14.0",
     "webpack-merge": "^0.14.1",
     "webpack-dev-server": "^1.16.2",
-    "webpack-visualizer-plugin": "^0.1.6",
+    "webpack-bundle-analyzer": "^2.2.1",
     "webpack-uglify-parallel": "^0.1.3"
   },
   "devDependencies": {

@@ -1,6 +1,6 @@
 const { join } = require('path')
 const expect = require('expect')
-const { getFiles } = require('../../utils/getEntry')
+const { getFiles } = require('../../lib/utils/getEntry')
 
 const fixtures = join(__dirname, '..', 'fixtures')
 const getEntryFixture = join(fixtures, 'getEntry')

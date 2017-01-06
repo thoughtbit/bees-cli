@@ -25,7 +25,7 @@ case 'build':
 case 'start':
   result = spawn.sync(
     'node',
-    [require.resolve(`../scripts/${script}`)].concat(args),
+    [require.resolve(`../lib/cli/${script}`)].concat(args),
     { stdio: 'inherit' }
   )
   process.exit(result.status)
