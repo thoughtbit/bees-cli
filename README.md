@@ -48,7 +48,7 @@ $ bee build
   "extraBabelPlugins": [],
   "disableCSSModules": false,
   "cssSourceMap": false,
-  "isVisualizer": false,
+  "analyze": false,
   "autoprefixer": null,
   "externals": null,
   "multipage": false,

@@ -1,9 +1,13 @@
 {
   "name": "bees-cli",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "A simple CLI for serve and build web app, support JSON pattern config.",
   "bin": {
     "bee": "./bin/bee"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thoughtbit/bees-cli.git"
   },
   "keywords": [
     "bee",
@@ -19,9 +23,7 @@
   "homepage": "https://github.com/thoughtbit/bees-cli#readme",
   "files": [
     "bin",
-    "utils",
-    "scripts",
-    "config",
+    "lib",
     ".eslintrc"
   ],
   "scripts": {
@@ -88,5 +90,8 @@
     "expect": "^1.20.2",
     "husky": "^0.11.9",
     "mocha": "^3.2.0"
+  },
+  "engines": {
+    "node": ">=6.5.0"
   }
 }
