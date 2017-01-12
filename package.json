@@ -43,6 +43,7 @@
     "babel-preset-stage-0": "^6.16.0",
     "case-sensitive-paths-webpack-plugin": "^1.1.4",
     "chalk": "^1.1.3",
+    "chokidar": "^1.6.1",
     "connect-history-api-fallback": "^1.3.0",
     "copy-webpack-plugin": "^4.0.1",
     "cross-spawn": "^5.0.1",
@@ -55,7 +56,7 @@
     "fs-extra": "^1.0.0",
     "glob": "^7.1.1",
     "gzip-size": "^3.0.0",
-    "http-proxy-middleware": "0.17.2",
+    "http-proxy-middleware": "^0.17.3",
     "is-plain-object": "^2.0.1",
     "json-loader": "^0.5.4",
     "sass-loader": "^4.1.0",
@@ -71,6 +72,7 @@
     "strip-ansi": "^3.0.1",
     "strip-json-comments": "^2.0.1",
     "style-loader": "^0.13.1",
+    "system-bell-webpack-plugin": "^1.0.0",
     "url-loader": "^0.5.7",
     "resolve-url-loader": "^1.6.1",
     "stylus":"^0.54.5",
@@ -80,7 +82,8 @@
     "webpack-merge": "^0.14.1",
     "webpack-dev-server": "^1.16.2",
     "webpack-bundle-analyzer": "^2.2.1",
-    "webpack-uglify-parallel": "^0.1.3"
+    "webpack-uglify-parallel": "^0.1.3",
+    "yargs": "^6.5.0"
   },
   "devDependencies": {
     "eslint": "^3.12.2",
@@ -88,10 +91,13 @@
     "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-standard": "^2.0.1",
     "expect": "^1.20.2",
+    "got": "^6.7.1",
     "husky": "^0.11.9",
+    "nyc": "^10.0.0",
+    "rimraf": "^2.5.4",
     "mocha": "^3.2.0"
   },
   "engines": {
-    "node": ">=6.5.0"
+    "node": ">=6.9.0"
   }
 }
