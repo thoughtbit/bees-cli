@@ -32,7 +32,7 @@ const cp = spawn(command, args.concat([cmd]), {
 cp.on('exit', () => {
   if (argv.coverage && fs.existsSync(join(process.cwd(), 'coverage/lcov-report/index.html'))) {
     console.log()
-    console.log(`You can see more detail in ${chalk.cyan('coverage/lcov-report/index.html')}`);
+    console.log(`You can see more detail in ${chalk.cyan('coverage/lcov-report/index.html')}`)
     console.log()
   }
 })

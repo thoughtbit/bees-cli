@@ -59,7 +59,6 @@ function readWebpackConfig () {
   )
 }
 
-
 function setupCompiler (host, port, protocol) {
   compiler = webpack(config)
 
