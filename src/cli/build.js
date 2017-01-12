@@ -6,9 +6,9 @@ import { sync as gzipSize } from 'gzip-size'
 import webpack from 'webpack'
 import recursive from 'recursive-readdir'
 import stripAnsi from 'strip-ansi'
-import getPaths from './config/paths'
-import getConfig from './utils/getConfig'
-import applyWebpackConfig, { warnIfExists } from './utils/applyWebpackConfig'
+import getPaths from './../config/paths'
+import getConfig from './../utils/getConfig'
+import applyWebpackConfig, { warnIfExists } from './../utils/applyWebpackConfig'
 
 process.env.NODE_ENV = 'production'
 
@@ -50,7 +50,7 @@ export function build (argv) {
   try {
     rcConfig = getConfig(process.env.NODE_ENV, argv.cwd)
   } catch (e) {
-    console.log(chalk.red('Failed to parse .roadhogrc config.'))
+    console.log(chalk.red('Failed to parse .beerc config.'))
     console.log()
     console.log(e.message)
     process.exit(1)
@@ -59,7 +59,7 @@ export function build (argv) {
   outputPath = argv.outputPath || rcConfig.outputPath || 'dist'
   appBuild = paths.resolveApp(outputPath)
   config = applyWebpackConfig(
-    require('./config/webpack.config.prod')(argv, appBuild, rcConfig, paths),
+    require('./config/webpack.prod.config')(argv, appBuild, rcConfig, paths),
     process.env.NODE_ENV,
   )
 

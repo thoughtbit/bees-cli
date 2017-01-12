@@ -20,7 +20,7 @@ $ npm install -g bees-cli
 本地开发
 
 ```bash
-$ bee start
+$ bee server
 ```
 
 打包发布

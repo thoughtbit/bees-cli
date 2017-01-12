@@ -1,35 +1,34 @@
-const os = require('os')
-const fs = require('fs')
-const webpack = require('webpack')
-const merge = require('webpack-merge')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const UglifyJsParallelPlugin = require('webpack-uglify-parallel')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
-const baseWebpackConfig = require('./webpack.base.config')
-const paths = require('./paths')
-const getConfig = require('../utils/getConfig')
-const cssLoaders = require('../utils/getCSSLoaders')
-const normalizeDefine = require('../utils/normalizeDefine')
+import os from 'os'
+import fs from 'fs'
+import webpack from 'webpack'
+import merge from 'webpack-merge'
+import ExtractTextPlugin from 'extract-text-webpack-plugin'
+import UglifyJsParallelPlugin from 'webpack-uglify-parallel'
+import CopyWebpackPlugin from 'copy-webpack-plugin'
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import baseWebpackConfig from './webpack.base.config'
+import getCSSLoaders from '../utils/getCSSLoaders'
+import normalizeDefine from '../utils/normalizeDefine'
 
-const config = getConfig()
-const publicPath = config.publicPath || '/'
-
-module.exports = function (args, appBuild) {
+export default function (args, appBuild, config, paths) {
   const { debug } = args
   const NODE_ENV = debug ? 'development' : process.env.NODE_ENV
 
-  const webpackConfig = merge(baseWebpackConfig, {
+  const publicPath = config.publicPath || '/'
+  const styleLoaders = getCSSLoaders.cssLoaders.styleLoaders({
+    sourceMap: config.cssSourceMap,
+    extract: true
+  })
+  const commonConfig = baseWebpackConfig(config, paths)
+
+  return merge(commonConfig, {
     bail: true,
     output: {
       path: appBuild,
-      publicPath: publicPath
+      publicPath
     },
     module: {
-      loaders: cssLoaders.styleLoaders({
-        sourceMap: config.cssSourceMap,
-        extract: true
-      })
+      loaders: styleLoaders
     },
     plugins: [
       new webpack.DefinePlugin({
@@ -77,6 +76,4 @@ module.exports = function (args, appBuild) {
     ),
     externals: config.externals
   })
-
-  return webpackConfig
 }

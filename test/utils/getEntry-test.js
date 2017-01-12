@@ -1,6 +1,6 @@
-const { join } = require('path')
-const expect = require('expect')
-const { getFiles } = require('../../lib/utils/getEntry')
+import { join } from 'path'
+import expect from 'expect'
+import { getFiles } from '../../src/utils/getEntry'
 
 const fixtures = join(__dirname, '..', 'fixtures')
 const getEntryFixture = join(fixtures, 'getEntry')
@@ -53,4 +53,3 @@ describe('getEntry', () => {
     ])
   })
 })
-

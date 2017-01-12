@@ -21,7 +21,7 @@ export function getConfig (filePath) {
       return realRequire(m, filename)
     }
 
-    const config = require(resolvedFilePath);  // eslint-disable-line
+    const config = require(resolvedFilePath)  // eslint-disable-line
     require.extensions['.js'] = realRequire
 
     return { config, files }
