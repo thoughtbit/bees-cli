@@ -73,6 +73,7 @@ export default {
   "publicPath": "/",
   "extraBabelPresets": [],
   "extraBabelPlugins": [],
+  "extraPostCSSPlugins": [],
   "cssSourceMap": false,
   "analyze": false,
   "autoprefixer": null,
