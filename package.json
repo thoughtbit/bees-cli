@@ -1,6 +1,6 @@
 {
   "name": "bees-cli",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "A simple CLI for serve and build web app, support JSON pattern config.",
   "bin": {
     "bee": "./bin/bee"
@@ -11,7 +11,10 @@
   },
   "keywords": [
     "bee",
-    "cli"
+    "cli",
+    "react",
+    "create-react-app",
+    "webpack"
   ],
   "authors": [
     "moocss <moocss@gmail.com> (https://github.com/moocss)"
@@ -28,15 +31,9 @@
     ".eslintrc"
   ],
   "scripts": {
-    "dev:start": "nodemon -w src --exec \"babel-node src/cli/server.js --presets es2015,stage-0\"",
-    "dev:build": "nodemon -w src --exec \"babel-node src/cli/build.js --presets es2015,stage-0\"",
-    "build": "babel src -s -D -d lib --presets es2015,stage-0",
-
-    "build:b": "rimraf lib && babel src --out-dir lib",
-
-    "bee:start": "node ./lib/server.js",
-    "bee:build": "node ./lib/build.js",
-
+    "build": "rimraf lib && babel src --out-dir lib --presets es2015,stage-0",
+    "bee:start": "node ./lib/cli/server.js",
+    "bee:build": "node ./lib/cli/build.js",
     "debug": "cross-env NODE_ENV=test mocha --require babel-register --no-timeouts test/**/*-test.js",
     "report": "nyc report --reporter=html",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
@@ -107,6 +104,7 @@
     "husky": "^0.11.9",
     "nyc": "^10.0.0",
     "rimraf": "^2.5.4",
+    "cross-env": "^3.1.4",
     "postcss-pxtorem": "^3.3.1",
     "mocha": "^3.2.0"
   },

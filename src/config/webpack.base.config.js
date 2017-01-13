@@ -1,16 +1,5 @@
-import autoprefixer from 'autoprefixer'
-import getEntry from '../utils/getEntry'
-
 export default function (config, paths) {
-  const publicPath = '/'
-
   return {
-    entry: getEntry(config, paths.appDirectory),
-    output: {
-      path: paths.appBuild,
-      filename: '[name].js',
-      publicPath: publicPath
-    },
     resolve: {
       extensions: ['.js', '.json', '.jsx', '.ts', 'tsx', ''],
       alias: {
@@ -74,18 +63,6 @@ export default function (config, paths) {
         require.resolve('babel-plugin-add-module-exports')
       ].concat(config.extraBabelPlugins || []),
       cacheDirectory: true
-    },
-    postcss: function () {
-      return [
-        autoprefixer(config.autoprefixer || {
-          browsers: [
-            '>1%',
-            'last 4 versions',
-            'Firefox ESR',
-            'not ie < 9' // React doesn't support IE8 anyway
-          ]
-        })
-      ]
     },
     node: {
       fs: 'empty',

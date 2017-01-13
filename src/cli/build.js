@@ -9,6 +9,7 @@ import stripAnsi from 'strip-ansi'
 import getPaths from './../config/paths'
 import getConfig from './../utils/getConfig'
 import applyWebpackConfig, { warnIfExists } from './../utils/applyWebpackConfig'
+import WebPackProdConfig from './../config/webpack.prod.config'
 
 process.env.NODE_ENV = 'production'
 
@@ -31,11 +32,6 @@ const argv = require('yargs')
     describe: 'Specify output path',
     default: null
   })
-  .option('analyze', {
-    type: 'boolean',
-    describe: 'Visualize and analyze your Webpack bundle.',
-    default: false
-  })
   .help('h')
   .argv
 
@@ -43,6 +39,7 @@ let rcConfig
 let outputPath
 let appBuild
 let config
+let webPackProdConfig
 
 export function build (argv) {
   const paths = getPaths(argv.cwd)
@@ -58,10 +55,9 @@ export function build (argv) {
 
   outputPath = argv.outputPath || rcConfig.outputPath || 'dist'
   appBuild = paths.resolveApp(outputPath)
-  config = applyWebpackConfig(
-    require('./config/webpack.prod.config')(argv, appBuild, rcConfig, paths),
-    process.env.NODE_ENV,
-  )
+
+  webPackProdConfig = WebPackProdConfig(argv, appBuild, rcConfig, paths)
+  config = applyWebpackConfig(webPackProdConfig, process.env.NODE_ENV)
 
   return new Promise((resolve) => {
     // First, read the current file sizes in build directory.
@@ -175,11 +171,6 @@ function doneHandler (previousSizeMap, argv, resolve, err, stats) {
   console.log()
   printFileSizes(stats, previousSizeMap)
   console.log()
-
-  if (argv.analyze) {
-    console.log(`Analyze result is generated at ${chalk.cyan('dist/stats.html')}.`)
-    console.log()
-  }
 
   resolve()
 }

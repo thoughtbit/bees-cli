@@ -12,6 +12,7 @@ import chokidar from 'chokidar'
 import getPaths from './../config/paths'
 import getConfig from './../utils/getConfig'
 import applyWebpackConfig, { warnIfExists } from './../utils/applyWebpackConfig'
+import WebpackDevConfig from './../config/webpack.dev.config'
 import { applyMock, outputError as outputMockError } from './../utils/mock'
 
 process.env.NODE_ENV = 'development'
@@ -53,10 +54,8 @@ function readRcConfig () {
 }
 
 function readWebpackConfig () {
-  config = applyWebpackConfig(
-    require('./config/webpack.dev.config')(rcConfig, cwd),
-    process.env.NODE_ENV,
-  )
+  const webpackDevConfig = WebpackDevConfig(rcConfig, cwd)
+  config = applyWebpackConfig(webpackDevConfig, process.env.NODE_ENV)
 }
 
 function setupCompiler (host, port, protocol) {

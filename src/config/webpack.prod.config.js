@@ -1,34 +1,51 @@
 import os from 'os'
 import fs from 'fs'
+import autoprefixer from 'autoprefixer'
 import webpack from 'webpack'
 import merge from 'webpack-merge'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import UglifyJsParallelPlugin from 'webpack-uglify-parallel'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import getEntry from '../utils/getEntry'
 import baseWebpackConfig from './webpack.base.config'
-import getCSSLoaders from '../utils/getCSSLoaders'
-import normalizeDefine from '../utils/normalizeDefine'
+import getCSSLoaders from './../utils/getCSSLoaders'
+import normalizeDefine from './../utils/normalizeDefine'
 
 export default function (args, appBuild, config, paths) {
   const { debug } = args
   const NODE_ENV = debug ? 'development' : process.env.NODE_ENV
 
   const publicPath = config.publicPath || '/'
-  const styleLoaders = getCSSLoaders.cssLoaders.styleLoaders({
+  const styleLoaders = getCSSLoaders.styleLoaders({
     sourceMap: config.cssSourceMap,
     extract: true
   })
+
   const commonConfig = baseWebpackConfig(config, paths)
 
   return merge(commonConfig, {
     bail: true,
+    entry: getEntry(config, paths.appDirectory),
     output: {
       path: appBuild,
+      filename: '[name].js',
       publicPath
     },
     module: {
       loaders: styleLoaders
+    },
+    postcss () {
+      return [
+        autoprefixer(config.autoprefixer || {
+          browsers: [
+            '>1%',
+            'last 4 versions',
+            'Firefox ESR',
+            'not ie < 9' // React doesn't support IE8 anyway
+          ]
+        })
+      ].concat(config.extraPostCSSPlugins ? config.extraPostCSSPlugins : [])
     },
     plugins: [
       new webpack.DefinePlugin({
