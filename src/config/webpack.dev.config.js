@@ -4,7 +4,9 @@ import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin'
 import WatchMissingNodeModulesPlugin from 'react-dev-utils/WatchMissingNodeModulesPlugin'
 import FriendlyErrors from 'friendly-errors-webpack-plugin'
 import webpack from 'webpack'
+import merge from 'webpack-merge'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
+import baseWebpackConfig from './webpack.base.config'
 import getPaths from './paths'
 import getEntry from '../utils/getEntry'
 import getCSSLoaders from './../utils/getCSSLoaders'
@@ -14,8 +16,9 @@ export default function (config, cwd) {
   const publicPath = '/'
   const paths = getPaths(cwd)
   const styleLoaders = getCSSLoaders.styleLoaders({ sourceMap: config.cssSourceMap })
+  const commonConfig = baseWebpackConfig(config, paths)
 
-  return {
+  return merge(commonConfig, {
     devtool: 'cheap-module-source-map',
     entry: getEntry(config, paths.appDirectory),
     output: {
@@ -24,70 +27,11 @@ export default function (config, cwd) {
       pathinfo: true,
       publicPath
     },
-    resolve: {
-      extensions: ['.js', '.json', '.jsx', '.ts', 'tsx', ''],
-      alias: {
-        'src': paths.resolveApp('./../src'),
-        'assets': paths.resolveApp('./../src/assets'),
-        'components': paths.resolveApp('./../src/components')
-      }
-    },
-    resolveLoader: {
-      root: paths.ownNodeModules
-    },
     module: {
-      loaders: [
-        {
-          exclude: [
-            /\.html$/,
-            /\.(js|jsx)$/,
-            /\.css$/,
-            /\.json$/,
-            /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-            /\.(woff2?|eot|ttf|otf)(\?.*)?$/
-          ],
-          loader: 'url',
-          query: {
-            limit: 10000,
-            name: 'static/[name].[hash:8].[ext]'
-          }
-        },
-        {
-          test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-          loader: 'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
-        },
-        {
-          test: /\.(js|jsx)$/,
-          include: paths.appSrc,
-          loader: 'babel'
-        },
-        {
-          test: /\.html$/,
-          loader: 'file?name=[name].[ext]'
-        },
-        {
-          test: /\.json$/,
-          loader: 'json'
-        },
-        {
-          test: /\.svg$/,
-          loader: 'file',
-          query: {
-            name: 'static/[name].[hash:8].[ext]'
-          }
-        }
-      ].concat(styleLoaders)
+      loaders: styleLoaders
     },
     babel: {
-      babelrc: false,
-      presets: [
-        require.resolve('babel-preset-es2015'),
-        require.resolve('babel-preset-stage-0')
-      ].concat(config.extraBabelPresets || []),
-      plugins: [
-        require.resolve('babel-plugin-add-module-exports')
-      ].concat(config.extraBabelPlugins || []),
-      cacheDirectory: true
+      babelrc: false
     },
     postcss () {
       return [
@@ -122,11 +66,6 @@ export default function (config, cwd) {
     ).concat(
       !config.define ? [] : new webpack.DefinePlugin(normalizeDefine(config.define))
     ),
-    externals: config.externals,
-    node: {
-      fs: 'empty',
-      net: 'empty',
-      tls: 'empty'
-    }
-  }
+    externals: config.externals
+  })
 }

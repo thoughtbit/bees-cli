@@ -2,11 +2,13 @@ import os from 'os'
 import fs from 'fs'
 import autoprefixer from 'autoprefixer'
 import webpack from 'webpack'
+import merge from 'webpack-merge'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import UglifyJsParallelPlugin from 'webpack-uglify-parallel'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import getEntry from '../utils/getEntry'
+import baseWebpackConfig from './webpack.base.config'
 import getCSSLoaders from './../utils/getCSSLoaders'
 import normalizeDefine from './../utils/normalizeDefine'
 
@@ -20,7 +22,9 @@ export default function (args, appBuild, config, paths) {
     extract: true
   })
 
-  return {
+  const commonConfig = baseWebpackConfig(config, paths)
+
+  return merge(commonConfig, {
     bail: true,
     entry: getEntry(config, paths.appDirectory),
     output: {
@@ -28,69 +32,8 @@ export default function (args, appBuild, config, paths) {
       filename: '[name].js',
       publicPath
     },
-    resolve: {
-      extensions: ['.js', '.json', '.jsx', '.ts', 'tsx', ''],
-      alias: {
-        'src': paths.resolveApp('./../src'),
-        'assets': paths.resolveApp('./../src/assets'),
-        'components': paths.resolveApp('./../src/components')
-      }
-    },
-    resolveLoader: {
-      root: paths.ownNodeModules
-    },
     module: {
-      loaders: [
-        {
-          exclude: [
-            /\.html$/,
-            /\.(js|jsx)$/,
-            /\.css$/,
-            /\.json$/,
-            /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-            /\.(woff2?|eot|ttf|otf)(\?.*)?$/
-          ],
-          loader: 'url',
-          query: {
-            limit: 10000,
-            name: 'static/[name].[hash:8].[ext]'
-          }
-        },
-        {
-          test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-          loader: 'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
-        },
-        {
-          test: /\.(js|jsx)$/,
-          include: paths.appSrc,
-          loader: 'babel'
-        },
-        {
-          test: /\.html$/,
-          loader: 'file?name=[name].[ext]'
-        },
-        {
-          test: /\.json$/,
-          loader: 'json'
-        },
-        {
-          test: /\.svg$/,
-          loader: 'file',
-          query: {
-            name: 'static/[name].[hash:8].[ext]'
-          }
-        }
-      ].concat(styleLoaders)
-    },
-    babel: {
-      presets: [
-        require.resolve('babel-preset-es2015'),
-        require.resolve('babel-preset-stage-0')
-      ].concat(config.extraBabelPresets || []),
-      plugins: [
-        require.resolve('babel-plugin-add-module-exports')
-      ].concat(config.extraBabelPlugins || []),
-      cacheDirectory: true
+      loaders: styleLoaders
     },
     postcss () {
       return [
@@ -148,11 +91,6 @@ export default function (args, appBuild, config, paths) {
     ).concat(
       !config.define ? [] : new webpack.DefinePlugin(normalizeDefine(config.define))
     ),
-    externals: config.externals,
-    node: {
-      fs: 'empty',
-      net: 'empty',
-      tls: 'empty'
-    }
-  }
+    externals: config.externals
+  })
 }

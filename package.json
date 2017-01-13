@@ -1,6 +1,6 @@
 {
   "name": "bees-cli",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "A simple CLI for serve and build web app, support JSON pattern config.",
   "bin": {
     "bee": "./bin/bee"
@@ -87,6 +87,7 @@
     "stylus-loader": "^2.4.0",
     "image-webpack-loader": "^3.1.0",
     "webpack": "^1.14.0",
+    "webpack-merge": "^0.14.1",
     "webpack-dev-server": "^1.16.2",
     "webpack-bundle-analyzer": "^2.2.1",
     "webpack-uglify-parallel": "^0.1.3",
