@@ -92,7 +92,7 @@ export default function (args, appBuild, config, paths) {
       ].concat(config.extraBabelPlugins || []),
       cacheDirectory: true
     },
-    postcss: function () {
+    postcss () {
       return [
         autoprefixer(config.autoprefixer || {
           browsers: [

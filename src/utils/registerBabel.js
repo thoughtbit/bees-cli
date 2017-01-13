@@ -3,7 +3,6 @@ if (process.env.NODE_ENV !== 'test') {
     only: /(webpack.config.js|.beerc.js|.beerc.mock.js|mock\/)/,
     presets: [
       require.resolve('babel-preset-es2015'),
-      require.resolve('babel-preset-react'),
       require.resolve('babel-preset-stage-0')
     ],
     plugins: [

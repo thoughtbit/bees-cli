@@ -89,7 +89,7 @@ export default function (config, cwd) {
       ].concat(config.extraBabelPlugins || []),
       cacheDirectory: true
     },
-    postcss: function () {
+    postcss () {
       return [
         autoprefixer(config.autoprefixer || {
           browsers: [
