@@ -14,7 +14,7 @@ import WebPackProdConfig from './../config/webpack.prod.config'
 process.env.NODE_ENV = 'production'
 
 const argv = require('yargs')
-  .usage('Usage: roadhog build [options]')
+  .usage('Usage: bee build [options]')
   .option('debug', {
     type: 'boolean',
     describe: 'Build with compress',

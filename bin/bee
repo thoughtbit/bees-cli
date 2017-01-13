@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
-const spawn = require('cross-spawn')
-const chalk = require('chalk')
-const os = require('os')
+var spawn = require('cross-spawn')
+var chalk = require('chalk')
+var os = require('os')
 
-const script = process.argv[2]
-const args = process.argv.slice(3)
+var script = process.argv[2]
+var args = process.argv.slice(3)
 
-const nodeVersion = process.versions.node
-const versions = nodeVersion.split('.')
-const major = versions[0]
-const minor = versions[1]
-const platform = os.platform()
+var nodeVersion = process.versions.node
+var versions = nodeVersion.split('.')
+var major = versions[0]
+var minor = versions[1]
+var platform = os.platform()
 
 if (((major * 10) + (minor * 1)) < 69) {
   console.log(chalk.red(`Node version (${major}.${minor}) is not compatibile, ${chalk.cyan('must >= 6.9')}.`))
@@ -25,7 +25,7 @@ if (((major * 10) + (minor * 1)) < 69) {
   process.exit(1)
 }
 
-let result
+var result
 
 switch (script) {
 case '-v':

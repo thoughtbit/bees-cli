@@ -24,7 +24,7 @@ const paths = getPaths(cwd)
 let compiler
 
 const argv = require('yargs')
-  .usage('Usage: roadhog server [options]')
+  .usage('Usage: bee server [options]')
   .option('open', {
     type: 'boolean',
     describe: 'Open url in browser after started',

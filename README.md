@@ -29,6 +29,33 @@ $ bee server
 $ bee build
 ```
 
+### Mock
+
+bee server 支持 mock 功能，类似 [dora-plugin-proxy](https://github.com/dora-js/dora-plugin-proxy)，在 `.beerc.mock.js` 中进行配置，支持基于 require 动态分析的实时刷新，支持 ES6 语法，以及友好的出错提示。
+
+比如：
+
+```js
+export default {
+  // 支持值为 Object 和 Array
+  'GET /api/users': { users: [1,2] },
+
+  // GET POST 可省略
+  '/api/users/1': { id: 1 },
+
+  // 支持自定义函数，API 参考 express@4
+  'POST /api/users/create': (req, res) => { res.end('OK'); },
+};
+```
+
+### 智能重启
+
+配置文件修改的修改会触发 bee server 的自动重启，会触发重启的文件有：
+
+* `.beerc`
+* `.beerc.js`
+* `.beerc.mock.js`
+
 ### 配置
 
 关于配置的一些基本概念：
@@ -36,7 +63,7 @@ $ bee build
 * 配置存于 `.beerc` 文件中（如果你不喜欢 JSON 配置，可以用 `.beerc.js` 以 JS 的方式编写，支持 ES6）
 * 格式为 `JSON`，允许注释
 * 布尔类型的配置项默认值均为 `false`
-* 支持通过 `webpack.config.js` 以编码的方式进行配置，但不推荐，因为 roadhog 本身的 major 或 minor 升级可能会引起兼容问题。使用时会给予警告⚠️⚠️⚠️， 。（`webpack.config.js` 本身的编写支持 ES6，会通过 babal-register 做一层转换。）
+* 支持通过 `webpack.config.js` 以编码的方式进行配置，但不推荐，因为 bee 本身的 major 或 minor 升级可能会引起兼容问题。使用时会给予警告⚠️⚠️⚠️， 。（`webpack.config.js` 本身的编写支持 ES6，会通过 babal-register 做一层转换。）
 
 .beerc 默认配置：
 
@@ -46,7 +73,6 @@ $ bee build
   "publicPath": "/",
   "extraBabelPresets": [],
   "extraBabelPlugins": [],
-  "disableCSSModules": false,
   "cssSourceMap": false,
   "analyze": false,
   "autoprefixer": null,
@@ -105,10 +131,6 @@ package.json 的 React开发配置：
 ```
 "entry": "src/pages/*.js"
 ```
-
-### disableCSSModules
-
-禁用 [CSS Modules](https://github.com/css-modules/css-modules)。最好别关，熟悉并使用他后，你会发现写样式简单了很多。
 
 ### publicPath
 
@@ -239,6 +261,17 @@ Options:
   --output-path, -o  Specify output path                [string] [default: null]
                                                       [boolean] [default: false]
   -h                 Show help                                         [boolean]
+```
+
+### bee test
+
+```bash
+$ bee test -h
+Usage: bee test [options] [mocha-options]
+
+Options:
+  --coverage  Output coverage                         [boolean] [default: false]
+  -h          Show help                                                [boolean]
 ```
 
 ## 使用 `public` 目录
