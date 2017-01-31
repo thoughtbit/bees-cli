@@ -9,7 +9,10 @@ export default function (config, paths) {
       }
     },
     resolveLoader: {
-      root: paths.ownNodeModules
+      root: [
+        paths.ownNodeModules,
+        paths.appNodeModules
+      ]
     },
     module: {
       loaders: [

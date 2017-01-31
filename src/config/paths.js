@@ -18,7 +18,7 @@ export default function getPaths (cwd) {
     appPublic: resolveApp('public'),
     appPackageJson: resolveApp('package.json'),
     appNodeModules: resolveApp('node_modules'),
-    ownNodeModules: resolveOwn('../node_modules'),
+    ownNodeModules: resolveOwn('../../node_modules'),
     appDirectory,
     resolveApp,
     resolveOwn
