@@ -257,7 +257,7 @@ $ bee build -h
 Usage: bee build [options]
 
 Options:
-  --debug            Build with compress              [boolean] [default: false]
+  --debug            Build without compress           [boolean] [default: false]
   --watch, -w        Watch file changes and rebuild   [boolean] [default: false]
   --output-path, -o  Specify output path                [string] [default: null]
                                                       [boolean] [default: false]

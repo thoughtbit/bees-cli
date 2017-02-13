@@ -17,7 +17,7 @@ const argv = require('yargs')
   .usage('Usage: bee build [options]')
   .option('debug', {
     type: 'boolean',
-    describe: 'Build with compress',
+    describe: 'Build without compress',
     default: false
   })
   .option('watch', {
