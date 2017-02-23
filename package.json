@@ -1,6 +1,6 @@
 {
   "name": "bees-cli",
-  "version": "0.5.9",
+  "version": "0.5.10",
   "description": "A simple CLI for serve and build web app, support JSON pattern config.",
   "bin": {
     "bee": "./bin/bee"
@@ -43,6 +43,7 @@
   },
   "dependencies": {
     "autoprefixer": "^6.5.4",
+    "awesome-typescript-loader": "^3.0.6",
     "babel-cli": "^6.18.0",
     "babel-core": "^6.18.0",
     "babel-loader": "^6.2.9",
@@ -81,6 +82,7 @@
     "strip-json-comments": "^2.0.1",
     "style-loader": "^0.13.1",
     "system-bell-webpack-plugin": "^1.0.0",
+    "typescript": "^2.1.6",
     "url-loader": "^0.5.7",
     "resolve-url-loader": "^1.6.1",
     "stylus":"^0.54.5",

@@ -1,7 +1,7 @@
 export default function (config, paths) {
   return {
     resolve: {
-      extensions: ['.js', '.json', '.jsx', '.ts', 'tsx', ''],
+      extensions: ['.js', '.json', '.jsx', '.ts', '.tsx', ''],
       alias: {
         'src': paths.resolveApp('./../src'),
         'assets': paths.resolveApp('./../src/assets'),
@@ -20,7 +20,8 @@ export default function (config, paths) {
           exclude: [
             /\.html$/,
             /\.(js|jsx)$/,
-            /\.css$/,
+            /\.tsx?$/,
+            /\.(css|less|scss)$/,
             /\.json$/,
             /\.(png|jpe?g|gif|svg)(\?.*)?$/,
             /\.(woff2?|eot|ttf|otf)(\?.*)?$/
@@ -54,6 +55,11 @@ export default function (config, paths) {
           query: {
             name: 'static/[name].[hash:8].[ext]'
           }
+        },
+        {
+          test: /\.tsx?$/,
+          include: paths.appSrc,
+          loader: 'babel!awesome-typescript'
         }
       ]
     },
