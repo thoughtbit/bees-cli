@@ -86,7 +86,7 @@ export function applyMock (devServer) {
       console.log(chalk.green('CHANGED'), path.replace(paths.appDirectory, '.'))
       watcher.close()
       applyMock(devServer)
-    });
+    })
   }
 }
 
@@ -112,7 +112,7 @@ function realApplyMock (devServer) {
       typeof config[key] === 'object' ||
       typeof config[key] === 'string',
       `mock value of ${key} should be function or object or string, but got ${typeof config[key]}`,
-    );
+    )
     if (typeof config[key] === 'string') {
       let path = keyParsed.path
       if (/\(.+\)/.test(keyParsed.path)) {
@@ -121,7 +121,7 @@ function realApplyMock (devServer) {
       app.use(
         path,
         createProxy(keyParsed.method, path, config[key]),
-      );
+      )
     } else {
       app[keyParsed.method](
         keyParsed.path,
@@ -136,7 +136,7 @@ function realApplyMock (devServer) {
     if (item.name === 'webpackDevMiddleware') {
       lastIndex = index
     }
-  });
+  })
   const mockAPILength = app._router.stack.length - 1 - lastIndex
   if (lastIndex && lastIndex > 0) {
     const newStack = app._router.stack
