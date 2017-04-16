@@ -710,7 +710,7 @@ babel-plugin-transform-es2015-template-literals@^6.6.0:
 
 babel-plugin-transform-es2015-typeof-symbol@^6.18.0:
   version "6.18.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-transform-es2015-typeof-symbol/-/babel-plugin-transform-es2015-typeof-symbol-6.18.0.tgz#0b14c48629c90ff47a0650077f6aa699bee35798"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-es2015-typeof-symbol/-/babel-plugin-transform-es2015-typeof-symbol-6.18.0.tgz#0b14c48629c90ff47a0650077f6aa699bees35798"
   dependencies:
     babel-runtime "^6.0.0"
 
@@ -910,9 +910,9 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
-beeper@^1.0.0:
+beesper@^1.0.0:
   version "1.1.1"
-  resolved "https://registry.yarnpkg.com/beeper/-/beeper-1.1.1.tgz#e6d5ea8c5dad001304a70b22638447f69cb2f809"
+  resolved "https://registry.yarnpkg.com/beesper/-/beesper-1.1.1.tgz#e6d5ea8c5dad001304a70b22638447f69cb2f809"
 
 big.js@^3.1.3:
   version "3.1.3"
@@ -1082,7 +1082,7 @@ callsites@^0.2.0:
 
 camelcase-keys@^2.0.0:
   version "2.1.0"
-  resolved "https://registry.yarnpkg.com/camelcase-keys/-/camelcase-keys-2.1.0.tgz#308beeaffdf28119051efa1d932213c91b8f92e7"
+  resolved "https://registry.yarnpkg.com/camelcase-keys/-/camelcase-keys-2.1.0.tgz#308beesaffdf28119051efa1d932213c91b8f92e7"
   dependencies:
     camelcase "^2.0.0"
     map-obj "^1.0.0"
@@ -1505,7 +1505,7 @@ css@^2.0.0:
 
 cssesc@^0.1.0:
   version "0.1.0"
-  resolved "https://registry.yarnpkg.com/cssesc/-/cssesc-0.1.0.tgz#c814903e45623371a0477b40109aaafbeeaddbb4"
+  resolved "https://registry.yarnpkg.com/cssesc/-/cssesc-0.1.0.tgz#c814903e45623371a0477b40109aaafbeesaddbb4"
 
 "cssnano@>=2.6.1 <4":
   version "3.9.1"
@@ -1598,7 +1598,7 @@ debug@2.2.0, debug@~2.2.0:
 
 decamelize@^1.0.0, decamelize@^1.1.1, decamelize@^1.1.2:
   version "1.2.0"
-  resolved "https://registry.yarnpkg.com/decamelize/-/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
+  resolved "https://registry.yarnpkg.com/decamelize/-/decamelize-1.2.0.tgz#f6534d15148269b20352e7bees26f501f9a191290"
 
 decompress-tar@^3.0.0:
   version "3.1.0"
@@ -2340,7 +2340,7 @@ for-own@^0.1.4:
 
 foreach@^2.0.5:
   version "2.0.5"
-  resolved "https://registry.yarnpkg.com/foreach/-/foreach-2.0.5.tgz#0bee005018aeb260d0a3af3ae658dd0136ec1b99"
+  resolved "https://registry.yarnpkg.com/foreach/-/foreach-2.0.5.tgz#0bees005018aeb260d0a3af3ae658dd0136ec1b99"
 
 foreground-child@^1.5.3, foreground-child@^1.5.6:
   version "1.5.6"
@@ -2713,7 +2713,7 @@ gulp-util@^3.0.1:
   dependencies:
     array-differ "^1.0.0"
     array-uniq "^1.0.2"
-    beeper "^1.0.0"
+    beesper "^1.0.0"
     chalk "^1.0.0"
     dateformat "^1.0.11"
     fancy-log "^1.1.0"
@@ -3148,7 +3148,7 @@ is-fullwidth-code-point@^1.0.0:
 
 is-fullwidth-code-point@^2.0.0:
   version "2.0.0"
-  resolved "https://registry.yarnpkg.com/is-fullwidth-code-point/-/is-fullwidth-code-point-2.0.0.tgz#a3b30a5c4f199183167aaab93beefae3ddfb654f"
+  resolved "https://registry.yarnpkg.com/is-fullwidth-code-point/-/is-fullwidth-code-point-2.0.0.tgz#a3b30a5c4f199183167aaab93beesfae3ddfb654f"
 
 is-generator-function@^1.0.3:
   version "1.0.3"
@@ -4206,7 +4206,7 @@ nodemon@^1.9.2:
 
 nopt@~1.0.10:
   version "1.0.10"
-  resolved "http://registry.npm.taobao.org/nopt/download/nopt-1.0.10.tgz#6ddd21bd2a31417b92727dd585f8a6f37608ebee"
+  resolved "http://registry.npm.taobao.org/nopt/download/nopt-1.0.10.tgz#6ddd21bd2a31417b92727dd585f8a6f37608ebees"
   dependencies:
     abbrev "1"
 
@@ -4417,7 +4417,7 @@ optipng-bin@^3.0.0:
 
 ordered-read-streams@^0.3.0:
   version "0.3.0"
-  resolved "https://registry.yarnpkg.com/ordered-read-streams/-/ordered-read-streams-0.3.0.tgz#7137e69b3298bb342247a1bbee3881c80e2fd78b"
+  resolved "https://registry.yarnpkg.com/ordered-read-streams/-/ordered-read-streams-0.3.0.tgz#7137e69b3298bb342247a1bbees3881c80e2fd78b"
   dependencies:
     is-stream "^1.0.1"
     readable-stream "^2.0.1"
@@ -5239,7 +5239,7 @@ require-directory@^2.1.1:
 
 require-from-string@^1.1.0:
   version "1.2.1"
-  resolved "https://registry.yarnpkg.com/require-from-string/-/require-from-string-1.2.1.tgz#529c9ccef27380adfec9a2f965b649bbee636418"
+  resolved "https://registry.yarnpkg.com/require-from-string/-/require-from-string-1.2.1.tgz#529c9ccef27380adfec9a2f965b649bbees636418"
 
 require-main-filename@^1.0.1:
   version "1.0.1"
@@ -5708,7 +5708,7 @@ string_decoder@^0.10.25, string_decoder@~0.10.x:
 
 stringstream@~0.0.4:
   version "0.0.5"
-  resolved "https://registry.yarnpkg.com/stringstream/-/stringstream-0.0.5.tgz#4e484cd4de5a0bbbee18e46307710a8a81621878"
+  resolved "https://registry.yarnpkg.com/stringstream/-/stringstream-0.0.5.tgz#4e484cd4de5a0bbbees18e46307710a8a81621878"
 
 strip-ansi@3.0.1, strip-ansi@^3.0.0, strip-ansi@^3.0.1:
   version "3.0.1"
@@ -6399,7 +6399,7 @@ window-size@0.1.0:
 
 window-size@^0.2.0:
   version "0.2.0"
-  resolved "https://registry.yarnpkg.com/window-size/-/window-size-0.2.0.tgz#b4315bb4214a3d7058ebeee892e13fa24d98b075"
+  resolved "https://registry.yarnpkg.com/window-size/-/window-size-0.2.0.tgz#b4315bb4214a3d7058ebeese892e13fa24d98b075"
 
 wordwrap@0.0.2:
   version "0.0.2"

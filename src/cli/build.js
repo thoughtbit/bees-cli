@@ -9,12 +9,11 @@ import stripAnsi from 'strip-ansi'
 import getPaths from './../config/paths'
 import getConfig from './../utils/getConfig'
 import applyWebpackConfig, { warnIfExists } from './../utils/applyWebpackConfig'
-import WebPackProdConfig from './../config/webpack.config.prod'
 
-process.env.NODE_ENV = 'production'
+process.env.NODE_ENV = process.env.NODE_ENV || 'production'
 
 const argv = require('yargs')
-  .usage('Usage: bee build [options]')
+  .usage('Usage: bees build [options]')
   .option('debug', {
     type: 'boolean',
     describe: 'Build without compress',
@@ -39,7 +38,6 @@ let rcConfig
 let outputPath
 let appBuild
 let config
-let webPackProdConfig
 
 export function build (argv) {
   const paths = getPaths(argv.cwd)
@@ -47,7 +45,7 @@ export function build (argv) {
   try {
     rcConfig = getConfig(process.env.NODE_ENV, argv.cwd)
   } catch (e) {
-    console.log(chalk.red('Failed to parse .beerc config.'))
+    console.log(chalk.red('Failed to parse .beesrc config.'))
     console.log()
     console.log(e.message)
     process.exit(1)
@@ -55,9 +53,10 @@ export function build (argv) {
 
   outputPath = argv.outputPath || rcConfig.outputPath || 'dist'
   appBuild = paths.resolveApp(outputPath)
-
-  webPackProdConfig = WebPackProdConfig(argv, appBuild, rcConfig, paths)
-  config = applyWebpackConfig(webPackProdConfig, process.env.NODE_ENV)
+  config = applyWebpackConfig(
+    require('./config/webpack.config.prod')(argv, appBuild, rcConfig, paths),
+    process.env.NODE_ENV,
+  )
 
   return new Promise((resolve) => {
     // First, read the current file sizes in build directory.

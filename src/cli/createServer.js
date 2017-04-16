@@ -12,10 +12,9 @@ import chokidar from 'chokidar'
 import getPaths from './../config/paths'
 import getConfig from './../utils/getConfig'
 import applyWebpackConfig, { warnIfExists } from './../utils/applyWebpackConfig'
-import WebpackDevConfig from './../config/webpack.config.dev'
 import { applyMock, outputError as outputMockError } from './../utils/mock'
 
-process.env.NODE_ENV = 'development'
+process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
 const DEFAULT_PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 8000
 const isInteractive = process.stdout.isTTY
@@ -24,7 +23,7 @@ const paths = getPaths(cwd)
 let compiler
 
 const argv = require('yargs')
-  .usage('Usage: bee server [options]')
+  .usage('Usage: bees server [options]')
   .option('open', {
     type: 'boolean',
     describe: 'Open url in browser after started',
@@ -46,7 +45,7 @@ function readRcConfig () {
   try {
     rcConfig = getConfig(process.env.NODE_ENV, cwd)
   } catch (e) {
-    console.log(chalk.red('Failed to parse .beerc config.'))
+    console.log(chalk.red('Failed to parse .beesrc config.'))
     console.log()
     console.log(e.message)
     process.exit(1)
@@ -54,8 +53,10 @@ function readRcConfig () {
 }
 
 function readWebpackConfig () {
-  const webpackDevConfig = WebpackDevConfig(rcConfig, cwd)
-  config = applyWebpackConfig(webpackDevConfig, process.env.NODE_ENV)
+  config = applyWebpackConfig(
+    require('./../config/webpack.config.dev')(rcConfig, cwd),
+    process.env.NODE_ENV,
+  )
 }
 
 function setupCompiler (host, port, protocol) {
@@ -187,8 +188,8 @@ function runDevServer (host, port, protocol) {
 
 function setupWatch (devServer) {
   const files = [
-    paths.resolveApp('.beerc'),
-    paths.resolveApp('.beerc.js'),
+    paths.resolveApp('.beesrc'),
+    paths.resolveApp('.beesrc.js'),
     paths.resolveApp('webpack.config.js')
   ]
     .concat(typeof rcConfig.theme === 'string' ? paths.resolveApp(rcConfig.theme) : [])
