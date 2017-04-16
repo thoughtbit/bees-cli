@@ -9,7 +9,7 @@ import stripAnsi from 'strip-ansi'
 import getPaths from './../config/paths'
 import getConfig from './../utils/getConfig'
 import applyWebpackConfig, { warnIfExists } from './../utils/applyWebpackConfig'
-import WebPackProdConfig from './../config/webpack.prod.config'
+import WebPackProdConfig from './../config/webpack.config.prod'
 
 process.env.NODE_ENV = 'production'
 

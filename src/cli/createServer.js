@@ -12,7 +12,7 @@ import chokidar from 'chokidar'
 import getPaths from './../config/paths'
 import getConfig from './../utils/getConfig'
 import applyWebpackConfig, { warnIfExists } from './../utils/applyWebpackConfig'
-import WebpackDevConfig from './../config/webpack.dev.config'
+import WebpackDevConfig from './../config/webpack.config.dev'
 import { applyMock, outputError as outputMockError } from './../utils/mock'
 
 process.env.NODE_ENV = 'development'

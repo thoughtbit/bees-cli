@@ -8,7 +8,7 @@ import UglifyJsParallelPlugin from 'webpack-uglify-parallel'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import getEntry from '../utils/getEntry'
-import baseWebpackConfig from './webpack.base.config'
+import baseWebpackConfig from './webpack.config.base'
 import getCSSLoaders from './../utils/getCSSLoaders'
 import normalizeDefine from './../utils/normalizeDefine'
 
