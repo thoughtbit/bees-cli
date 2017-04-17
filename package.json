@@ -3,14 +3,14 @@
   "version": "0.5.12",
   "description": "A simple CLI for serve and build web app, support JSON pattern config.",
   "bin": {
-    "bee": "./bin/bee"
+    "bees": "./bin/bees"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/thoughtbit/bees-cli.git"
   },
   "keywords": [
-    "bee",
+    "bees",
     "cli",
     "react",
     "create-react-app",
@@ -32,8 +32,8 @@
   ],
   "scripts": {
     "build": "rimraf lib && babel src --out-dir lib --presets es2015,stage-0",
-    "bee:start": "node ./lib/cli/server.js",
-    "bee:build": "node ./lib/cli/build.js",
+    "bees:start": "node ./lib/cli/server.js",
+    "bees:build": "node ./lib/cli/build.js",
     "debug": "cross-env NODE_ENV=test mocha --require babel-register --no-timeouts test/**/*-test.js",
     "report": "nyc report --reporter=html",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
@@ -59,6 +59,8 @@
     "css-loader": "^0.26.1",
     "detect-port": "^1.0.7",
     "explain-error": "^1.0.3",
+    "express-http-proxy": "^0.11.0",
+    "body-parser": "^1.17.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "friendly-errors-webpack-plugin": "^1.1.2",
     "file-loader": "^0.9.0",
@@ -68,6 +70,7 @@
     "gzip-size": "^3.0.0",
     "http-proxy-middleware": "^0.17.3",
     "is-plain-object": "^2.0.1",
+    "istanbul": "^0.4.5",
     "json-loader": "^0.5.4",
     "sass-loader": "^4.1.0",
     "node-sass": "^4.1.0",
@@ -93,7 +96,7 @@
     "webpack-dev-server": "^1.16.2",
     "webpack-bundle-analyzer": "^2.2.1",
     "webpack-uglify-parallel": "^0.1.3",
-    "yargs": "^6.5.0"
+    "yargs": "7.0.2"
   },
   "devDependencies": {
     "eslint": "^3.12.2",

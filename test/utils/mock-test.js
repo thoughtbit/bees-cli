@@ -2,7 +2,7 @@ import { join } from 'path'
 import expect from 'expect'
 import { getConfig } from '../../src/utils/mock'
 
-const rcPath = join(__dirname, '../fixtures/mock/.beerc.mock.js')
+const rcPath = join(__dirname, '../fixtures/mock/.beesrc.mock.js')
 
 describe('mock', () => {
   it('getConfig', () => {

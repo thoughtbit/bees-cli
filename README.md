@@ -1,11 +1,11 @@
-# Bee
+# bees
 A simple CLI for serve and build web app, support JSON pattern config.
 
 一个简单的CLI工具，无需复杂的配置，轻松的构建和调试项目。
 
 ### 声明
 
-Bee 是 [create-react-app](https://github.com/facebookincubator/create-react-app) 和 [roadhog](https://github.com/sorrycc/roadhog) 的克隆版，根据团队和自己日常开发的需求修改的一个版本。
+bees 是 [create-react-app](https://github.com/facebookincubator/create-react-app) 和 [roadhog](https://github.com/sorrycc/roadhog) 的克隆版，根据团队和自己日常开发的需求修改的一个版本。
 
 ### 安装
 
@@ -20,18 +20,18 @@ $ npm install -g bees-cli
 本地开发
 
 ```bash
-$ bee server
+$ bees server
 ```
 
 打包发布
 
 ```bash
-$ bee build
+$ bees build
 ```
 
 ### Mock
 
-bee server 支持 mock 功能，类似 [dora-plugin-proxy](https://github.com/dora-js/dora-plugin-proxy)，在 `.beerc.mock.js` 中进行配置，支持基于 require 动态分析的实时刷新，支持 ES6 语法，以及友好的出错提示。
+bees server 支持 mock 功能，类似 [dora-plugin-proxy](https://github.com/dora-js/dora-plugin-proxy)，在 `.beesrc.mock.js` 中进行配置，支持基于 require 动态分析的实时刷新，支持 ES6 语法，以及友好的出错提示。
 
 比如：
 
@@ -50,22 +50,22 @@ export default {
 
 ### 智能重启
 
-配置文件修改的修改会触发 bee server 的自动重启，会触发重启的文件有：
+配置文件修改的修改会触发 bees server 的自动重启，会触发重启的文件有：
 
-* `.beerc`
-* `.beerc.js`
-* `.beerc.mock.js`
+* `.beesrc`
+* `.beesrc.js`
+* `.beesrc.mock.js`
 
 ### 配置
 
 关于配置的一些基本概念：
 
-* 配置存于 `.beerc` 文件中（如果你不喜欢 JSON 配置，可以用 `.beerc.js` 以 JS 的方式编写，支持 ES6）
+* 配置存于 `.beesrc` 文件中（如果你不喜欢 JSON 配置，可以用 `.beesrc.js` 以 JS 的方式编写，支持 ES6）
 * 格式为 `JSON`，允许注释
 * 布尔类型的配置项默认值均为 `false`
-* 支持通过 `webpack.config.js` 以编码的方式进行配置，但不推荐，因为 bee 本身的 major 或 minor 升级可能会引起兼容问题。使用时会给予警告⚠️⚠️⚠️， 。（`webpack.config.js` 本身的编写支持 ES6，会通过 babal-register 做一层转换。）
+* 支持通过 `webpack.config.js` 以编码的方式进行配置，但不推荐，因为 bees 本身的 major 或 minor 升级可能会引起兼容问题。使用时会给予警告⚠️⚠️⚠️， 。（`webpack.config.js` 本身的编写支持 ES6，会通过 babal-register 做一层转换。）
 
-.beerc 默认配置：
+.beesrc 默认配置：
 
 ```json
 {
@@ -85,7 +85,7 @@ export default {
 }
 ```
 
-.beerc 的 React开发配置：
+.beesrc 的 React开发配置：
 
 ```json
 {
@@ -231,30 +231,30 @@ package.json 的 React开发配置：
 
 ```bash
 // OS X, Linux
-$ PORT=12306 bee server
+$ PORT=12306 bees server
 
 // Windows (cmd.exe)
-$ set PORT=12306&&bee server
+$ set PORT=12306&&bees server
 ```
 
 ## 命令行参数
 
-### bee server
+### bees server
 
 ```bash
-$ bee server -h
-Usage: bee server [options]
+$ bees server -h
+Usage: bees server [options]
 
 Options:
   --open  Open url in browser after started            [boolean] [default: true]
   -h      Show help                                                    [boolean]
 ```
 
-### bee build
+### bees build
 
 ```bash
-$ bee build -h
-Usage: bee build [options]
+$ bees build -h
+Usage: bees build [options]
 
 Options:
   --debug            Build without compress           [boolean] [default: false]
@@ -264,11 +264,11 @@ Options:
   -h                 Show help                                         [boolean]
 ```
 
-### bee test
+### bees test
 
 ```bash
-$ bee test -h
-Usage: bee test [options] [mocha-options]
+$ bees test -h
+Usage: bees test [options] [mocha-options]
 
 Options:
   --coverage  Output coverage                         [boolean] [default: false]

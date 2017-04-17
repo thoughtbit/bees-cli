@@ -1,6 +1,6 @@
 if (process.env.NODE_ENV !== 'test') {
   require('babel-register')({
-    only: /(webpack.config.js|.beerc.js|.beerc.mock.js|mock\/)/,
+    only: /(webpack.config.js|.beesrc.js|.beesrc.mock.js|mock\/)/,
     presets: [
       require.resolve('babel-preset-es2015'),
       require.resolve('babel-preset-stage-0')

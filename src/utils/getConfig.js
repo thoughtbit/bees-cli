@@ -23,7 +23,7 @@ function getConfig (configFile, paths) {
   const jsConfig = paths.resolveApp(`${configFile}.js`)
 
   if (existsSync(rcConfig)) {
-    // return parseJSON(stripJsonComments(readFileSync(rcConfig, 'utf-8')), './beerc')
+    // return parseJSON(stripJsonComments(readFileSync(rcConfig, 'utf-8')), './beesrc')
     return parseJSON(stripJsonComments(readFileSync(rcConfig, 'utf-8')), `./${configFile}`)
   } else if (existsSync(jsConfig)) {
     return require(jsConfig);  // eslint-disable-line
@@ -59,5 +59,5 @@ export function realGetConfig (configFile, env, pkg = {}, paths) {
 export default function (env, cwd) {
   const paths = getPaths(cwd)
   const pkg = JSON.parse(readFileSync(paths.appPackageJson, 'utf-8'))
-  return realGetConfig('.beerc', env, pkg, paths)
+  return realGetConfig('.beesrc', env, pkg, paths)
 }

@@ -5,7 +5,7 @@ import { spawn } from 'child_process'
 import chalk from 'chalk'
 
 const argv = require('yargs')
-  .usage('Usage: bee test [options] [mocha-options]')
+  .usage('Usage: bees test [options] [mocha-options]')
   .option('coverage', {
     type: 'boolean',
     describe: 'Output coverage',
