@@ -45,6 +45,13 @@ export default {
 
   // 支持自定义函数，API 参考 express@4
   'POST /api/users/create': (req, res) => { res.end('OK'); },
+
+  // Forward 到另一个服务器
+  'GET /assets/*': 'https://assets.online/',
+
+  // Forward 到另一个服务器，并指定子路径
+  // 请求 /someDir/0.0.50/index.css 会被代理到 https://g.alicdn.com/tb-page/taobao-home, 实际返回 https://g.alicdn.com/tb-page/taobao-home/0.0.50/index.css
+  'GET /someDir/(.*)': 'https://g.alicdn.com/tb-page/taobao-home',
 };
 ```
 
@@ -69,8 +76,10 @@ export default {
 
 ```json
 {
+  "use": "webpack",
   "entry": "src/index.js",
   "publicPath": "/",
+  "outputPath": "./dist",
   "extraBabelPresets": [],
   "extraBabelPlugins": [],
   "extraPostCSSPlugins": [],
@@ -79,9 +88,10 @@ export default {
   "autoprefixer": null,
   "externals": null,
   "multipage": false,
+  "dllPlugin": null,
   "define": null,
   "proxy": null,
-  "env": null
+  "env": null,
 }
 ```
 
@@ -123,6 +133,42 @@ package.json 的 React开发配置：
 }
 ```
 
+.beesrc 的 Vue开发配置：
+
+```json
+{
+  "entry": "src/index.js",
+  "publicPath": "/",
+  "extraBabelPlugins": [
+    "transform-vue-jsx",
+    "transform-runtime"
+  ],
+  "autoprefixer": null,
+  "externals": null,
+  "multipage": true,
+  "define": null,
+  "proxy": null,
+  "env": {
+    "development": {
+      "cssSourceMap": false
+    },
+    "production": {
+      "cssSourceMap": true,
+      "analyze": true
+    }
+  }
+}
+```
+
+package.json 的 Vue开发配置：
+
+```json
+{
+  "babel-plugin-transform-vue-jsx": "",
+  "babel-plugin-transform-runtime": ""
+}
+```
+
 ### entry
 
 指定 webpack 入口文件，支持 [glob](https://github.com/isaacs/node-glob) 格式。
@@ -133,6 +179,10 @@ package.json 的 React开发配置：
 "entry": "src/pages/*.js"
 ```
 
+### disableCSSModules
+
+禁用 [CSS Modules](https://github.com/css-modules/css-modules)。最好别关，熟悉并使用他后，你会发现写样式简单了很多。
+
 ### publicPath
 
 配置生产环境的 [publicPath](http://webpack.github.io/docs/configuration.html#output-publicpath)，开发环境下永远为 `/`。
@@ -140,6 +190,36 @@ package.json 的 React开发配置：
 ### extraBabelPlugins
 
 配置额外的 babel plugin。babel plugin 只能添加，不允许覆盖和删除。
+
+```
+"extraBabelPlugins": ["transform-runtime"],
+"env": {
+  "development": {
+    "extraBabelPlugins": ["dva-hmr"]
+  }
+}
+```
+
+这样，开发环境下的 extraBabelPlugins 是 `["transform-runtime", "dva-hmr"]`，而生产环境下是 `["transform-runtime"]`。
+
+
+### extraPostCSSPlugins
+
+配置额外的 postcss 插件。
+
+注意：由于 postcss 的插件是以函数的方式进行配置的，所以这个配置只能在 `.roadhogrc.js` 里使用。
+
+比如：
+
+```
+import pxtorem from 'postcss-pxtorem'
+extraPostCSSPlugins: [
+  pxtorem({
+    rootValue: 100,
+    propWhiteList: [],
+  }),
+],
+```
 
 ### autoprefixer
 
@@ -176,12 +256,33 @@ package.json 的 React开发配置：
 如果要做数据 mock，可以考虑和 [json-server](https://github.com/typicode/json-server) 或者 [mock-server](https://github.com/thoughtbit/mock-server) 结合使用，把 `/api` 代理到 json-server 或者 mock-server 启动的端口。
 
 ### externals
-
+```
+{
+  "externals": {
+    "react": "window.React"
+  }
+}
+```
 配置 webpack 的 [externals](http://webpack.github.io/docs/configuration.html#externals) 属性。
 
 ### multipage
 
 配置是否多页应用。多页应用会自动提取公共部分为 common.js 和 common.css 。
+
+### dllPlugin
+```
+"dllPlugin": {
+  "name": "bees",
+  "include": [
+    "react",
+    "react-dom",
+    "react-redux",
+    "react-router",
+    "react-router-redux",
+    "redux"
+  ]
+}
+```
 
 ### define
 
@@ -277,3 +378,14 @@ Options:
 
 ## 使用 `public` 目录
 我们约定 `public` 目录下的文件会在 server 和 build 时被自动 copy 到输出目录（默认是 `./dist`）下。所以可以在这里存放 favicon, iconfont, html, html 里引用的图片等。
+
+## 常见问题
+
+### 那么为什么提供 JSON 级别的约定型配置，而非类似 webpack.config.js 的编码型配置?
+
+首先是 JSON 的方式比较简单，`true`/`false` 或是一些简单的字符串就可完成配置；另外，JSON 方式能有效控制使用场景，而编程式的非常不可控，roadhog 的一个简单改动都可能导致之前的配置不可用。
+
+### node-sass 安装失败
+```bash
+SASS_BINARY_SITE=https://npm.taobao.org/mirrors/node-sass/ npm install node-sass --save-dev
+```

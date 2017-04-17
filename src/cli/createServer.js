@@ -1,4 +1,5 @@
 import detect from 'detect-port'
+import fs from 'fs'
 import clearConsole from 'react-dev-utils/clearConsole'
 import getProcessForPort from 'react-dev-utils/getProcessForPort'
 import formatWebpackMessages from 'react-dev-utils/formatWebpackMessages'
@@ -34,6 +35,7 @@ const argv = require('yargs')
 
 let rcConfig
 let config
+let use
 
 function clearConsoleWrapped () {
   if (process.env.CLEAR_CONSOLE !== 'NONE') {
@@ -53,8 +55,10 @@ function readRcConfig () {
 }
 
 function readWebpackConfig () {
+  // 用来区分 config 模板， 默认是webpack
+  use = rcConfig.use ? rcConfig.use : 'webpack'
   config = applyWebpackConfig(
-    require('./../config/webpack.config.dev')(rcConfig, cwd),
+    require(`./../config/${use}/webpack.config.dev`)(rcConfig, cwd),
     process.env.NODE_ENV,
   )
 }
@@ -214,6 +218,10 @@ function run (port) {
 
 function init () {
   readRcConfig()
+  if (rcConfig.dllPlugin && !fs.existsSync(paths.dllManifest)) {
+    console.log(chalk.red('Failed to start the server, since you have enabled dllPlugin, but have not run `bees build-dll` before `bees server`.'))
+    process.exit(1)
+  }
   readWebpackConfig()
   detect(DEFAULT_PORT).then((port) => {
     if (port === DEFAULT_PORT) {

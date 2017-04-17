@@ -33,6 +33,7 @@ case '--version':
   console.log(require('../package.json').version)
   break
 case 'build':
+case 'build-dll':
 case 'server':
 case 'test':
   result = spawn.sync(

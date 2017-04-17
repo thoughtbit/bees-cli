@@ -1,11 +1,10 @@
 export default function (config, paths) {
   return {
     resolve: {
-      extensions: ['.js', '.json', '.jsx', '.ts', '.tsx', ''],
+      extensions: ['.js', '.json', '.jsx', '.ts', '.tsx', '.vue', ''],
       alias: {
-        'src': paths.resolveApp('./../src'),
-        'assets': paths.resolveApp('./../src/assets'),
-        'components': paths.resolveApp('./../src/components')
+        'vue$': 'vue/dist/vue.esm.js',
+        '@': paths.resolveApp('src')
       }
     },
     resolveLoader: {
@@ -19,12 +18,11 @@ export default function (config, paths) {
         {
           exclude: [
             /\.html$/,
-            /\.(js|jsx)$/,
+            /\.(js|jsx|vue)$/,
             /\.tsx?$/,
             /\.(css|less|scss)$/,
-            /\.json$/,
-            /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-            /\.(woff2?|eot|ttf|otf)(\?.*)?$/
+            /\.svg$/,
+            /\.json$/
           ],
           loader: 'url',
           query: {
@@ -37,9 +35,13 @@ export default function (config, paths) {
           loader: 'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
         },
         {
-          test: /\.(js|jsx)$/,
+          test: /\.(js|jsx})$/,
           include: paths.appSrc,
           loader: 'babel'
+        },
+        {
+          test: /\.vue$/,
+          loader: 'vue'
         },
         {
           test: /\.html$/,

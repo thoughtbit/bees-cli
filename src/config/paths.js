@@ -19,6 +19,8 @@ export default function getPaths (cwd) {
     appPackageJson: resolveApp('package.json'),
     appNodeModules: resolveApp('node_modules'),
     ownNodeModules: resolveOwn('../../node_modules'),
+    dllNodeModule: resolveApp('node_modules/bees-dlls'),
+    dllManifest: resolveApp('node_modules/bees-dlls/bees.json'),
     appDirectory,
     resolveApp,
     resolveOwn

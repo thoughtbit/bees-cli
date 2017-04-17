@@ -20,9 +20,9 @@ function cssLoaders (options) {
     }).join('!')
 
     if (options.extract) {
-      return ExtractTextPlugin.extract('style-loader', sourceLoader)
+      return ExtractTextPlugin.extract('vue-style-loader', sourceLoader)
     } else {
-      return ['style-loader', sourceLoader].join('!')
+      return ['vue-style-loader', sourceLoader].join('!')
     }
   }
 

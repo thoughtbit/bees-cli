@@ -13,34 +13,11 @@ import applyWebpackConfig, { warnIfExists } from './../utils/applyWebpackConfig'
 process.env.NODE_ENV = process.env.NODE_ENV || 'production'
 
 const argv = require('yargs')
-  .usage('Usage: bees build [options]')
-  .option('debug', {
-    type: 'boolean',
-    describe: 'Build without compress',
-    default: false
-  })
-  .option('watch', {
-    type: 'boolean',
-    alias: 'w',
-    describe: 'Watch file changes and rebuild',
-    default: false
-  })
-  .option('output-path', {
-    type: 'string',
-    alias: 'o',
-    describe: 'Specify output path',
-    default: null
-  })
-  .option('analyze', {
-    type: 'boolean',
-    describe: 'Visualize and analyze your Webpack bundle.',
-    default: false
-  })
+  .usage('Usage: bees build-dll [options]')
   .help('h')
   .argv
 
 let rcConfig
-let outputPath
 let appBuild
 let config
 let use
@@ -57,13 +34,16 @@ export function build (argv) {
     process.exit(1)
   }
 
+  if (!rcConfig.dllPlugin) {
+    console.log(chalk.red('dllPlugin config not found in .beesrc'))
+    process.exit(1)
+  }
+
+  appBuild = paths.dllNodeModule
   // 用来区分 config 模板， 默认是webpack
   use = rcConfig.use ? rcConfig.use : 'webpack'
-
-  outputPath = argv.outputPath || rcConfig.outputPath || 'dist'
-  appBuild = paths.resolveApp(outputPath)
   config = applyWebpackConfig(
-    require(`./../config/${use}/webpack.config.prod`)(argv, appBuild, rcConfig, paths),
+    require(`./../config/${use}/webpack.config.dll`)(argv, rcConfig, paths),
     process.env.NODE_ENV,
   )
 
@@ -125,7 +105,7 @@ function printFileSizes (stats, previousSizeMap) {
       const previousSize = previousSizeMap[removeFileNameHash(asset.name)]
       const difference = getDifferenceLabel(size, previousSize)
       return {
-        folder: path.join(outputPath, path.dirname(asset.name)),
+        folder: path.join(appBuild, path.dirname(asset.name)),
         name: path.basename(asset.name),
         size,
         sizeLabel: filesize(size) + (difference ? ` (${difference})` : '')
@@ -180,29 +160,16 @@ function doneHandler (previousSizeMap, argv, resolve, err, stats) {
   printFileSizes(stats, previousSizeMap)
   console.log()
 
-  if (argv.analyze) {
-    console.log(`Analyze result is generated at ${chalk.cyan('dist/stats.html')}.`)
-    console.log()
-  }
-
   resolve()
 }
 
 // Create the production build and print the deployment instructions.
 function realBuild (previousSizeMap, resolve, argv) {
-  if (argv.debug) {
-    console.log('Creating an development build without compress...')
-  } else {
-    console.log('Creating an optimized production build...')
-  }
+  console.log('Creating dll bundle...')
 
   const compiler = webpack(config)
   const done = doneHandler.bind(null, previousSizeMap, argv, resolve)
-  if (argv.watch) {
-    compiler.watch(200, done)
-  } else {
-    compiler.run(done)
-  }
+  compiler.run(done)
 }
 
 // Run.

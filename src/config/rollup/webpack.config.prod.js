@@ -7,13 +7,25 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import UglifyJsParallelPlugin from 'webpack-uglify-parallel'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
-import getEntry from '../utils/getEntry'
+
+const rollupBabel = require('rollup-plugin-babel')
+const rollupResolve = require('rollup-plugin-node-resolve')
+const rollupVue = require('rollup-plugin-vue')
+const rollupJsx = require('rollup-plugin-jsx')
+// const rollupBuble = require('rollup-plugin-buble')
+const rollupReplace = require('rollup-plugin-replace')
+const rollupCommonjs = require('rollup-plugin-commonjs')
+
+
+import getEntry from './../../utils/getEntry'
 import baseWebpackConfig from './webpack.config.base'
-import getCSSLoaders from './../utils/getCSSLoaders'
-import normalizeDefine from './../utils/normalizeDefine'
+import getCSSLoaders from './../../utils/getCSSLoaders'
+import normalizeDefine from './../../utils/normalizeDefine'
 
 export default function (args, appBuild, config, paths) {
-  const { debug } = args
+  const {
+    debug
+  } = args
   const NODE_ENV = debug ? 'development' : process.env.NODE_ENV
 
   const publicPath = config.publicPath || '/'
@@ -24,13 +36,14 @@ export default function (args, appBuild, config, paths) {
 
   const commonConfig = baseWebpackConfig(config, paths)
 
-  return merge(commonConfig, {
+  const webpackConfig = merge(commonConfig, {
     bail: true,
-    entry: getEntry(config, paths.appDirectory),
+    entry: getEntry(config, paths.appDirectory, /* isBuild */ true),
     output: {
       path: appBuild,
       filename: '[name].js',
-      publicPath
+      publicPath,
+      chunkFilename: '[id].async.js'
     },
     module: {
       loaders: styleLoaders
@@ -74,23 +87,49 @@ export default function (args, appBuild, config, paths) {
           comments: false,
           screw_ie8: true
         },
-        sourceMap: false
+        sourceMap: true
       })
-    ).concat(
-      !config.analyze ? [] : new BundleAnalyzerPlugin({
-        analyzerMode: 'static',
-        openAnalyzer: false
-      })
-    ).concat(
-      !fs.existsSync(paths.appPublic) ? [] : new CopyWebpackPlugin([{
-        from: paths.appPublic,
-        to: paths.appBuild
-      }])
-    ).concat(
-      !config.multipage ? [] : new webpack.optimize.CommonsChunkPlugin({ name: 'common' })
-    ).concat(
-      !config.define ? [] : new webpack.DefinePlugin(normalizeDefine(config.define))
-    ),
+    ).concat(!config.analyze ? [] : new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      openAnalyzer: false,
+      reportFilename: paths.resolveOwn(`../reports/${process.env.NODE_ENV}.html`)
+    })).concat(!fs.existsSync(paths.appPublic) ? [] : new CopyWebpackPlugin([{
+      from: paths.appPublic,
+      to: paths.appBuild
+    }])).concat(!config.multipage ? [] : new webpack.optimize.CommonsChunkPlugin({
+      name: 'common'
+    })).concat(!config.define ? [] : new webpack.DefinePlugin(normalizeDefine(config.define))),
     externals: config.externals
   })
+
+  webpackConfig.module.loaders.push({
+    test: /\.(js|jsx|vue)$/,
+    exclude: /\/node_modules\//,
+    loader: 'rollup-loader',
+    options: {
+      external: false,
+      plugins: [
+        rollupResolve(),
+        rollupCommonjs(),
+        rollupVue({
+          compileTemplate: true
+        }),
+        rollupJsx({ factory: 'h' }),
+        rollupReplace(Object.assign(
+          {
+            __VERSION__: paths.appPackageJson.version
+          },
+          {
+            'process.env': {
+              'NODE_ENV': JSON.stringify(NODE_ENV)
+            }
+          }
+        )),
+        // rollupBuble(),
+        rollupBabel()
+      ]
+    }
+  })
+
+  return webpackConfig
 }
