@@ -277,3 +277,9 @@ Options:
 
 ## 使用 `public` 目录
 我们约定 `public` 目录下的文件会在 server 和 build 时被自动 copy 到输出目录（默认是 `./dist`）下。所以可以在这里存放 favicon, iconfont, html, html 里引用的图片等。
+
+## 常见问题
+node-sass 安装失败
+```bash
+SASS_BINARY_SITE=https://npm.taobao.org/mirrors/node-sass/ npm install node-sass --save-dev
+```
