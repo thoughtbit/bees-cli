@@ -13,6 +13,7 @@ import chokidar from 'chokidar'
 import getPaths from './../config/paths'
 import getConfig from './../utils/getConfig'
 import applyWebpackConfig, { warnIfExists } from './../utils/applyWebpackConfig'
+import WebpackDevConfig from './../config/webpack.config.dev'
 import { applyMock, outputError as outputMockError } from './../utils/mock'
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
@@ -35,11 +36,10 @@ const argv = require('yargs')
 
 let rcConfig
 let config
-let use
 
 function clearConsoleWrapped () {
   if (process.env.CLEAR_CONSOLE !== 'NONE') {
-    clearConsole()
+    // clearConsole()
   }
 }
 
@@ -52,15 +52,20 @@ function readRcConfig () {
     console.log(e.message)
     process.exit(1)
   }
+
+  if (rcConfig.dllPlugin && !fs.existsSync(paths.dllManifest)) {
+    console.log(chalk.red('Failed to start the server, since you have enabled dllPlugin, but have not run `bees build-dll` before `bees server`.'))
+    process.exit(1)
+  }
+
+  if (!rcConfig.use) {
+    console.log(chalk.red('use config not found in .beesrc'))
+    process.exit(1)
+  }
 }
 
 function readWebpackConfig () {
-  // 用来区分 config 模板， 默认是webpack
-  use = rcConfig.use ? rcConfig.use : 'webpack'
-  config = applyWebpackConfig(
-    require(`./../config/${use}/webpack.config.dev`)(rcConfig, cwd),
-    process.env.NODE_ENV,
-  )
+  config = applyWebpackConfig(WebpackDevConfig(rcConfig, cwd), process.env.NODE_ENV)
 }
 
 function setupCompiler (host, port, protocol) {
@@ -218,10 +223,6 @@ function run (port) {
 
 function init () {
   readRcConfig()
-  if (rcConfig.dllPlugin && !fs.existsSync(paths.dllManifest)) {
-    console.log(chalk.red('Failed to start the server, since you have enabled dllPlugin, but have not run `bees build-dll` before `bees server`.'))
-    process.exit(1)
-  }
   readWebpackConfig()
   detect(DEFAULT_PORT).then((port) => {
     if (port === DEFAULT_PORT) {

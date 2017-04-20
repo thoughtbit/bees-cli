@@ -9,6 +9,7 @@ import stripAnsi from 'strip-ansi'
 import getPaths from './../config/paths'
 import getConfig from './../utils/getConfig'
 import applyWebpackConfig, { warnIfExists } from './../utils/applyWebpackConfig'
+import WebPackProdConfig from './../config/webpack.config.dll'
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'production'
 
@@ -20,7 +21,6 @@ const argv = require('yargs')
 let rcConfig
 let appBuild
 let config
-let use
 
 export function build (argv) {
   const paths = getPaths(argv.cwd)
@@ -40,12 +40,7 @@ export function build (argv) {
   }
 
   appBuild = paths.dllNodeModule
-  // 用来区分 config 模板， 默认是webpack
-  use = rcConfig.use ? rcConfig.use : 'webpack'
-  config = applyWebpackConfig(
-    require(`./../config/${use}/webpack.config.dll`)(argv, rcConfig, paths),
-    process.env.NODE_ENV,
-  )
+  config = applyWebpackConfig(WebPackProdConfig(argv, rcConfig, paths), process.env.NODE_ENV)
 
   return new Promise((resolve) => {
     // First, read the current file sizes in build directory.

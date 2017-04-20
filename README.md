@@ -76,13 +76,14 @@ export default {
 
 ```json
 {
-  "use": "webpack",
+  "use": "react",
   "entry": "src/index.js",
   "publicPath": "/",
   "outputPath": "./dist",
   "extraBabelPresets": [],
   "extraBabelPlugins": [],
   "extraPostCSSPlugins": [],
+  "disableCSSModules": false,
   "cssSourceMap": false,
   "analyze": false,
   "autoprefixer": null,
@@ -207,7 +208,7 @@ package.json 的 Vue开发配置：
 
 配置额外的 postcss 插件。
 
-注意：由于 postcss 的插件是以函数的方式进行配置的，所以这个配置只能在 `.roadhogrc.js` 里使用。
+注意：由于 postcss 的插件是以函数的方式进行配置的，所以这个配置只能在 `.beesrc.js` 里使用。
 
 比如：
 

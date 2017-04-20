@@ -8,17 +8,24 @@ import webpack from 'webpack'
 import merge from 'webpack-merge'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
-import DashboardPlugin from 'webpack-dashboard/plugin'
+// import HtmlWebpackPlugin from 'html-webpack-plugin'
+// import AddAssetHtmlPlugin from 'add-asset-html-webpack-plugin'
 import baseWebpackConfig from './webpack.config.base'
-import getPaths from './../paths'
-import getEntry from './../../utils/getEntry'
-import getCSSLoaders from './../../utils/getCSSLoaders'
-import normalizeDefine from './../../utils/normalizeDefine'
+import getPaths from './paths'
+import getEntry from './../utils/getEntry'
+import getCSSLoaders from './../utils/getCSSLoaders'
+import normalizeDefine from './../utils/normalizeDefine'
 
 export default function (config, cwd) {
   const publicPath = '/'
   const paths = getPaths(cwd)
-  const styleLoaders = getCSSLoaders.styleLoaders({ sourceMap: config.cssSourceMap })
+  const styleLoaders = getCSSLoaders.styleLoaders(config, {
+    sourceMap: config.cssSourceMap
+  })
+  config.vueLoaders = getCSSLoaders.cssLoaders(config, {
+    sourceMap: config.cssSourceMap,
+    extract: false
+  })
   const dllPlugins = config.dllPlugin ? [
     new webpack.DllReferencePlugin({
       context: paths.appSrc,
@@ -31,9 +38,9 @@ export default function (config, cwd) {
       }
     ])
   ] : []
-  const commonConfig = baseWebpackConfig(config, paths)
 
-  return merge(commonConfig, {
+  const commonConfig = baseWebpackConfig(config, paths)
+  const webpackConfig = merge(commonConfig, {
     devtool: 'cheap-module-source-map',
     entry: getEntry(config, paths.appDirectory),
     output: {
@@ -44,25 +51,7 @@ export default function (config, cwd) {
       chunkFilename: '[id].async.js'
     },
     module: {
-      loaders: styleLoaders
-    },
-    babel: {
-      babelrc: false
-    },
-    vue: {
-      loaders: getCSSLoaders.cssLoaders()
-    },
-    postcss () {
-      return [
-        autoprefixer(config.autoprefixer || {
-          browsers: [
-            '>1%',
-            'last 4 versions',
-            'Firefox ESR',
-            'not ie < 9' // React doesn't support IE8 anyway
-          ]
-        })
-      ].concat(config.extraPostCSSPlugins ? config.extraPostCSSPlugins : [])
+      rules: styleLoaders
     },
     plugins: [
       new webpack.DefinePlugin({
@@ -71,13 +60,38 @@ export default function (config, cwd) {
           'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
         }
       }),
+      new webpack.LoaderOptionsPlugin({
+        options: {
+          babel: {
+            babelrc: false,
+            presets: [
+              [require.resolve('babel-preset-es2015'), { modules: false }],
+              require.resolve('babel-preset-stage-0')
+            ].concat(config.extraBabelPresets || []),
+            plugins: [
+              require.resolve('babel-plugin-add-module-exports')
+            ].concat(config.extraBabelPlugins || []),
+            cacheDirectory: true
+          },
+          postcss () {
+            return [
+              autoprefixer(config.autoprefixer || {
+                browsers: [
+                  '>1%',
+                  'last 4 versions',
+                  'Firefox ESR',
+                  'not ie < 9' // React doesn't support IE8 anyway
+                ]
+              })
+            ].concat(config.extraPostCSSPlugins ? config.extraPostCSSPlugins : [])
+          }
+        }
+      }),
       new webpack.HotModuleReplacementPlugin(),
       new CaseSensitivePathsPlugin(),
       new WatchMissingNodeModulesPlugin(paths.appNodeModules),
-      new webpack.NoErrorsPlugin(),
       // 取代 system-bell-webpack-plugin
-      new FriendlyErrors(),
-      new DashboardPlugin()
+      new FriendlyErrors()
     ].concat(
       dllPlugins,
     ).concat(
@@ -92,10 +106,25 @@ export default function (config, cwd) {
         to: paths.appBuild
       }])
     ).concat(
-      !config.multipage ? [] : new webpack.optimize.CommonsChunkPlugin({ name: 'common' })
+      !config.multipage ? [] : new webpack.optimize.CommonsChunkPlugin({
+        name: 'vendor',
+        minChunks: function (module, count) {
+          // any required modules inside node_modules are extracted to vendor
+          return (
+            module.resource && /\.js$/.test(module.resource) &&
+            module.resource.indexOf(join(__dirname, '../node_modules')) === 0
+          )
+        }
+      })
+    ).concat(
+      !config.multipage ? [] : new webpack.optimize.CommonsChunkPlugin({
+        name: 'manifest',
+        chunks: ['vendor']
+      }),
     ).concat(
       !config.define ? [] : new webpack.DefinePlugin(normalizeDefine(config.define))
     ),
     externals: config.externals
   })
+  return webpackConfig
 }

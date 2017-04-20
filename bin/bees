@@ -13,9 +13,9 @@ var major = versions[0]
 var minor = versions[1]
 var platform = os.platform()
 
-if (((major * 10) + (minor * 1)) < 69) {
-  console.log(chalk.red(`Node version (${major}.${minor}) is not compatibile, ${chalk.cyan('must >= 6.9')}.`))
-  console.log(chalk.red(`你的 Node 版本是 ${chalk.yellow(`${major}.${minor}`)}，请升级到${chalk.cyan(' 6.9 或以上')}.`))
+if (((major * 10) + (minor * 1)) < 65) {
+  console.log(chalk.red(`Node version (${major}.${minor}) is not compatibile, ${chalk.cyan('must >= 6.5')}.`))
+  console.log(chalk.red(`你的 Node 版本是 ${chalk.yellow(`${major}.${minor}`)}，请升级到${chalk.cyan(' 6.5 或以上')}.`))
   console.log()
   if (platform === 'darwin') {
     console.log(`推荐用 ${chalk.cyan('https://github.com/creationix/nvm')} 管理和升级你的 node 版本。`)
