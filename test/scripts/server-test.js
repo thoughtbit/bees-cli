@@ -10,12 +10,12 @@ describe('server', () => {
   it('mock', (done) => {
     const mock = join(fixtures, 'server/mock')
     process.chdir(mock)
-    const p = fork(`${__dirname}/../../lib/server`, ['--no-open'])
+    const p = fork(`${__dirname}/../../lib/cli/server`, ['--no-open'])
     p.on('message', (data) => {
       if (data === 'READY') {
         Promise.all([
-          got('http://localhost:8000/a'),
-          got('http://localhost:8000/b')
+          got('http://localhost:12306/a'),
+          got('http://localhost:12306/b')
         ]).then((res) => {
           const data = res.map(item => item.body)
           expect(data).toEqual(['a', '{"data":"b"}'])

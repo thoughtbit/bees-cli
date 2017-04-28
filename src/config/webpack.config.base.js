@@ -1,77 +1,50 @@
 export default function (config, paths) {
-  return {
+  const baseWebpackConfig = {
     resolve: {
-      extensions: ['.js', '.json', '.jsx', '.ts', '.tsx', ''],
+      extensions: ['.js', '.json', '.jsx', '.ts', '.tsx', '.vue'],
       alias: {
-        'src': paths.resolveApp('./../src'),
-        'assets': paths.resolveApp('./../src/assets'),
-        'components': paths.resolveApp('./../src/components')
+        '@': paths.appSrc
       }
     },
-    resolveLoader: {
-      root: [
-        paths.ownNodeModules,
-        paths.appNodeModules
-      ]
-    },
     module: {
-      loaders: [
+      rules: [
+        {
+          test: /\.(js|jsx})$/,
+          include: paths.appSrc,
+          loader: 'babel-loader'
+        },
+        {
+          test: /\.tsx?$/,
+          include: paths.appSrc,
+          loader: 'babel-loader!awesome-typescript'
+        },
         {
           exclude: [
             /\.html$/,
-            /\.(js|jsx)$/,
+            /\.(js|jsx|vue)$/,
             /\.tsx?$/,
             /\.(css|less|scss)$/,
-            /\.json$/,
-            /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-            /\.(woff2?|eot|ttf|otf)(\?.*)?$/
+            /\.svg$/,
+            /\.json$/
           ],
-          loader: 'url',
+          loader: 'url-loader',
           query: {
             limit: 10000,
             name: 'static/[name].[hash:8].[ext]'
           }
         },
         {
-          test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-          loader: 'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
-        },
-        {
-          test: /\.(js|jsx)$/,
-          include: paths.appSrc,
-          loader: 'babel'
-        },
-        {
           test: /\.html$/,
-          loader: 'file?name=[name].[ext]'
-        },
-        {
-          test: /\.json$/,
-          loader: 'json'
+          loader: 'file-loader?name=[name].[ext]'
         },
         {
           test: /\.svg$/,
-          loader: 'file',
+          loader: 'file-loader',
           query: {
             name: 'static/[name].[hash:8].[ext]'
           }
-        },
-        {
-          test: /\.tsx?$/,
-          include: paths.appSrc,
-          loader: 'babel!awesome-typescript'
         }
       ]
-    },
-    babel: {
-      presets: [
-        require.resolve('babel-preset-es2015'),
-        require.resolve('babel-preset-stage-0')
-      ].concat(config.extraBabelPresets || []),
-      plugins: [
-        require.resolve('babel-plugin-add-module-exports')
-      ].concat(config.extraBabelPlugins || []),
-      cacheDirectory: true
     },
     node: {
       fs: 'empty',
@@ -79,4 +52,17 @@ export default function (config, paths) {
       tls: 'empty'
     }
   }
+
+  if (config.use === 'vue') {
+    baseWebpackConfig.resolve.alias['vue$'] = 'vue/dist/vue.esm.js'
+    baseWebpackConfig.module.rules.push({
+      test: /\.vue$/,
+      loader: 'vue-loader',
+      options: {
+        loaders: config.vueLoaders
+      }
+    })
+  }
+
+  return baseWebpackConfig
 }

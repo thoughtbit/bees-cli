@@ -9,34 +9,16 @@ import stripAnsi from 'strip-ansi'
 import getPaths from './../config/paths'
 import getConfig from './../utils/getConfig'
 import applyWebpackConfig, { warnIfExists } from './../utils/applyWebpackConfig'
-import WebPackProdConfig from './../config/webpack.config.prod'
+import WebPackDllConfig from './../config/webpack.config.dll'
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'production'
 
 const argv = require('yargs')
-  .usage('Usage: bees build [options]')
-  .option('debug', {
-    type: 'boolean',
-    describe: 'Build without compress',
-    default: false
-  })
-  .option('watch', {
-    type: 'boolean',
-    alias: 'w',
-    describe: 'Watch file changes and rebuild',
-    default: false
-  })
-  .option('output-path', {
-    type: 'string',
-    alias: 'o',
-    describe: 'Specify output path',
-    default: null
-  })
+  .usage('Usage: bees build-dll [options]')
   .help('h')
   .argv
 
 let rcConfig
-let outputPath
 let appBuild
 let config
 
@@ -52,15 +34,13 @@ export function build (argv) {
     process.exit(1)
   }
 
-  if (!rcConfig.use) {
-    console.log(chalk.red(`你没有在${chalk.yellow('.beesrc')}中定义${chalk.cyan('use')}.`))
+  if (!rcConfig.dllPlugin) {
+    console.log(chalk.red('dllPlugin config not found in .beesrc'))
     process.exit(1)
   }
 
-  outputPath = argv.outputPath || rcConfig.outputPath || 'dist'
-  appBuild = paths.resolveApp(outputPath)
-
-  config = applyWebpackConfig(WebPackProdConfig(argv, appBuild, rcConfig, paths), process.env.NODE_ENV)
+  appBuild = paths.dllNodeModule
+  config = applyWebpackConfig(WebPackDllConfig(argv, rcConfig, paths), process.env.NODE_ENV)
 
   return new Promise((resolve) => {
     // First, read the current file sizes in build directory.
@@ -120,7 +100,7 @@ function printFileSizes (stats, previousSizeMap) {
       const previousSize = previousSizeMap[removeFileNameHash(asset.name)]
       const difference = getDifferenceLabel(size, previousSize)
       return {
-        folder: path.join(outputPath, path.dirname(asset.name)),
+        folder: path.join(appBuild, path.dirname(asset.name)),
         name: path.basename(asset.name),
         size,
         sizeLabel: filesize(size) + (difference ? ` (${difference})` : '')
@@ -139,7 +119,7 @@ function printFileSizes (stats, previousSizeMap) {
       sizeLabel += rightPadding
     }
     console.log(
-      `${sizeLabel}  ${chalk.dim(asset.folder + path.sep)}${chalk.cyan(asset.name)}`,
+      `  ${sizeLabel}  ${chalk.dim(asset.folder + path.sep)}${chalk.cyan(asset.name)}`,
     )
   })
 }
@@ -174,24 +154,17 @@ function doneHandler (previousSizeMap, argv, resolve, err, stats) {
   console.log()
   printFileSizes(stats, previousSizeMap)
   console.log()
+
   resolve()
 }
 
 // Create the production build and print the deployment instructions.
 function realBuild (previousSizeMap, resolve, argv) {
-  if (argv.debug) {
-    console.log('Creating an development build without compress...')
-  } else {
-    console.log('Creating an optimized production build...')
-  }
+  console.log('Creating dll bundle...')
 
   const compiler = webpack(config)
   const done = doneHandler.bind(null, previousSizeMap, argv, resolve)
-  if (argv.watch) {
-    compiler.watch(200, done)
-  } else {
-    compiler.run(done)
-  }
+  compiler.run(done)
 }
 
 // Run.

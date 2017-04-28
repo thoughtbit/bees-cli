@@ -1,4 +1,5 @@
 import detect from 'detect-port'
+import fs from 'fs'
 import clearConsole from 'react-dev-utils/clearConsole'
 import getProcessForPort from 'react-dev-utils/getProcessForPort'
 import formatWebpackMessages from 'react-dev-utils/formatWebpackMessages'
@@ -15,16 +16,16 @@ import applyWebpackConfig, { warnIfExists } from './../utils/applyWebpackConfig'
 import WebpackDevConfig from './../config/webpack.config.dev'
 import { applyMock, outputError as outputMockError } from './../utils/mock'
 
-process.env.NODE_ENV = 'development'
+process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
-const DEFAULT_PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 8000
+const DEFAULT_PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 12306
 const isInteractive = process.stdout.isTTY
 const cwd = process.cwd()
 const paths = getPaths(cwd)
 let compiler
 
 const argv = require('yargs')
-  .usage('Usage: bee server [options]')
+  .usage('Usage: bees server [options]')
   .option('open', {
     type: 'boolean',
     describe: 'Open url in browser after started',
@@ -46,16 +47,25 @@ function readRcConfig () {
   try {
     rcConfig = getConfig(process.env.NODE_ENV, cwd)
   } catch (e) {
-    console.log(chalk.red('Failed to parse .beerc config.'))
+    console.log(chalk.red('Failed to parse .beesrc config.'))
     console.log()
     console.log(e.message)
+    process.exit(1)
+  }
+
+  if (rcConfig.dllPlugin && !fs.existsSync(paths.dllManifest)) {
+    console.log(chalk.red('Failed to start the server, since you have enabled dllPlugin, but have not run `bees build-dll` before `bees server`.'))
+    process.exit(1)
+  }
+
+  if (!rcConfig.use) {
+    console.log(chalk.red(`你没有在${chalk.yellow('.beesrc')}中定义${chalk.cyan('use')}.`))
     process.exit(1)
   }
 }
 
 function readWebpackConfig () {
-  const webpackDevConfig = WebpackDevConfig(rcConfig, cwd)
-  config = applyWebpackConfig(webpackDevConfig, process.env.NODE_ENV)
+  config = applyWebpackConfig(WebpackDevConfig(rcConfig, cwd), process.env.NODE_ENV)
 }
 
 function setupCompiler (host, port, protocol) {
@@ -138,6 +148,7 @@ function addMiddleware (devServer) {
 
 function runDevServer (host, port, protocol) {
   const devServer = new WebpackDevServer(compiler, {
+    disableHostCheck: true,
     compress: true,
     clientLogLevel: 'none',
     contentBase: paths.appPublic,
@@ -161,7 +172,7 @@ function runDevServer (host, port, protocol) {
   addMiddleware(devServer)
   applyMock(devServer)
 
-  devServer.listen(port, (err) => {
+  devServer.listen(port, '0.0.0.0', (err) => {
     if (err) {
       return console.log(err)
     }
@@ -187,11 +198,10 @@ function runDevServer (host, port, protocol) {
 
 function setupWatch (devServer) {
   const files = [
-    paths.resolveApp('.beerc'),
-    paths.resolveApp('.beerc.js'),
+    paths.resolveApp('.beesrc'),
+    paths.resolveApp('.beesrc.js'),
     paths.resolveApp('webpack.config.js')
   ]
-    .concat(typeof rcConfig.theme === 'string' ? paths.resolveApp(rcConfig.theme) : [])
   const watcher = chokidar.watch(files, {
     ignored: /node_modules/,
     persistent: true

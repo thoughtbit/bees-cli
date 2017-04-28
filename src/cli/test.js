@@ -5,7 +5,7 @@ import { spawn } from 'child_process'
 import chalk from 'chalk'
 
 const argv = require('yargs')
-  .usage('Usage: bee test [options] [mocha-options]')
+  .usage('Usage: bees test [options] [mocha-options]')
   .option('coverage', {
     type: 'boolean',
     describe: 'Output coverage',
@@ -14,10 +14,10 @@ const argv = require('yargs')
   .help('h')
   .argv
 
-const compiler = join(__dirname, './test/compiler.js')
-const setup = join(__dirname, './test/setup.js')
+const compiler = join(__dirname, './../test/compiler.js')
+const setup = join(__dirname, './../test/setup.js')
 const mochaArgs = process.argv.slice(2).filter(item => item !== '--coverage').join(' ')
-const mochaBin = join(__dirname, '../node_modules/.bin/_mocha')
+const mochaBin = require.resolve('mocha/bin/_mocha')
 const istanbul = join(require.resolve('istanbul'), '../lib/cli.js')
 const cmd = argv.coverage
   ? `node ${istanbul} cover ${mochaBin} -- --compilers .:${compiler} --require ${setup} ${mochaArgs}`

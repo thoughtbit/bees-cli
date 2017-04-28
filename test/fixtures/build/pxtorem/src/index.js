@@ -1,3 +1,3 @@
-import 'a'
-import './index.css'
-console.log('pxtorem')
+import 'a';
+import './index.css';
+console.log('pxtorem');

@@ -13,12 +13,14 @@ export default function getPaths (cwd) {
   }
 
   return {
-    appSrc: resolveApp('src'),
+    appSrc: resolveApp('react'),
+    // appSrc: resolveApp('src'),
     appBuild: resolveApp('dist'),
     appPublic: resolveApp('public'),
     appPackageJson: resolveApp('package.json'),
     appNodeModules: resolveApp('node_modules'),
     ownNodeModules: resolveOwn('../../node_modules'),
+    dllNodeModule: resolveApp('node_modules/bees-dlls'),
     appDirectory,
     resolveApp,
     resolveOwn

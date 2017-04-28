@@ -1,50 +1,93 @@
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
 
-function cssLoaders (options) {
+function cssLoaders (config, options) {
+  let cssLoader
   options = options || {}
-  // generate loader string to be used with extract text plugin
-  function generateLoaders (loaders) {
-    // if (options.postcss) {
-    //   loaders.splice(1, 0, 'postcss')
-    // }
-    const sourceLoader = loaders.map(function (loader) {
-      let extraParamChar
-      if (/\?/.test(loader)) {
-        loader = loader.replace(/\?/, '-loader?')
-        extraParamChar = '&'
-      } else {
-        loader = loader + '-loader'
-        extraParamChar = '?'
+  if (!config.disableCSSModules) {
+    cssLoader = {
+      loader: 'css-loader',
+      options: {
+        importLoaders: 1,
+        minimize: process.env.NODE_ENV === 'production',
+        sourceMap: options.sourceMap
       }
-      return loader + (options.sourceMap ? extraParamChar + 'sourceMap' : '')
-    }).join('!')
-
-    if (options.extract) {
-      return ExtractTextPlugin.extract('style-loader', sourceLoader)
-    } else {
-      return ['style-loader', sourceLoader].join('!')
+    }
+  } else {
+    cssLoader = {
+      loader: 'css-loader',
+      options: {
+        importLoaders: 1,
+        modules: true,
+        localIdentName: '[local]--[hash:base64:5]',
+        minimize: process.env.NODE_ENV === 'production',
+        sourceMap: options.sourceMap
+      }
     }
   }
 
-  return {
-    css: generateLoaders(['css', 'postcss']),
-    less: generateLoaders(['css', 'less', 'postcss', 'resolve-url']),
-    sass: generateLoaders(['css', 'sass?indentedSyntax', 'postcss', 'resolve-url']),
-    scss: generateLoaders(['css', 'sass', 'postcss', 'resolve-url']),
-    stylus: generateLoaders(['css', 'stylus', 'postcss', 'resolve-url']),
-    styl: generateLoaders(['css', 'stylus', 'postcss', 'resolve-url'])
+  // generate loader string to be used with extract text plugin
+  function generateLoaders (loader, loaderOptions) {
+    let loaders = [cssLoader]
+    let use = config.use === 'vue' ? 'vue-' : ''
+    if (loader) {
+      loaders.push(
+        {
+          loader: loader + '-loader',
+          options: Object.assign({}, loaderOptions, {
+            sourceMap: options.sourceMap
+          })
+        },
+        {
+          loader: 'postcss-loader',
+          options: { sourceMap: options.sourceMap }
+        }
+      )
+    }
+
+    // Extract CSS when that option is specified
+    // (which is the case during production build)
+    if (options.extract) {
+      return ExtractTextPlugin.extract({
+        use: loaders,
+        fallback: `${use}style-loader`
+      })
+    } else {
+      return [`${use}style-loader`].concat(loaders)
+    }
+  }
+
+  // http://vuejs.github.io/vue-loader/en/configurations/extract-css.html
+  if (config.use === 'vue') {
+    return {
+      css: generateLoaders(),
+      postcss: generateLoaders(),
+      less: generateLoaders('less'),
+      sass: generateLoaders('sass', { indentedSyntax: true }),
+      scss: generateLoaders('sass'),
+      stylus: generateLoaders('stylus'),
+      styl: generateLoaders('stylus')
+    }
+  } else {
+    return {
+      css: generateLoaders(),
+      less: generateLoaders('less'),
+      sass: generateLoaders('sass', { indentedSyntax: true }),
+      scss: generateLoaders('sass'),
+      stylus: generateLoaders('stylus'),
+      styl: generateLoaders('stylus')
+    }
   }
 }
 
-// Generate loaders for standalone style files (outside of .vue)
-function styleLoaders (options) {
+// Generate loaders for standalone style files
+function styleLoaders (config, options) {
   let output = []
-  const loaders = cssLoaders(options)
-  for (const extension in loaders) {
+  const loaders = cssLoaders(config, options)
+  for (let extension in loaders) {
     const loader = loaders[extension]
     output.push({
       test: new RegExp('\\.' + extension + '$'),
-      loader: loader
+      use: loader
     })
   }
   return output

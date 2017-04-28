@@ -1,0 +1,12 @@
+{
+  "use": "react",
+  "extraBabelPresets": [
+    "react"
+  ],
+  "extraBabelPlugins": [
+    "react-require"
+  ],
+  "externals": {
+    "react": "window.React"
+  }
+}

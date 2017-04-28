@@ -1,5 +1,6 @@
 import os from 'os'
 import fs from 'fs'
+import { join } from 'path'
 import autoprefixer from 'autoprefixer'
 import webpack from 'webpack'
 import merge from 'webpack-merge'
@@ -7,7 +8,7 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import UglifyJsParallelPlugin from 'webpack-uglify-parallel'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
-import getEntry from '../utils/getEntry'
+import getEntry from './../utils/getEntry'
 import baseWebpackConfig from './webpack.config.base'
 import getCSSLoaders from './../utils/getCSSLoaders'
 import normalizeDefine from './../utils/normalizeDefine'
@@ -16,36 +17,35 @@ export default function (args, appBuild, config, paths) {
   const { debug } = args
   const NODE_ENV = debug ? 'development' : process.env.NODE_ENV
 
-  const publicPath = config.publicPath || '/'
-  const styleLoaders = getCSSLoaders.styleLoaders({
+  const {
+    publicPath = '/',
+    library = null,
+    libraryTarget = 'var'
+  } = config
+
+  const styleLoaders = getCSSLoaders.styleLoaders(config, {
     sourceMap: config.cssSourceMap,
     extract: true
   })
 
+  const output = {
+    path: appBuild,
+    filename: '[name].js',
+    publicPath,
+    libraryTarget,
+    chunkFilename: '[id].async.js'
+  }
+
+  if (library) output.library = library
+
   const commonConfig = baseWebpackConfig(config, paths)
 
-  return merge(commonConfig, {
+  const webpackConfig = merge(commonConfig, {
     bail: true,
-    entry: getEntry(config, paths.appDirectory),
-    output: {
-      path: appBuild,
-      filename: '[name].js',
-      publicPath
-    },
+    entry: getEntry(config, paths.appDirectory, /* isBuild */ true),
+    output,
     module: {
-      loaders: styleLoaders
-    },
-    postcss () {
-      return [
-        autoprefixer(config.autoprefixer || {
-          browsers: [
-            '>1%',
-            'last 4 versions',
-            'Firefox ESR',
-            'not ie < 9' // React doesn't support IE8 anyway
-          ]
-        })
-      ].concat(config.extraPostCSSPlugins ? config.extraPostCSSPlugins : [])
+      rules: styleLoaders
     },
     plugins: [
       new webpack.DefinePlugin({
@@ -53,8 +53,31 @@ export default function (args, appBuild, config, paths) {
           'NODE_ENV': JSON.stringify(NODE_ENV)
         }
       }),
-      // 按引用频度来排序 ID，以便达到减少文件大小的效果
-      new webpack.optimize.OccurrenceOrderPlugin(),
+      new webpack.LoaderOptionsPlugin({
+        options: {
+          babel: {
+            presets: [
+              require.resolve('babel-preset-es2015'),
+              require.resolve('babel-preset-stage-2')
+            ].concat(config.extraBabelPresets || []),
+            plugins: [
+              require.resolve('babel-plugin-transform-runtime')
+            ].concat(config.extraBabelPlugins || []),
+            cacheDirectory: true
+          },
+          postcss () {
+            return [
+              autoprefixer(config.autoprefixer || {
+                browsers: [
+                  '>1%',
+                  'last 4 versions',
+                  'not ie <= 8'
+                ]
+              })
+            ].concat(config.extraPostCSSPlugins ? config.extraPostCSSPlugins : [])
+          }
+        }
+      }),
       // 排除相似的或相同的，避免在最终生成的文件中出现重复的模块。
       new webpack.optimize.DedupePlugin(),
       // extract css into its own file
@@ -74,7 +97,7 @@ export default function (args, appBuild, config, paths) {
           comments: false,
           screw_ie8: true
         },
-        sourceMap: false
+        sourceMap: true
       })
     ).concat(
       !config.analyze ? [] : new BundleAnalyzerPlugin({
@@ -87,10 +110,12 @@ export default function (args, appBuild, config, paths) {
         to: paths.appBuild
       }])
     ).concat(
-      !config.multipage ? [] : new webpack.optimize.CommonsChunkPlugin({ name: 'common' })
+      !config.multipage ? [] : new webpack.optimize.CommonsChunkPlugin({name: 'common', filename: 'common.js'})
     ).concat(
       !config.define ? [] : new webpack.DefinePlugin(normalizeDefine(config.define))
     ),
     externals: config.externals
   })
+
+  return webpackConfig
 }
