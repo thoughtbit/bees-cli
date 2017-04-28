@@ -25,7 +25,7 @@ export default function (argv, rcConfig, paths) {
     },
     plugins: [
       new webpack.DllPlugin({
-        path: join(appBuild, '[name].json'),
+        path: join(appBuild, '[name]-manifest.json'),
         name: '[name]',
         context: paths.appSrc
       })

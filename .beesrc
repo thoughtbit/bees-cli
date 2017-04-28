@@ -1,9 +1,9 @@
 {
-  "use": "react",
-  "entry": "react/index.js",
+  "use": "vue",
+  "entry": "vue/index.js",
   "publicPath": "/",
-  "extraBabelPresets": ["react"],
-  "extraBabelPlugins": ["transform-runtime"],
+  "extraBabelPresets": [],
+  "extraBabelPlugins": [],
   "autoprefixer": null,
   "externals": [],
   "multipage": true,

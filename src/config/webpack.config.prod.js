@@ -22,16 +22,29 @@ import getCSSLoaders from './../utils/getCSSLoaders'
 import normalizeDefine from './../utils/normalizeDefine'
 
 export default function (args, appBuild, config, paths) {
-  const {
-    debug
-  } = args
+  const { debug } = args
   const NODE_ENV = debug ? 'development' : process.env.NODE_ENV
 
-  const publicPath = config.publicPath || '/'
+  const {
+    publicPath = '/',
+    library = null,
+    libraryTarget = 'var'
+  } = config
+
   const styleLoaders = getCSSLoaders.styleLoaders(config, {
     sourceMap: config.cssSourceMap,
     extract: true
   })
+
+  const output = {
+    path: appBuild,
+    filename: '[name].js',
+    publicPath,
+    libraryTarget,
+    chunkFilename: '[id].async.js'
+  }
+
+  if (library) output.library = library
 
   const commonConfig = baseWebpackConfig(config, paths)
 
@@ -49,8 +62,11 @@ export default function (args, appBuild, config, paths) {
     },
     plugins: [
       new webpack.DefinePlugin({
+        '__VERSION__': JSON.stringify(paths.appPackageJson.version),
+        APP_NAME: JSON.stringify(paths.appPackageJson.name)
+      }),
+      new webpack.DefinePlugin({
         'process.env': {
-          '__VERSION__': JSON.stringify(paths.appPackageJson.version),
           'NODE_ENV': JSON.stringify(NODE_ENV)
         }
       }),
@@ -59,11 +75,11 @@ export default function (args, appBuild, config, paths) {
           babel: {
             babelrc: false,
             presets: [
-              [require.resolve('babel-preset-es2015'), { modules: false }],
-              require.resolve('babel-preset-stage-0')
+              [require.resolve('babel-preset-env'), { modules: false }],
+              require.resolve('babel-preset-stage-2')
             ].concat(config.extraBabelPresets || []),
             plugins: [
-              require.resolve('babel-plugin-add-module-exports')
+              require.resolve('babel-plugin-transform-runtime')
             ].concat(config.extraBabelPlugins || []),
             cacheDirectory: true
           },
@@ -74,7 +90,7 @@ export default function (args, appBuild, config, paths) {
                   '>1%',
                   'last 4 versions',
                   'Firefox ESR',
-                  'not ie < 9' // React doesn't support IE8 anyway
+                  'not ie < 9'
                 ]
               })
             ].concat(config.extraPostCSSPlugins ? config.extraPostCSSPlugins : [])
@@ -114,16 +130,7 @@ export default function (args, appBuild, config, paths) {
         to: paths.appBuild
       }])
     ).concat(
-      !config.multipage ? [] : new webpack.optimize.CommonsChunkPlugin({
-        name: 'vendor',
-        minChunks: function (module, count) {
-          // any required modules inside node_modules are extracted to vendor
-          return (
-            module.resource && /\.js$/.test(module.resource) &&
-            module.resource.indexOf(join(__dirname, '../node_modules')) === 0
-          )
-        }
-      })
+      !config.multipage ? [] : new webpack.optimize.CommonsChunkPlugin({name: 'common', filename: 'common.js'})
     ).concat(
       !config.define ? [] : new webpack.DefinePlugin(normalizeDefine(config.define))
     ),

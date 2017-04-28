@@ -18,7 +18,7 @@ import { applyMock, outputError as outputMockError } from './../utils/mock'
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
-const DEFAULT_PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 8000
+const DEFAULT_PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 12306
 const isInteractive = process.stdout.isTTY
 const cwd = process.cwd()
 const paths = getPaths(cwd)
@@ -39,7 +39,7 @@ let config
 
 function clearConsoleWrapped () {
   if (process.env.CLEAR_CONSOLE !== 'NONE') {
-    // clearConsole()
+    clearConsole()
   }
 }
 

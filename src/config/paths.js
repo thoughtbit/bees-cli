@@ -13,7 +13,7 @@ export default function getPaths (cwd) {
   }
 
   return {
-    appSrc: resolveApp('react'),
+    appSrc: resolveApp('vue'),
     // appSrc: resolveApp('src'),
     appBuild: resolveApp('dist'),
     appPublic: resolveApp('public'),
@@ -21,7 +21,6 @@ export default function getPaths (cwd) {
     appNodeModules: resolveApp('node_modules'),
     ownNodeModules: resolveOwn('../../node_modules'),
     dllNodeModule: resolveApp('node_modules/bees-dlls'),
-    dllManifest: resolveApp('node_modules/bees-dlls/bees.json'),
     appDirectory,
     resolveApp,
     resolveOwn

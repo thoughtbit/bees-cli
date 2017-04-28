@@ -9,7 +9,6 @@ import merge from 'webpack-merge'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 // import HtmlWebpackPlugin from 'html-webpack-plugin'
-// import AddAssetHtmlPlugin from 'add-asset-html-webpack-plugin'
 import baseWebpackConfig from './webpack.config.base'
 import getPaths from './paths'
 import getEntry from './../utils/getEntry'
@@ -17,7 +16,11 @@ import getCSSLoaders from './../utils/getCSSLoaders'
 import normalizeDefine from './../utils/normalizeDefine'
 
 export default function (config, cwd) {
-  const publicPath = '/'
+  const {
+    publicPath = '/',
+    library = null,
+    libraryTarget = 'var'
+  } = config
   const paths = getPaths(cwd)
   const styleLoaders = getCSSLoaders.styleLoaders(config, {
     sourceMap: config.cssSourceMap
@@ -26,10 +29,21 @@ export default function (config, cwd) {
     sourceMap: config.cssSourceMap,
     extract: false
   })
+  const output = {
+    path: paths.appBuild,
+    filename: '[name].js',
+    pathinfo: true,
+    publicPath,
+    libraryTarget,
+    chunkFilename: '[id].async.js'
+  }
+
+  if (library) output.library = library
+
   const dllPlugins = config.dllPlugin ? [
     new webpack.DllReferencePlugin({
       context: paths.appSrc,
-      manifest: require(paths.dllManifest) // eslint-disable-line
+      manifest: require(join(paths.dllNodeModule, `${config.dllPlugin.name}.json`),) // eslint-disable-line
     }),
     new CopyWebpackPlugin([
       {
@@ -43,19 +57,12 @@ export default function (config, cwd) {
   const webpackConfig = merge(commonConfig, {
     devtool: 'cheap-module-source-map',
     entry: getEntry(config, paths.appDirectory),
-    output: {
-      path: paths.appBuild,
-      filename: '[name].js',
-      pathinfo: true,
-      publicPath,
-      chunkFilename: '[id].async.js'
-    },
+    output,
     module: {
       rules: styleLoaders
     },
     plugins: [
       new webpack.DefinePlugin({
-        '__VERSION__': JSON.stringify(paths.appPackageJson.version),
         'process.env': {
           'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
         }
@@ -65,11 +72,11 @@ export default function (config, cwd) {
           babel: {
             babelrc: false,
             presets: [
-              [require.resolve('babel-preset-es2015'), { modules: false }],
-              require.resolve('babel-preset-stage-0')
+              [require.resolve('babel-preset-env'), { modules: false }],
+              require.resolve('babel-preset-stage-2')
             ].concat(config.extraBabelPresets || []),
             plugins: [
-              require.resolve('babel-plugin-add-module-exports')
+              require.resolve('babel-plugin-transform-runtime')
             ].concat(config.extraBabelPlugins || []),
             cacheDirectory: true
           },
@@ -79,8 +86,7 @@ export default function (config, cwd) {
                 browsers: [
                   '>1%',
                   'last 4 versions',
-                  'Firefox ESR',
-                  'not ie < 9' // React doesn't support IE8 anyway
+                  'not ie <= 8'
                 ]
               })
             ].concat(config.extraPostCSSPlugins ? config.extraPostCSSPlugins : [])
@@ -106,21 +112,7 @@ export default function (config, cwd) {
         to: paths.appBuild
       }])
     ).concat(
-      !config.multipage ? [] : new webpack.optimize.CommonsChunkPlugin({
-        name: 'vendor',
-        minChunks: function (module, count) {
-          // any required modules inside node_modules are extracted to vendor
-          return (
-            module.resource && /\.js$/.test(module.resource) &&
-            module.resource.indexOf(join(__dirname, '../node_modules')) === 0
-          )
-        }
-      })
-    ).concat(
-      !config.multipage ? [] : new webpack.optimize.CommonsChunkPlugin({
-        name: 'manifest',
-        chunks: ['vendor']
-      }),
+      !config.multipage ? [] : new webpack.optimize.CommonsChunkPlugin({name: 'common', filename: 'common.js'})
     ).concat(
       !config.define ? [] : new webpack.DefinePlugin(normalizeDefine(config.define))
     ),

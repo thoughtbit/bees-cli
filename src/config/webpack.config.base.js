@@ -3,11 +3,21 @@ export default function (config, paths) {
     resolve: {
       extensions: ['.js', '.json', '.jsx', '.ts', '.tsx', '.vue'],
       alias: {
-        '@': paths.resolveApp('src')
+        '@': paths.appSrc
       }
     },
     module: {
       rules: [
+        {
+          test: /\.(js|jsx})$/,
+          include: paths.appSrc,
+          loader: 'babel-loader'
+        },
+        {
+          test: /\.tsx?$/,
+          include: paths.appSrc,
+          loader: 'babel-loader!awesome-typescript'
+        },
         {
           exclude: [
             /\.html$/,
@@ -24,15 +34,6 @@ export default function (config, paths) {
           }
         },
         {
-          test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-          loader: 'image-webpack-loader?bypassOnDebug&optimizationLevel=7&interlaced=false'
-        },
-        {
-          test: /\.(js|jsx})$/,
-          include: paths.appSrc,
-          loader: 'babel-loader'
-        },
-        {
           test: /\.html$/,
           loader: 'file-loader?name=[name].[ext]'
         },
@@ -42,11 +43,6 @@ export default function (config, paths) {
           query: {
             name: 'static/[name].[hash:8].[ext]'
           }
-        },
-        {
-          test: /\.tsx?$/,
-          include: paths.appSrc,
-          loader: 'babel-loader!awesome-typescript'
         }
       ]
     },
@@ -58,6 +54,7 @@ export default function (config, paths) {
   }
 
   if (config.use === 'vue') {
+    baseWebpackConfig.resolve.alias['vue$'] = 'vue/dist/vue.esm.js'
     baseWebpackConfig.module.rules.push({
       test: /\.vue$/,
       loader: 'vue-loader',
