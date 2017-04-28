@@ -16,10 +16,11 @@ import getCSSLoaders from './../utils/getCSSLoaders'
 import normalizeDefine from './../utils/normalizeDefine'
 
 export default function (config, cwd) {
+  const publicPath = '/'
   const {
-    publicPath = '/',
     library = null,
-    libraryTarget = 'var'
+    libraryTarget = 'var',
+    devtool = '#cheap-module-eval-source-map'
   } = config
   const paths = getPaths(cwd)
   const styleLoaders = getCSSLoaders.styleLoaders(config, {
@@ -55,7 +56,7 @@ export default function (config, cwd) {
 
   const commonConfig = baseWebpackConfig(config, paths)
   const webpackConfig = merge(commonConfig, {
-    devtool: 'cheap-module-source-map',
+    devtool,
     entry: getEntry(config, paths.appDirectory),
     output,
     module: {
@@ -72,7 +73,7 @@ export default function (config, cwd) {
           babel: {
             babelrc: false,
             presets: [
-              [require.resolve('babel-preset-env'), { modules: false }],
+              require.resolve('babel-preset-es2015'),
               require.resolve('babel-preset-stage-2')
             ].concat(config.extraBabelPresets || []),
             plugins: [

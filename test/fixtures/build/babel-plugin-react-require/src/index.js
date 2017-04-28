@@ -1,4 +1,4 @@
 
-function Foo () {
-  return <div />
+function Foo() {
+  return <div />;
 }

@@ -9,7 +9,7 @@ import stripAnsi from 'strip-ansi'
 import getPaths from './../config/paths'
 import getConfig from './../utils/getConfig'
 import applyWebpackConfig, { warnIfExists } from './../utils/applyWebpackConfig'
-import WebPackProdConfig from './../config/webpack.config.dll'
+import WebPackDllConfig from './../config/webpack.config.dll'
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'production'
 
@@ -40,7 +40,7 @@ export function build (argv) {
   }
 
   appBuild = paths.dllNodeModule
-  config = applyWebpackConfig(WebPackProdConfig(argv, rcConfig, paths), process.env.NODE_ENV)
+  config = applyWebpackConfig(WebPackDllConfig(argv, rcConfig, paths), process.env.NODE_ENV)
 
   return new Promise((resolve) => {
     // First, read the current file sizes in build directory.

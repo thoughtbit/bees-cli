@@ -59,7 +59,7 @@ function readRcConfig () {
   }
 
   if (!rcConfig.use) {
-    console.log(chalk.red('use config not found in .beesrc'))
+    console.log(chalk.red(`你没有在${chalk.yellow('.beesrc')}中定义${chalk.cyan('use')}.`))
     process.exit(1)
   }
 }
@@ -148,6 +148,7 @@ function addMiddleware (devServer) {
 
 function runDevServer (host, port, protocol) {
   const devServer = new WebpackDevServer(compiler, {
+    disableHostCheck: true,
     compress: true,
     clientLogLevel: 'none',
     contentBase: paths.appPublic,
@@ -171,7 +172,7 @@ function runDevServer (host, port, protocol) {
   addMiddleware(devServer)
   applyMock(devServer)
 
-  devServer.listen(port, (err) => {
+  devServer.listen(port, '0.0.0.0', (err) => {
     if (err) {
       return console.log(err)
     }
@@ -201,7 +202,6 @@ function setupWatch (devServer) {
     paths.resolveApp('.beesrc.js'),
     paths.resolveApp('webpack.config.js')
   ]
-    .concat(typeof rcConfig.theme === 'string' ? paths.resolveApp(rcConfig.theme) : [])
   const watcher = chokidar.watch(files, {
     ignored: /node_modules/,
     persistent: true

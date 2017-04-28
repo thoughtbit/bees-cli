@@ -3,7 +3,7 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin'
 function cssLoaders (config, options) {
   let cssLoader
   options = options || {}
-  if (config.disableCSSModules) {
+  if (!config.disableCSSModules) {
     cssLoader = {
       loader: 'css-loader',
       options: {
@@ -78,7 +78,6 @@ function cssLoaders (config, options) {
     }
   }
 }
-
 
 // Generate loaders for standalone style files
 function styleLoaders (config, options) {

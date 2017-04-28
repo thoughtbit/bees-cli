@@ -13,7 +13,7 @@ export default function getPaths (cwd) {
   }
 
   return {
-    appSrc: resolveApp('vue'),
+    appSrc: resolveApp('react'),
     // appSrc: resolveApp('src'),
     appBuild: resolveApp('dist'),
     appPublic: resolveApp('public'),

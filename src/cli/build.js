@@ -32,11 +32,6 @@ const argv = require('yargs')
     describe: 'Specify output path',
     default: null
   })
-  .option('analyze', {
-    type: 'boolean',
-    describe: 'Visualize and analyze your Webpack bundle.',
-    default: false
-  })
   .help('h')
   .argv
 
@@ -58,7 +53,7 @@ export function build (argv) {
   }
 
   if (!rcConfig.use) {
-    console.log(chalk.red('use config not found in .beesrc'))
+    console.log(chalk.red(`你没有在${chalk.yellow('.beesrc')}中定义${chalk.cyan('use')}.`))
     process.exit(1)
   }
 
@@ -144,7 +139,7 @@ function printFileSizes (stats, previousSizeMap) {
       sizeLabel += rightPadding
     }
     console.log(
-      `  ${sizeLabel}  ${chalk.dim(asset.folder + path.sep)}${chalk.cyan(asset.name)}`,
+      `${sizeLabel}  ${chalk.dim(asset.folder + path.sep)}${chalk.cyan(asset.name)}`,
     )
   })
 }
@@ -179,12 +174,6 @@ function doneHandler (previousSizeMap, argv, resolve, err, stats) {
   console.log()
   printFileSizes(stats, previousSizeMap)
   console.log()
-
-  if (argv.analyze) {
-    console.log(`Analyze result is generated at ${chalk.cyan('dist/stats.html')}.`)
-    console.log()
-  }
-
   resolve()
 }
 

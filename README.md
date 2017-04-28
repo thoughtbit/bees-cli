@@ -88,6 +88,8 @@ export default {
   "analyze": false,
   "autoprefixer": null,
   "externals": null,
+  "library": null,
+  "libraryTarget": "var",
   "multipage": false,
   "dllPlugin": null,
   "define": null,
@@ -106,7 +108,7 @@ export default {
     "react"
   ],
   "extraBabelPlugins": [
-    "transform-runtime"
+    "react-require"
   ],
   "autoprefixer": null,
   "externals": null,
@@ -129,8 +131,7 @@ package.json 的 React开发配置：
 
 ```json
 {
-  "babel-preset-react": "",
-  "babel-plugin-transform-runtime": ""
+  "babel-preset-react": ""
 }
 ```
 
@@ -141,8 +142,7 @@ package.json 的 React开发配置：
   "entry": "src/index.js",
   "publicPath": "/",
   "extraBabelPlugins": [
-    "transform-vue-jsx",
-    "transform-runtime"
+    "transform-vue-jsx"
   ],
   "autoprefixer": null,
   "externals": null,
@@ -165,8 +165,7 @@ package.json 的 Vue开发配置：
 
 ```json
 {
-  "babel-plugin-transform-vue-jsx": "",
-  "babel-plugin-transform-runtime": ""
+  "babel-plugin-transform-vue-jsx": ""
 }
 ```
 
@@ -266,6 +265,15 @@ extraPostCSSPlugins: [
 ```
 配置 webpack 的 [externals](http://webpack.github.io/docs/configuration.html#externals) 属性。
 
+### library
+
+配置 webpack 的 [library](http://webpack.github.io/docs/configuration.html#output-library) 属性。
+
+### libraryTarget
+
+配置 webpack 的 [libraryTarget](http://webpack.github.io/docs/configuration.html#output-librarytarget) 属性。
+
+
 ### multipage
 
 配置是否多页应用。多页应用会自动提取公共部分为 common.js 和 common.css 。
@@ -325,7 +333,7 @@ extraPostCSSPlugins: [
 
 可环境变量临时配置一些参数，包括：
 
-- `PORT`, 端口号，默认 8000
+- `PORT`, 端口号，默认 12306
 - `HOST`, 默认 localhost
 - `HTTPS`，是否开启 https，默认关闭
 

@@ -31,8 +31,7 @@ export default function (argv, rcConfig, paths) {
       })
     ],
     resolve: {
-      root: paths.appDirectory,
-      modulesDirectories: ['node_modules']
+      modules: ['node_modules']
     }
   }
 }
