@@ -149,6 +149,7 @@ function addMiddleware (devServer) {
 function runDevServer (host, port, protocol) {
   const devServer = new WebpackDevServer(compiler, {
     disableHostCheck: true,
+    // Enable gzip compression of generated files.
     compress: true,
     clientLogLevel: 'none',
     contentBase: paths.appPublic,
@@ -166,7 +167,8 @@ function runDevServer (host, port, protocol) {
     },
     https: protocol === 'https',
     host,
-    proxy: rcConfig.proxy
+    proxy: rcConfig.proxy,
+    overlay: false
   })
 
   addMiddleware(devServer)

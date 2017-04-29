@@ -31,9 +31,9 @@ export default function (args, appBuild, config, paths) {
   const output = {
     path: appBuild,
     filename: '[name].js',
+    chunkFilename: '[id].async.js',
     publicPath,
-    libraryTarget,
-    chunkFilename: '[id].async.js'
+    libraryTarget
   }
 
   if (library) output.library = library
@@ -41,6 +41,7 @@ export default function (args, appBuild, config, paths) {
   const commonConfig = baseWebpackConfig(config, paths)
 
   const webpackConfig = merge(commonConfig, {
+    // Don't attempt to continue if there are any errors.
     bail: true,
     entry: getEntry(config, paths.appDirectory, /* isBuild */ true),
     output,

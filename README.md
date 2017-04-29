@@ -5,7 +5,7 @@ A simple CLI for serve and build web app, support JSON pattern config.
 
 ### 声明
 
-bees 是 [create-react-app](https://github.com/facebookincubator/create-react-app) 和 [roadhog](https://github.com/sorrycc/roadhog) 的克隆版，根据团队和自己日常开发的需求修改的一个版本。
+Bees 是 [create-react-app](https://github.com/facebookincubator/create-react-app) 、 [roadhog](https://github.com/sorrycc/roadhog) 和 [vue-cli](https://github.com/vuejs/vue-cli) 的克隆版，根据团队和自己日常开发的需求修改而成的, 提供 init、 server、 build 和 test 四个命令，分别用于生成脚手架、本地调试和构建，并且提供了特别易用的 mock 功能。命令行体验同 vue-cli 和 roadhog 一致，但配置略有不同。让人兴奋的是同时支持 Vue 和 React 的构建与调试。
 
 ### 安装
 
@@ -16,6 +16,11 @@ $ npm install -g bees-cli
 ```
 
 ### 使用
+脚手架
+
+```bash
+$ bees init
+```
 
 本地开发
 
@@ -110,6 +115,7 @@ export default {
   "extraBabelPlugins": [
     "react-require"
   ],
+  "disableCSSModules": false,
   "autoprefixer": null,
   "externals": null,
   "multipage": true,
@@ -142,8 +148,10 @@ package.json 的 React开发配置：
   "entry": "src/index.js",
   "publicPath": "/",
   "extraBabelPlugins": [
-    "transform-vue-jsx"
+    "transform-vue-jsx",
+    "transform-object-rest-spread"
   ],
+  "disableCSSModules": false,
   "autoprefixer": null,
   "externals": null,
   "multipage": true,
@@ -348,6 +356,25 @@ $ set PORT=12306&&bees server
 ```
 
 ## 命令行参数
+
+### bees init
+
+```bash
+Usage:
+    bees init <template-name> [project-name]
+
+Options:
+
+    -h, --help   output usage information
+    -c, --clone  use git clone
+
+Examples:
+    # create a new project with an official template
+    $ bees init vue-webpack my-project
+  
+    # create a new project straight from a github template
+    $ bees init username/repo my-project
+```
 
 ### bees server
 

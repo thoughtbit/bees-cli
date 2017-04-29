@@ -94,8 +94,14 @@ export default function (config, cwd) {
           }
         }
       }),
+      // This is necessary to emit hot updates (currently CSS only):
       new webpack.HotModuleReplacementPlugin(),
+      // Watcher doesn't work well if you mistype casing in a path so we use
+      // a plugin that prints an error when you attempt to do this.
       new CaseSensitivePathsPlugin(),
+      // If you require a missing module and then `npm install` it, you still have
+      // to restart the development server for Webpack to discover it. This plugin
+      // makes the discovery automatic so you don't have to restart.
       new WatchMissingNodeModulesPlugin(paths.appNodeModules),
       // 取代 system-bell-webpack-plugin
       new FriendlyErrors()
@@ -117,6 +123,10 @@ export default function (config, cwd) {
     ).concat(
       !config.define ? [] : new webpack.DefinePlugin(normalizeDefine(config.define))
     ),
+    // 开发环境中没必要开启性能警告提示，反而影响速度.
+    performance: {
+      hints: false
+    },
     externals: config.externals
   })
   return webpackConfig

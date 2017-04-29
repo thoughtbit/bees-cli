@@ -32,6 +32,7 @@ case '-v':
 case '--version':
   console.log(require('../package.json').version)
   break
+case 'init':
 case 'build':
 case 'build-dll':
 case 'server':
@@ -45,5 +46,6 @@ case 'test':
   break
 default:
   console.log(`Unknown script ${chalk.cyan(script)}.`)
+  console.log(`Perhaps you need to update ${chalk.red('bees-cli')}?`)
   break
 }
