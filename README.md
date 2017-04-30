@@ -376,6 +376,20 @@ Examples:
     $ bees init username/repo my-project
 ```
 
+
+官方模板仓库 [fis-templates organization](https://github.com/fis-templates). 
+
+目前可用的模板列表
+
+- [vue-webpack](https://github.com/fis-templates/vue-webpack) - 使用 Webpack 构建一个 Vue App。
+- [vue-gulp](https://github.com/fis-templates/vue-gulp) - 使用 Gulp 构建一个 Vue App。
+- [react-webpack](https://github.com/fis-templates/react-webpack) - 使用 Webpack 构建一个 React App。 
+- [react-gulp](https://github.com/fis-templates/react-gulp) - 使用 Gulp 构建一个 React App。 
+- [angular-rollup](https://github.com/fis-templates/angular-rollup) - 使用 Gulp + Rollup 构建一个 Angular App。 
+- [angular-webpack](https://github.com/fis-templates/angular-webpack) - 使用 Webpack 构建一个 Angular App。 
+- [angular-gulp](https://github.com/fis-templates/angular-gulp) - 使用 Gulp 构建一个 Angular App。 
+
+
 ### bees server
 
 ```bash
