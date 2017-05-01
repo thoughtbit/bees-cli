@@ -79,7 +79,7 @@ const clone = argv.clone || false
 if (existsSync(to)) {
   inquirer.prompt([{
     type: 'confirm',
-    message: inPlace ? '您确定要在当前目录生成项目吗?' : '您要创建的项目已经存在了. 继续吗?',
+    message: inPlace ? '您确定要在当前目录生成项目吗?' : `您要创建的 ${chalk.red(`${rawName}`)} 项目已经存在了. 继续吗?`,
     name: 'ok'
   }], function (answers) {
     if (answers.ok) {
@@ -130,7 +130,7 @@ function run () {
 
 function downloadAndGenerate (template) {
   const tmp = os.tmpdir() + '/fis-template-' + uid()
-  const spinner = ora('downloading template')
+  const spinner = ora('Downloading template...')
   spinner.start()
   download(template, tmp, { clone: clone }, function (err) {
     spinner.stop()

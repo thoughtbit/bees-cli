@@ -25,6 +25,22 @@ if (((major * 10) + (minor * 1)) < 65) {
   process.exit(1)
 }
 
+function printUsageAndExit (script) {
+  console.log(`
+${chalk.gray('==========================================================================\n')}
+Unsupported command: ${chalk.cyan(script)}.
+
+Usage:
+  bees init ${chalk.gray('<template-name> [project-name]')}\t快速生成项目模板
+  bees server\t本地开发
+  bees build\t打包发布
+
+Perhaps you need to update ${chalk.red('bees-cli')}?
+${chalk.gray('\n==========================================================================')}
+`)
+  process.exit(0)
+}
+
 var result
 
 switch (script) {
@@ -45,7 +61,6 @@ case 'test':
   process.exit(result.status)
   break
 default:
-  console.log(`Unknown script ${chalk.cyan(script)}.`)
-  console.log(`Perhaps you need to update ${chalk.red('bees-cli')}?`)
+  printUsageAndExit(script)
   break
 }
