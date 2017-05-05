@@ -3,12 +3,12 @@ import { join } from 'path'
 import autoprefixer from 'autoprefixer'
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin'
 import WatchMissingNodeModulesPlugin from 'react-dev-utils/WatchMissingNodeModulesPlugin'
-import FriendlyErrors from 'friendly-errors-webpack-plugin'
 import webpack from 'webpack'
 import merge from 'webpack-merge'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
-// import HtmlWebpackPlugin from 'html-webpack-plugin'
+import NpmInstallPlugin from 'npm-install-webpack-plugin-steamer'
+import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import baseWebpackConfig from './webpack.config.base'
 import getPaths from './paths'
 import getEntry from './../utils/getEntry'
@@ -16,20 +16,26 @@ import getCSSLoaders from './../utils/getCSSLoaders'
 import normalizeDefine from './../utils/normalizeDefine'
 
 export default function (config, cwd) {
+  const env = process.env.NODE_ENV
   const publicPath = '/'
   const {
     library = null,
     libraryTarget = 'var',
     devtool = '#cheap-module-eval-source-map'
   } = config
+
   const paths = getPaths(cwd)
+
   const styleLoaders = getCSSLoaders.styleLoaders(config, {
-    sourceMap: config.cssSourceMap
+    sourceMap: config.cssSourceMap,
+    extract: true
   })
-  config.vueLoaders = getCSSLoaders.cssLoaders(config, {
+
+  const vueStyleLoaderMap = getCSSLoaders.cssLoaders(config, {
     sourceMap: config.cssSourceMap,
     extract: false
   })
+
   const output = {
     path: paths.appBuild,
     filename: '[name].js',
@@ -55,19 +61,85 @@ export default function (config, cwd) {
   ] : []
 
   const commonConfig = baseWebpackConfig(config, paths)
+
+  // "url" loader works like "file" loader except that it embeds assets
+  // smaller than specified limit in bytes as data URLs to avoid requests.
+  // A missing `test` is equivalent to a match.
+  const imageLoader = {
+    test: [/\.jpe?g$/, /\.png$/, /\.gif$/, /\.svg$/],
+    loaders: [
+      {
+        loader: 'url-loader',
+        query: {
+          limit: 10000,
+          name: 'static/[name].[hash:8].[ext]'
+        }
+      }
+    ]
+  }
+
+  commonConfig.module.rules.push(imageLoader)
+
+  if (config.use === 'vue') {
+    commonConfig.resolve.alias['vue$'] = 'vue/dist/vue.esm.js'
+
+    // vue-loader的样式loader配置
+    const vueLoader = {
+      test: /\.vue$/,
+      loader: 'vue-loader',
+      include: paths.appSrc,
+      options: {
+        loaders: {}
+      }
+    }
+
+    /*
+      // 预编译器，默认支持css 和 less. sass, scss 和 stylus 由npm-install-webpack-plugin自动安装
+      style: ["css", "less"]
+    */
+    config.style.forEach((style) => {
+      vueLoader.options.loaders[style] = vueStyleLoaderMap[style]
+      let rule = styleLoaders[style] || ''
+      rule && commonConfig.module.rules.push(rule)
+    })
+    commonConfig.module.rules.push(vueLoader)
+  } else {
+    config.style.forEach((style) => {
+      let rule = styleLoaders[style] || ''
+      rule && commonConfig.module.rules.push(rule)
+    })
+  }
+
+  if (config.eslint) {
+    if (config.use === 'vue') {
+      commonConfig.module.rules.push({
+        test: /\.(js|vue)$/,
+        loader: 'eslint-loader',
+        enforce: 'pre',
+        include: paths.appSrc,
+        options: {
+          formatter: require('eslint-friendly-formatter')
+        }
+      })
+    } else {
+      commonConfig.module.rules.push({
+        test: /\.(js|jsx)$/,
+        loader: 'eslint-loader',
+        enforce: 'pre',
+        include: paths.appSrc,
+        options: {
+          formatter: require('eslint-friendly-formatter')
+        }
+      })
+    }
+  }
+
   const webpackConfig = merge(commonConfig, {
     devtool,
-    entry: getEntry(config, paths.appDirectory),
+    entry: getEntry(config, paths),
     output,
-    module: {
-      rules: styleLoaders
-    },
     plugins: [
-      new webpack.DefinePlugin({
-        'process.env': {
-          'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-        }
-      }),
+      new webpack.NoEmitOnErrorsPlugin(),
       new webpack.LoaderOptionsPlugin({
         options: {
           babel: {
@@ -79,7 +151,7 @@ export default function (config, cwd) {
             plugins: [
               require.resolve('babel-plugin-transform-runtime')
             ].concat(config.extraBabelPlugins || []),
-            cacheDirectory: true
+            cacheDirectory: './.webpack_cache/'
           },
           postcss () {
             return [
@@ -94,6 +166,25 @@ export default function (config, cwd) {
           }
         }
       }),
+      new NpmInstallPlugin({
+        // Use --save or --save-dev
+        dev: true,
+        // Install missing peerDependencies
+        peerDependencies: true,
+        // Reduce amount of console logging
+        quiet: false
+      }),
+      new webpack.DefinePlugin({
+        'process.env': {
+          'NODE_ENV': JSON.stringify(env)
+        }
+      }),
+      // extract css into its own file
+      new ExtractTextPlugin({
+        filename: '[name].css',
+        allChunks: false,
+        disable: true
+      }),
       // This is necessary to emit hot updates (currently CSS only):
       new webpack.HotModuleReplacementPlugin(),
       // Watcher doesn't work well if you mistype casing in a path so we use
@@ -102,16 +193,14 @@ export default function (config, cwd) {
       // If you require a missing module and then `npm install` it, you still have
       // to restart the development server for Webpack to discover it. This plugin
       // makes the discovery automatic so you don't have to restart.
-      new WatchMissingNodeModulesPlugin(paths.appNodeModules),
-      // 取代 system-bell-webpack-plugin
-      new FriendlyErrors()
+      new WatchMissingNodeModulesPlugin(paths.appNodeModules)
     ].concat(
       dllPlugins,
     ).concat(
       !config.analyze ? [] : new BundleAnalyzerPlugin({
         analyzerMode: 'static',
         openAnalyzer: false,
-        reportFilename: paths.resolveOwn(`../reports/${process.env.NODE_ENV}.html`)
+        reportFilename: paths.resolveOwn(`../reports/${env}.html`)
       })
     ).concat(
       !fs.existsSync(paths.appPublic) ? [] : new CopyWebpackPlugin([{
@@ -127,7 +216,10 @@ export default function (config, cwd) {
     performance: {
       hints: false
     },
-    externals: config.externals
+    externals: config.externals,
+    watch: true
   })
+  // console.log(webpackConfig)
+  // console.log(JSON.stringify(webpackConfig, null, 2))
   return webpackConfig
 }

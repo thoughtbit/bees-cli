@@ -59,8 +59,15 @@ function readRcConfig () {
   }
 
   if (!rcConfig.use) {
-    console.log(chalk.red(`你没有在${chalk.yellow('.beesrc')}中定义${chalk.cyan('use')}.`))
-    process.exit(1)
+    rcConfig['use'] = rcConfig.use ? rcConfig.use : 'react'
+    console.log(chalk.red(`你没有在${chalk.yellow('.beesrc')}中定义${chalk.cyan('use')}, 默认值是${chalk.cyan(`${rcConfig.use}`)}.`))
+    // process.exit(1)
+  }
+
+  if (!rcConfig.style) {
+    rcConfig['style'] = rcConfig.style ? rcConfig.style : ['css', 'less']
+    console.log(chalk.red(`你没有在${chalk.yellow('.beesrc')}中定义${chalk.cyan('style')},  默认值是${chalk.cyan(`["css", "less"]`)}.`))
+    // process.exit(1)
   }
 }
 

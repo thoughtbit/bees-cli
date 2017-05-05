@@ -210,6 +210,12 @@ package.json 的 Vue开发配置：
 
 这样，开发环境下的 extraBabelPlugins 是 `["transform-runtime", "dva-hmr"]`，而生产环境下是 `["transform-runtime"]`。
 
+### style
+样式预编译器，默认支持css 和 less. sass[scss] 和 stylus[styl] 由npm-install-webpack-plugin自动安装
+
+```
+style: ["css", "less","sass","stylus"]
+```
 
 ### extraPostCSSPlugins
 
@@ -315,6 +321,35 @@ extraPostCSSPlugins: [
   }
 }
 ```
+
+### eslint
+
+在生产环境下开启 ESLint
+
+```
+"env": {
+  "production": {
+    "eslint": true
+  }
+}
+```
+
+推荐使用 [eslint-config-airbnb](https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb).
+
+具体的配置请查看[ESLint documentation](http://eslint.org/docs/rules/) 
+
+是否开启eslint， .eslintrc 或者 .eslintrc.js .eslintignore
+
+1. 重新配置 `.eslintrc 或者 .eslintrc.js` 文件. 例如:
+
+  ``` js
+  // .eslintrc.js
+  "semi": [2, "always"]
+  ```
+2. 排除, `.eslintignore`
+  ```
+  **/libs/*.js
+  ```
 
 ### env
 
@@ -434,6 +469,13 @@ Options:
 ### 那么为什么提供 JSON 级别的约定型配置，而非类似 webpack.config.js 的编码型配置?
 
 首先是 JSON 的方式比较简单，`true`/`false` 或是一些简单的字符串就可完成配置；另外，JSON 方式能有效控制使用场景，而编程式的非常不可控，roadhog 的一个简单改动都可能导致之前的配置不可用。
+
+### resolve.alias
+创建 import 或 require 的别名，来确保模块引入变得更简单, 别名是 `~`, 指向 src/ 文件夹下的常用模块。
+
+```
+import NavBar from '~/components/nav-bar'
+```
 
 ### node-sass 安装失败
 ```bash

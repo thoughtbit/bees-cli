@@ -32,11 +32,18 @@ function cssLoaders (config, options) {
     if (loader) {
       loaders.push(
         {
+          loader: 'postcss-loader',
+          options: { sourceMap: options.sourceMap }
+        },
+        {
           loader: loader + '-loader',
           options: Object.assign({}, loaderOptions, {
             sourceMap: options.sourceMap
           })
-        },
+        }
+      )
+    } else {
+      loaders.push(
         {
           loader: 'postcss-loader',
           options: { sourceMap: options.sourceMap }
@@ -81,14 +88,15 @@ function cssLoaders (config, options) {
 
 // Generate loaders for standalone style files
 function styleLoaders (config, options) {
-  let output = []
+  let output = {}
   const loaders = cssLoaders(config, options)
   for (let extension in loaders) {
     const loader = loaders[extension]
-    output.push({
+    const rule = {
       test: new RegExp('\\.' + extension + '$'),
-      use: loader
-    })
+      loader: loader
+    }
+    output[extension] = rule
   }
   return output
 }

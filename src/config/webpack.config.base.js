@@ -1,48 +1,75 @@
 export default function (config, paths) {
   const baseWebpackConfig = {
+    context: paths.appSrc,
     resolve: {
+      // This allows you to set a fallback for where Webpack should look for modules.
+      // We read `NODE_PATH` environment variable in `paths.js` and pass paths here.
+      // We placed these paths second because we want `node_modules` to "win"
+      // if there are any conflicts. This matches Node resolution mechanism.
+      // https://github.com/facebookincubator/create-react-app/issues/253
+      modules: [paths.appSrc, 'node_modules', paths.appNodeModules].concat(paths.nodePaths),
       extensions: ['.js', '.json', '.jsx', '.ts', '.tsx', '.vue'],
       alias: {
-        '@': paths.appSrc
+        '~': paths.appSrc
       }
+    },
+    // Resolve loaders (webpack plugins for CSS, images, transpilation) from the
+    // directory of `bees-cli` itself rather than the project directory.
+    resolveLoader: {
+      modules: [
+        paths.ownNodeModules,
+        // Lerna hoists everything, so we need to look in our app directory
+        paths.appNodeModules
+      ]
     },
     module: {
       rules: [
         {
           test: /\.(js|jsx})$/,
           include: paths.appSrc,
-          loader: 'babel-loader'
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: './.webpack_cache/'
+          }
         },
         {
           test: /\.tsx?$/,
           include: paths.appSrc,
-          loader: 'babel-loader!awesome-typescript'
+          loader: 'babel-loader!awesome-typescript',
+          options: {
+            cacheDirectory: './.webpack_cache/'
+          },
+          exclude: /node_modules/
         },
+        // ** ADDING/UPDATING LOADERS **
+        // The "url" loader handles all assets unless explicitly excluded.
+        // The `exclude` list *must* be updated with every change to loader extensions.
+        // When adding a new loader, you must add its `test`
+        // as a new entry in the `exclude` list for "url" loader.
+
+        // "file" loader makes sure those assets get served by WebpackDevServer.
+        // When you `import` an asset, you get its (virtual) filename.
+        // In production, they would get copied to the `build` folder.
         {
           exclude: [
             /\.html$/,
             /\.(js|jsx|vue)$/,
-            /\.tsx?$/,
-            /\.(css|less|scss)$/,
-            /\.svg$/,
-            /\.json$/
+            /\.css$/,
+            /\.json$/,
+            /\.bmp$/,
+            /\.gif$/,
+            /\.jpe?g$/,
+            /\.png$/,
+            /\.svg$/
           ],
-          loader: 'url-loader',
-          query: {
-            limit: 10000,
+          loader: 'file-loader',
+          options: {
             name: 'static/[name].[hash:8].[ext]'
           }
         },
         {
           test: /\.html$/,
-          loader: 'file-loader?name=[name].[ext]'
-        },
-        {
-          test: /\.svg$/,
-          loader: 'file-loader',
-          query: {
-            name: 'static/[name].[hash:8].[ext]'
-          }
+          loader: 'file?name=[name].[ext]'
         }
       ]
     },
@@ -51,17 +78,6 @@ export default function (config, paths) {
       net: 'empty',
       tls: 'empty'
     }
-  }
-
-  if (config.use === 'vue') {
-    baseWebpackConfig.resolve.alias['vue$'] = 'vue/dist/vue.esm.js'
-    baseWebpackConfig.module.rules.push({
-      test: /\.vue$/,
-      loader: 'vue-loader',
-      options: {
-        loaders: config.vueLoaders
-      }
-    })
   }
 
   return baseWebpackConfig

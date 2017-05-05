@@ -2,11 +2,9 @@ import { basename, sep } from 'path'
 import assert from 'assert'
 import glob from 'glob'
 
-const DEFAULT_ENTRY = './src/index.js'
-
 function getEntry (filePath, isBuild) {
   const key = basename(filePath, '.js')
-  const value = isBuild ? [filePath] : [require.resolve('react-dev-utils/webpackHotDevClient'), filePath]
+  const value = isBuild ? [require.resolve('./polyfills'), filePath] : [require.resolve('react-dev-utils/webpackHotDevClient'), require.resolve('./polyfills'), filePath]
   return {
     [key]: value
   }
@@ -37,8 +35,9 @@ export function getEntries (files, isBuild) {
   }, {})
 }
 
-export default function (config, appDirectory, isBuild) {
+export default function (config, paths, isBuild) {
+  const appDirectory = paths.appDirectory
   const entry = config.entry
-  const files = entry ? getFiles(entry, appDirectory) : [DEFAULT_ENTRY]
+  const files = entry ? getFiles(entry, appDirectory) : [paths.appIndexJs]
   return getEntries(files, isBuild)
 }

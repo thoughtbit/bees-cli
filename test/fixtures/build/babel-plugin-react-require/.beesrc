@@ -1,5 +1,4 @@
 {
-  "use": "react",
   "extraBabelPresets": [
     "react"
   ],
