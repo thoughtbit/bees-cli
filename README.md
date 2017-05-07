@@ -146,7 +146,7 @@ package.json 的 React开发配置：
 
 ```json
 {
-  "use": "vue",
+  "use": "vue",
   "entry": "src/index.js",
   "publicPath": "/",
   "extraBabelPlugins": [
