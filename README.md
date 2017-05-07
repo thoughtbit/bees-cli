@@ -107,6 +107,7 @@ export default {
 
 ```json
 {
+  "use": "react",
   "entry": "src/index.js",
   "publicPath": "/",
   "extraBabelPresets": [
@@ -145,6 +146,7 @@ package.json 的 React开发配置：
 
 ```json
 {
+  "use": "vue",
   "entry": "src/index.js",
   "publicPath": "/",
   "extraBabelPlugins": [
