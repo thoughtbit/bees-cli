@@ -379,6 +379,7 @@ extraPostCSSPlugins: [
 - `PORT`, 端口号，默认 12306
 - `HOST`, 默认 localhost
 - `HTTPS`，是否开启 https，默认关闭
+- `CLEAR_CONSOLE`，设为 none 时清屏
 
 比如，使用 12306 端口开启服务器可以这样：
 

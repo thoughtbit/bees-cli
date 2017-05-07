@@ -50,7 +50,7 @@ export default function (config, cwd) {
   const dllPlugins = config.dllPlugin ? [
     new webpack.DllReferencePlugin({
       context: paths.appSrc,
-      manifest: require(join(paths.dllNodeModule, `${config.dllPlugin.name}.json`),) // eslint-disable-line
+      manifest: require(join(paths.dllNodeModule, `${config.dllPlugin.name}.json`)) // eslint-disable-line
     }),
     new CopyWebpackPlugin([
       {

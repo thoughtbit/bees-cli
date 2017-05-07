@@ -31,7 +31,7 @@ export default function (argv, rcConfig, paths) {
       })
     ],
     resolve: {
-      modules: ['node_modules']
+      modules: ['node_modules', paths.appNodeModules].concat(paths.nodePaths)
     }
   }
 }

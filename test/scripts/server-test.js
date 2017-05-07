@@ -3,7 +3,7 @@ import { join } from 'path'
 import { fork } from 'child_process'
 import got from 'got'
 
-process.env.CLEAR_CONSOLE = 'NONE'
+process.env.CLEAR_CONSOLE = 'none'
 const fixtures = join(__dirname, '../fixtures')
 
 describe('server', () => {
@@ -15,10 +15,17 @@ describe('server', () => {
       if (data === 'READY') {
         Promise.all([
           got('http://localhost:12306/a'),
-          got('http://localhost:12306/b')
+          got('http://localhost:12306/b'),
+          // got('http://localhost:8000/tb-page/taobao-home/0.0.50/index.css'),
+          // got('http://localhost:8000/someDir/0.0.50/index.css'),
+          got.post('http://localhost:8000/c', { body: { a:'b' } })
         ]).then((res) => {
           const data = res.map(item => item.body)
-          expect(data).toEqual(['a', '{"data":"b"}'])
+          expect(data[0]).toEqual('a')
+          expect(data[1]).toEqual('{"data":"b"}')
+          // expect(data[2].indexOf('.iconfont,.tb-icon,body')).toEqual(0)
+          // expect(data[3].indexOf('.iconfont,.tb-icon,body')).toEqual(0)
+          expect(data[2]).toEqual('b')
           p.kill('SIGINT')
           done()
         })
