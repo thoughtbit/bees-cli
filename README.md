@@ -177,6 +177,13 @@ package.json 的 Vue开发配置：
 }
 ```
 
+### use 
+指定当前使用的前端框架是`vue` 还是 `react`， 默认支持的是`react`
+
+```
+"use": "react"
+```
+
 ### entry
 
 指定 webpack 入口文件，支持 [glob](https://github.com/isaacs/node-glob) 格式。
