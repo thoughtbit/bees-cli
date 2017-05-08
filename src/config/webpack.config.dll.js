@@ -23,15 +23,18 @@ export default function (argv, rcConfig, paths) {
       filename: '[name].dll.js',
       library: '[name]'
     },
+    module: {
+      rules: []
+    },
     plugins: [
       new webpack.DllPlugin({
-        path: join(appBuild, '[name]-manifest.json'),
+        path: join(appBuild, '[name].json'),
         name: '[name]',
         context: paths.appSrc
       })
     ],
     resolve: {
-      modules: ['node_modules', paths.appNodeModules].concat(paths.nodePaths)
+      modules: [paths.appSrc, 'node_modules', paths.appNodeModules].concat(paths.nodePaths)
     }
   }
 }

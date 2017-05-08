@@ -7,7 +7,7 @@ require('./registerBabel')
 export function warnIfExists () {
   const filePath = resolve('webpack.config.js')
   if (existsSync(filePath)) {
-    console.log(chalk.yellow(`警告：⚠️ ⚠️ ⚠️  不推荐通过 ${chalk.bold('webpack.config.js')} 以编码的方式进行配置, 因为 bees 本身的 major 或 minor 升级可能会导致不兼容。如果你坚持这样做,请小心 bees 升级后的兼容性问题。`))
+    console.log(chalk.yellow(`警告：⚠️ 不推荐通过 ${chalk.red('webpack.config.js')} 以编码的方式进行配置。如果你坚持这样做,请小心 ${chalk.red('bees')} 升级后的兼容性问题。`))
     console.log()
   }
 }

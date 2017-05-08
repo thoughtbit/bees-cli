@@ -41,12 +41,6 @@ export default function (config, paths) {
           },
           exclude: /node_modules/
         },
-        // ** ADDING/UPDATING LOADERS **
-        // The "url" loader handles all assets unless explicitly excluded.
-        // The `exclude` list *must* be updated with every change to loader extensions.
-        // When adding a new loader, you must add its `test`
-        // as a new entry in the `exclude` list for "url" loader.
-
         // "file" loader makes sure those assets get served by WebpackDevServer.
         // When you `import` an asset, you get its (virtual) filename.
         // In production, they would get copied to the `build` folder.
@@ -54,7 +48,7 @@ export default function (config, paths) {
           exclude: [
             /\.html$/,
             /\.(js|jsx|vue)$/,
-            /\.css$/,
+            /\.(css|less|sass|scss|styl)$/,
             /\.json$/,
             /\.bmp$/,
             /\.gif$/,
@@ -79,6 +73,5 @@ export default function (config, paths) {
       tls: 'empty'
     }
   }
-
   return baseWebpackConfig
 }

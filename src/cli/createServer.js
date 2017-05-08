@@ -1,5 +1,6 @@
 import detect from 'detect-port'
 import fs from 'fs'
+import { join } from 'path'
 import clearConsole from 'react-dev-utils/clearConsole'
 import getProcessForPort from 'react-dev-utils/getProcessForPort'
 import formatWebpackMessages from 'react-dev-utils/formatWebpackMessages'
@@ -53,7 +54,7 @@ function readRcConfig () {
     process.exit(1)
   }
 
-  if (rcConfig.dllPlugin && !fs.existsSync(paths.dllManifest)) {
+  if (rcConfig.dllPlugin && !fs.existsSync(join(paths.dllNodeModule, `${rcConfig.dllPlugin.name}.json`))) {
     console.log(chalk.red('Failed to start the server, since you have enabled dllPlugin, but have not run `bees build-dll` before `bees server`.'))
     process.exit(1)
   }

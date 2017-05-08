@@ -1,27 +1,15 @@
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
 
 function cssLoaders (config, options) {
-  let cssLoader
   options = options || {}
-  if (!config.disableCSSModules) {
-    cssLoader = {
-      loader: 'css-loader',
-      options: {
-        importLoaders: 1,
-        minimize: process.env.NODE_ENV === 'production',
-        sourceMap: options.sourceMap
-      }
-    }
-  } else {
-    cssLoader = {
-      loader: 'css-loader',
-      options: {
-        importLoaders: 1,
-        modules: true,
-        localIdentName: '[local]--[hash:base64:5]',
-        minimize: process.env.NODE_ENV === 'production',
-        sourceMap: options.sourceMap
-      }
+  let cssLoader = {
+    loader: 'css-loader',
+    options: {
+      importLoaders: 1,
+      modules: !!config.disableCSSModules,
+      localIdentName: '[name]-[local]-[hash:base64:5]',
+      minimize: process.env.NODE_ENV === 'production',
+      sourceMap: options.sourceMap
     }
   }
 
@@ -31,10 +19,7 @@ function cssLoaders (config, options) {
     let use = config.use === 'vue' ? 'vue-' : ''
     if (loader) {
       loaders.push(
-        {
-          loader: 'postcss-loader',
-          options: { sourceMap: options.sourceMap }
-        },
+        { loader: 'postcss-loader' },
         {
           loader: loader + '-loader',
           options: Object.assign({}, loaderOptions, {
@@ -44,23 +29,14 @@ function cssLoaders (config, options) {
       )
     } else {
       loaders.push(
-        {
-          loader: 'postcss-loader',
-          options: { sourceMap: options.sourceMap }
-        }
+        { loader: 'postcss-loader' }
       )
     }
 
-    // Extract CSS when that option is specified
-    // (which is the case during production build)
-    if (options.extract) {
-      return ExtractTextPlugin.extract({
-        use: loaders,
-        fallback: `${use}style-loader`
-      })
-    } else {
-      return [`${use}style-loader`].concat(loaders)
-    }
+    return ExtractTextPlugin.extract({
+      use: loaders,
+      fallback: `${use}style-loader`
+    })
   }
 
   // http://vuejs.github.io/vue-loader/en/configurations/extract-css.html

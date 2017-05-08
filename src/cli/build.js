@@ -177,15 +177,13 @@ function doneHandler (previousSizeMap, argv, resolve, err, stats) {
   // const jsonStats = stats.toJson()
   // print asset stats
   // fs.writeFileSync("stats.txt", JSON.stringify(jsonStats, " " , 4))
-
+  console.log(chalk.green(`Compiled successfully in ${(stats.toJson().time / 1000).toFixed(1)}s.`))
   // console.log(stats.toString({
   //   cached: true,
   //   chunks: false, // Makes the dist much quieter
   //   colors: true,
   //   children: false // supress some plugin output
   // }))
-
-  console.log(chalk.green(`Compiled successfully in ${(stats.toJson().time / 1000).toFixed(1)}s.`));
   console.log()
 
   console.log('File sizes after gzip:')

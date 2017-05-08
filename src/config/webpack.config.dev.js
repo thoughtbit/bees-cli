@@ -27,13 +27,11 @@ export default function (config, cwd) {
   const paths = getPaths(cwd)
 
   const styleLoaders = getCSSLoaders.styleLoaders(config, {
-    sourceMap: config.cssSourceMap,
-    extract: true
+    sourceMap: config.cssSourceMap
   })
 
   const vueStyleLoaderMap = getCSSLoaders.cssLoaders(config, {
-    sourceMap: config.cssSourceMap,
-    extract: false
+    sourceMap: config.cssSourceMap
   })
 
   const output = {
@@ -108,30 +106,6 @@ export default function (config, cwd) {
       let rule = styleLoaders[style] || ''
       rule && commonConfig.module.rules.push(rule)
     })
-  }
-
-  if (config.eslint) {
-    if (config.use === 'vue') {
-      commonConfig.module.rules.push({
-        test: /\.(js|vue)$/,
-        loader: 'eslint-loader',
-        enforce: 'pre',
-        include: paths.appSrc,
-        options: {
-          formatter: require('eslint-friendly-formatter')
-        }
-      })
-    } else {
-      commonConfig.module.rules.push({
-        test: /\.(js|jsx)$/,
-        loader: 'eslint-loader',
-        enforce: 'pre',
-        include: paths.appSrc,
-        options: {
-          formatter: require('eslint-friendly-formatter')
-        }
-      })
-    }
   }
 
   const webpackConfig = merge(commonConfig, {

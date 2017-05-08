@@ -258,6 +258,14 @@ extraPostCSSPlugins: [
 }
 ```
 
+### imgCompress
+
+生产环境是否开启图片压缩,默认没有开启, 如果设置为`true`是开启图片压缩模式的。
+
+```
+"imgCompress": true
+```
+
 ### proxy
 
 配置代理，详见 [webpack-dev-server#proxy](https://webpack.github.io/docs/webpack-dev-server.html#proxy)。(注意：仅支持 JSON 格式的配置，不支持 `bypass`。)
@@ -330,35 +338,6 @@ extraPostCSSPlugins: [
   }
 }
 ```
-
-### eslint
-
-在生产环境下开启 ESLint
-
-```
-"env": {
-  "production": {
-    "eslint": true
-  }
-}
-```
-
-推荐使用 [eslint-config-airbnb](https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb).
-
-具体的配置请查看[ESLint documentation](http://eslint.org/docs/rules/) 
-
-是否开启eslint， .eslintrc 或者 .eslintrc.js .eslintignore
-
-1. 重新配置 `.eslintrc 或者 .eslintrc.js` 文件. 例如:
-
-  ``` js
-  // .eslintrc.js
-  "semi": [2, "always"]
-  ```
-2. 排除, `.eslintignore`
-  ```
-  **/libs/*.js
-  ```
 
 ### env
 

@@ -43,6 +43,7 @@ export default function getPaths (cwd) {
     appNodeModules: resolveApp('node_modules'),
     ownNodeModules: resolveOwn('../../node_modules'),
     dllNodeModule: resolveApp('node_modules/bees-dlls'),
+    appBabelCache: resolveApp('node_modules/.cache/babel-loader'),
     nodePaths: nodePaths,
     appDirectory,
     resolveApp,
