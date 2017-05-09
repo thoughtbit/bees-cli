@@ -196,6 +196,8 @@ package.json 的 Vue开发配置：
 "entry": "src/pages/*.js"
 ```
 
+注意： entry 默认已经导入了一些polyfills，包括 `object-assign`， `promise`， `whatwg-fetch` 。这样我们就可以放心的使用 `Object.assign()`，`fetch()`，`new Promise()` ，不用担心浏览器是否支持的问题了。
+
 ### disableCSSModules
 
 禁用 [CSS Modules](https://github.com/css-modules/css-modules)。最好别关，熟悉并使用他后，你会发现写样式简单了很多。
