@@ -5,7 +5,7 @@ A simple CLI for serve and build web app, support JSON pattern config.
 
 ### 声明
 
-Bees 是 [create-react-app](https://github.com/facebookincubator/create-react-app) 、 [roadhog](https://github.com/sorrycc/roadhog) 和 [vue-cli](https://github.com/vuejs/vue-cli) 的克隆版，根据团队和自己日常开发的需求修改而成的, 提供 init、 server、 build 和 test 四个命令，分别用于生成脚手架、本地调试和构建，并且提供了特别易用的 mock 功能。命令行体验同 vue-cli 和 roadhog 一致，但配置略有不同。让人兴奋的是同时支持 Vue 和 React 的构建与调试。
+Bees 是 [create-react-app](https://github.com/facebookincubator/create-react-app) 、 [roadhog](https://github.com/sorrycc/roadhog) 和 [vue-cli](https://github.com/vuejs/vue-cli) 的克隆版，根据团队和自己日常开发的需求修改而成的, 提供 init、 server、 build 和 test 四个命令，分别用于生成脚手架、本地调试和构建，并且提供了特别易用的 mock 功能。命令行体验同 vue-cli 和 roadhog 一致，但配置略有不同。让人兴奋的是同时支持 Vue 和 React 的构建与调试。如果你喜欢 TypeScript 编译，默认也是支持的。
 
 ### 安装
 
