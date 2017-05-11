@@ -25,7 +25,7 @@ export default function (config, paths) {
     module: {
       rules: [
         {
-          test: /\.(js|jsx})$/,
+          test: /\.(js|jsx)$/,
           include: paths.appSrc,
           loader: 'babel-loader',
           options: {
@@ -33,7 +33,7 @@ export default function (config, paths) {
           }
         },
         {
-          test: /\.tsx?$/,
+          test: /\.(ts|tsx)$/,
           include: paths.appSrc,
           loader: 'babel-loader!awesome-typescript',
           options: {
@@ -47,7 +47,9 @@ export default function (config, paths) {
         {
           exclude: [
             /\.html$/,
-            /\.(js|jsx|vue)$/,
+            /\.(js|jsx)$/,
+            /\.(ts|tsx)$/,
+            /\.vue$/,
             /\.(css|less|sass|scss|styl)$/,
             /\.json$/,
             /\.bmp$/,
