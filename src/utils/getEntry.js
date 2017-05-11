@@ -23,9 +23,7 @@ export function getFiles (entry, cwd) {
     const files = glob.sync(entry, {
       cwd
     })
-    return files.map((file) => {
-      return (file.charAt(0) === '.') ? file : `.${sep}${file}`
-    })
+    return files
   }
 }
 
@@ -38,6 +36,6 @@ export function getEntries (files, isBuild) {
 export default function (config, paths, isBuild) {
   const appDirectory = paths.appDirectory
   const entry = config.entry
-  const files = entry ? getFiles(entry, appDirectory) : [paths.appIndexJs]
+  const files = entry ? getFiles(paths.resolveApp(entry), appDirectory) : [paths.appIndexJs]
   return getEntries(files, isBuild)
 }

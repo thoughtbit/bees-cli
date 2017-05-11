@@ -25,7 +25,7 @@ export default function (config, paths) {
     module: {
       rules: [
         {
-          test: /\.(js|jsx)$/,
+          test: /\.jsx?$/,
           include: paths.appSrc,
           loader: 'babel-loader',
           options: {
@@ -33,13 +33,13 @@ export default function (config, paths) {
           }
         },
         {
-          test: /\.(ts|tsx)$/,
+          test: /\.tsx?$/,
           include: paths.appSrc,
-          loader: 'babel-loader!awesome-typescript',
+          loader: 'ts-loader',
           options: {
-            cacheDirectory: './.webpack_cache/'
-          },
-          exclude: /node_modules/
+            cacheDirectory: './.webpack_cache/',
+            appendTsSuffixTo: [/\.vue$/]
+          }
         },
         // "file" loader makes sure those assets get served by WebpackDevServer.
         // When you `import` an asset, you get its (virtual) filename.
