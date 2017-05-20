@@ -1,2 +1,4 @@
 {
+  "babel-plugin-react-require": "^3.0.0",
+  "babel-preset-react": "^6.23.1"
 }

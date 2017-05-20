@@ -119,7 +119,7 @@ export default function (config, cwd) {
           babel: {
             babelrc: false,
             presets: [
-              require.resolve('babel-preset-es2015'),
+              [require.resolve('babel-preset-es2015'), { modules: false }],
               require.resolve('babel-preset-stage-2')
             ].concat(config.extraBabelPresets || []),
             plugins: [

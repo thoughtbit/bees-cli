@@ -131,7 +131,7 @@ export default function (args, appBuild, config, paths) {
         options: {
           babel: {
             presets: [
-              require.resolve('babel-preset-es2015'),
+              [require.resolve('babel-preset-es2015'), { modules: false }],
               require.resolve('babel-preset-stage-2')
             ].concat(config.extraBabelPresets || []),
             plugins: [

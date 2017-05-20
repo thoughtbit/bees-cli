@@ -6,11 +6,13 @@ import { sync as gzipSize } from 'gzip-size'
 import webpack from 'webpack'
 import recursive from 'recursive-readdir'
 import stripAnsi from 'strip-ansi'
+import ora from 'ora'
 import getPaths from './../config/paths'
 import getConfig from './../utils/getConfig'
 import applyWebpackConfig, { warnIfExists } from './../utils/applyWebpackConfig'
 import WebPackProdConfig from './../config/webpack.config.prod'
 
+process.noDeprecation = true
 process.env.NODE_ENV = process.env.NODE_ENV || 'production'
 
 const argv = require('yargs')
@@ -34,6 +36,8 @@ const argv = require('yargs')
   })
   .help('h')
   .argv
+
+const spinner = ora('Creating an optimized production build...')
 
 let rcConfig
 let outputPath
@@ -162,6 +166,7 @@ function printErrors (summary, errors) {
 }
 
 function doneHandler (previousSizeMap, argv, resolve, err, stats) {
+  spinner.stop()
   if (err) {
     printErrors('Failed to compile.', [err])
     process.exit(1)
@@ -198,9 +203,9 @@ function realBuild (previousSizeMap, resolve, argv) {
   if (argv.debug) {
     console.log('Creating an development build without compress...')
   } else {
-    console.log('Creating an optimized production build...')
+    spinner.start()
+    // console.log('Creating an optimized production build...')
   }
-
   const compiler = webpack(config)
   const done = doneHandler.bind(null, previousSizeMap, argv, resolve)
   if (argv.watch) {
