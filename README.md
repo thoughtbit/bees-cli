@@ -34,6 +34,12 @@ $ bees server
 $ bees build
 ```
 
+DllPlugin
+
+```bash
+$ bees build-dll
+```
+
 ### Mock
 
 bees server 支持 mock 功能，类似 [dora-plugin-proxy](https://github.com/dora-js/dora-plugin-proxy)，在 `.beesrc.mock.js` 中进行配置，支持基于 require 动态分析的实时刷新，支持 ES6 语法，以及友好的出错提示。

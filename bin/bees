@@ -34,6 +34,7 @@ Usage:
   bees init ${chalk.gray('<template-name> [project-name]')}\t快速生成项目模板
   bees server\t本地开发
   bees build\t打包发布
+  bees build-dll \tDllPlugin
 
 Perhaps you need to update ${chalk.red('bees-cli')}?
 ${chalk.gray('\n==========================================================================')}
