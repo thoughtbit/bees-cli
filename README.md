@@ -347,6 +347,14 @@ extraPostCSSPlugins: [
 }
 ```
 
+## service workers 
+
+[service workers](https://github.com/goldhand/notes/blob/master/notes/service_workers.md)
+
+```
+"sw": false
+```
+
 ### env
 
 针对特定的环境进行配置。server 的环境变量是 `development`，build 的环境变量是 `production`。

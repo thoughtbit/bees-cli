@@ -15,6 +15,6 @@ function start () {
 if (!process.send) {
   start()
 } else {
-  require('./createServer')
+  require('./createDevServer')
 }
 

@@ -40,6 +40,7 @@ export default function getPaths (cwd) {
     appPublic: resolveApp('public'),
     appIndexJs: resolveApp('src/index.js'),
     appPackageJson: resolveApp('package.json'),
+    yarnLockFile: resolveApp('yarn.lock'),
     appNodeModules: resolveApp('node_modules'),
     ownNodeModules: resolveOwn('../../node_modules'),
     dllNodeModule: resolveApp('node_modules/bees-dlls'),
