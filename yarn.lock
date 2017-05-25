@@ -2687,6 +2687,16 @@ fs-extra@^0.26.4, fs-extra@~0.26.5:
     path-is-absolute "^1.0.0"
     rimraf "^2.2.8"
 
+fs-extra@^0.30.0:
+  version "0.30.0"
+  resolved "http://registry.npm.taobao.org/fs-extra/download/fs-extra-0.30.0.tgz#f233ffcc08d4da7d432daa449776989db1df93f0"
+  dependencies:
+    graceful-fs "^4.1.2"
+    jsonfile "^2.1.0"
+    klaw "^1.0.0"
+    path-is-absolute "^1.0.0"
+    rimraf "^2.2.8"
+
 fs-extra@^2.1.2:
   version "2.1.2"
   resolved "http://registry.npm.taobao.org/fs-extra/download/fs-extra-2.1.2.tgz#046c70163cef9aad46b0e4a7fa467fb22d71de35"
@@ -4105,7 +4115,7 @@ lodash.uniq@^4.5.0:
   version "4.5.0"
   resolved "http://registry.npm.taobao.org/lodash.uniq/download/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
 
-lodash@^4.0.0, lodash@^4.14.0, lodash@^4.17.2, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.3.0:
+"lodash@>=3.5 <5", lodash@^4.0.0, lodash@^4.14.0, lodash@^4.17.2, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.3.0:
   version "4.17.4"
   resolved "http://registry.npm.taobao.org/lodash/download/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -6170,9 +6180,9 @@ svgo@^0.7.0:
     sax "~1.2.1"
     whet.extend "~0.9.9"
 
-sw-precache-webpack-plugin@0.9.1:
-  version "0.9.1"
-  resolved "http://registry.npm.taobao.org/sw-precache-webpack-plugin/download/sw-precache-webpack-plugin-0.9.1.tgz#2381ff706fbb6cabdb20a20337de8e58fb49a2a7"
+sw-precache-webpack-plugin@^0.9.1:
+  version "0.9.2"
+  resolved "http://registry.npm.taobao.org/sw-precache-webpack-plugin/download/sw-precache-webpack-plugin-0.9.2.tgz#34209de819bc6aeab352ea8ce7eba2daf5f93b71"
   dependencies:
     del "^2.2.2"
     sw-precache "^5.0.0"
@@ -6783,6 +6793,13 @@ webpack-dev-server@^2.4.5:
     supports-color "^3.1.1"
     webpack-dev-middleware "^1.10.2"
     yargs "^6.0.0"
+
+webpack-manifest-plugin@^1.1.0:
+  version "1.1.0"
+  resolved "http://registry.npm.taobao.org/webpack-manifest-plugin/download/webpack-manifest-plugin-1.1.0.tgz#6b6c718aade8a2537995784b46bd2e9836057caa"
+  dependencies:
+    fs-extra "^0.30.0"
+    lodash ">=3.5 <5"
 
 webpack-md5-hash@^0.0.5:
   version "0.0.5"

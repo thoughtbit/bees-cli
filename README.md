@@ -349,10 +349,12 @@ extraPostCSSPlugins: [
 
 ## service workers 
 
-[service workers](https://github.com/goldhand/notes/blob/master/notes/service_workers.md)
+了解 [service workers](https://github.com/goldhand/notes/blob/master/notes/service_workers.md) 相关知识。
+
+开启 service workers
 
 ```
-"sw": false
+"sw": true
 ```
 
 ### env
