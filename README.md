@@ -290,6 +290,8 @@ extraPostCSSPlugins: [
 }
 ```
 
+此配置也可以配置到 `package.json` 中，支持 prepareProxy 方法。
+
 然后访问 `/api/users` 就能访问到 http://jsonplaceholder.typicode.com/users 的数据。
 
 如果要做数据 mock，可以考虑和 [json-server](https://github.com/typicode/json-server) 或者 [mock-server](https://github.com/thoughtbit/mock-server) 结合使用，把 `/api` 代理到 json-server 或者 mock-server 启动的端口。
