@@ -43,6 +43,7 @@
     "report": "nyc report --reporter=html",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint --ext .js src",
+    "prepublish": "safe-publish-latest && npm run build",
     "precommit": "npm run lint",
     "pub": "npm publish && git push origin"
   },
@@ -148,7 +149,8 @@
     "expect": "^1.20.2",
     "got": "^6.7.1",
     "husky": "^0.11.9",
-    "nyc": "^10.0.0"
+    "nyc": "^10.0.0",
+    "safe-publish-latest": "^1.1.1"
   },
   "engines": {
     "node": ">=6.5.0"
