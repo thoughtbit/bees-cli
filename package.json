@@ -1,6 +1,6 @@
 {
   "name": "bees-cli",
-  "version": "0.6.11-beta.3",
+  "version": "0.6.11-beta.4",
   "description": "A simple CLI for serve and build web app, support JSON pattern config.",
   "bin": {
     "bees": "./bin/bees"
@@ -32,7 +32,7 @@
     ".eslintrc"
   ],
   "scripts": {
-    "build": "rimraf lib && babel src --out-dir lib --presets es2015,stage-2",
+    "build": "rimraf lib && babel src --out-dir lib",
     "bees:init": "node ./lib/cli/init.js",
     "bees:server": "node ./lib/cli/server.js",
     "bees:build": "node ./lib/cli/build.js",
