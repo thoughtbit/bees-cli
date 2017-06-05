@@ -3,7 +3,7 @@ import assert from 'assert'
 import glob from 'glob'
 
 function getEntry (filePath, isBuild) {
-  const key = basename(filePath, '.js')
+  const key = basename(filePath).replace(/\.(jsx?|tsx?)$/, '')
   const value = isBuild ? [require.resolve('./polyfills'), filePath] : [require.resolve('react-dev-utils/webpackHotDevClient'), require.resolve('./polyfills'), filePath]
   return {
     [key]: value
