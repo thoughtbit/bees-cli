@@ -56,12 +56,10 @@ export default function (config, paths) {
         // In production, they would get copied to the `build` folder.
         {
           exclude: [
-            /\.html$/,
             /\.(js|jsx)$/,
             /\.(ts|tsx)$/,
             /\.vue$/,
             /\.(css|less|sass|scss|styl)$/,
-            /\.json$/,
             /\.bmp$/,
             /\.gif$/,
             /\.jpe?g$/,
@@ -75,7 +73,17 @@ export default function (config, paths) {
         },
         {
           test: /\.html$/,
-          loader: 'file?name=[name].[ext]'
+          loader: 'file-loader',
+          query: {
+            name: '[name].[ext]'
+          }
+        },
+        {
+          test: /\.json$/,
+          loader: 'file-loader',
+          query: {
+            name: '[name].[ext]'
+          }
         }
       ]
     },
