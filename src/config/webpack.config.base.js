@@ -128,7 +128,23 @@ export function getPostCSSOptions (config) {
 }
 
 export function getCommonPlugins ({ config, paths, appBuild, NODE_ENV }) {
-  const ret = []
+  const ret = [
+    new webpack.LoaderOptionsPlugin({
+      options: {
+        babel: getBabelOptions(config),
+        postcss: getPostCSSOptions(config)
+      }
+    }),
+    new NpmInstallPlugin({
+      // Use --save or --save-dev
+      dev: true,
+      // Install missing peerDependencies
+      peerDependencies: true,
+      // Reduce amount of console logging
+      quiet: false
+    }),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+  ]
 
   let defineObj = {
     'process.env': {
@@ -160,24 +176,6 @@ export function getCommonPlugins ({ config, paths, appBuild, NODE_ENV }) {
       filename: 'common.js'
     }))
   }
-
-  ret.push(new webpack.LoaderOptionsPlugin({
-    options: {
-      babel: getBabelOptions(config),
-      postcss: getPostCSSOptions(config)
-    }
-  }))
-
-  ret.push(new NpmInstallPlugin({
-    // Use --save or --save-dev
-    dev: true,
-    // Install missing peerDependencies
-    peerDependencies: true,
-    // Reduce amount of console logging
-    quiet: false
-  }))
-
-  ret.push(new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/))
 
   return ret
 }

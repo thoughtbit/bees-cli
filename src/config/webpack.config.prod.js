@@ -13,8 +13,6 @@ import SWPrecacheWebpackPlugin from 'sw-precache-webpack-plugin'
 import getEntry from './../utils/getEntry'
 import baseWebpackConfig, {
   defaultDevtool,
-  getBabelOptions,
-  getPostCSSOptions,
   getCommonPlugins
 } from './webpack.config.base'
 import getCSSLoaders from './../utils/getCSSLoaders'
@@ -160,7 +158,7 @@ export default function (args, appBuild, config, paths) {
         },
         sourceMap: true
       })]),
-      ...(config.analyze ? [ new BundleAnalyzerPlugin({
+      ...(config.analyze ? [new BundleAnalyzerPlugin({
         analyzerMode: 'static',
         openAnalyzer: false
       })] : []),

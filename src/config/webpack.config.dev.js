@@ -7,14 +7,11 @@ import CopyWebpackPlugin from 'copy-webpack-plugin'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import baseWebpackConfig, {
   defaultDevtool,
-  getBabelOptions,
-  getPostCSSOptions,
   getCommonPlugins
 } from './webpack.config.base'
 import getPaths from './paths'
 import getEntry from './../utils/getEntry'
 import getCSSLoaders from './../utils/getCSSLoaders'
-import normalizeDefine from './../utils/normalizeDefine'
 
 export default function (config, cwd) {
   const publicPath = '/'

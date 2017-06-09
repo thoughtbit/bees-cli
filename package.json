@@ -1,6 +1,6 @@
 {
   "name": "bees-cli",
-  "version": "0.6.11-beta.7",
+  "version": "0.6.11-beta.8",
   "description": "A simple CLI for serve and build web app, support JSON pattern config.",
   "bin": {
     "bees": "./bin/bees"
