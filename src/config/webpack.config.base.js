@@ -1,7 +1,16 @@
+import webpack from 'webpack'
+import { existsSync } from 'fs'
 import ModuleScopePlugin from 'react-dev-utils/ModuleScopePlugin'
+import autoprefixer from 'autoprefixer'
+import CopyWebpackPlugin from 'copy-webpack-plugin'
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import NpmInstallPlugin from 'npm-install-webpack-plugin-steamer'
+import normalizeDefine from './../utils/normalizeDefine'
 
-export default function (config, paths) {
-  const baseWebpackConfig = {
+export const defaultDevtool = '#cheap-module-eval-source-map'
+
+export default function baseWebpackConfig (config, paths) {
+  return {
     context: paths.appSrc,
     resolve: {
       // This allows you to set a fallback for where Webpack should look for modules.
@@ -56,9 +65,11 @@ export default function (config, paths) {
         // In production, they would get copied to the `build` folder.
         {
           exclude: [
+            /\.html$/,
             /\.(js|jsx)$/,
             /\.(ts|tsx)$/,
             /\.vue$/,
+            /\.json$/,
             /\.(css|less|sass|scss|styl)$/,
             /\.bmp$/,
             /\.gif$/,
@@ -77,13 +88,6 @@ export default function (config, paths) {
           query: {
             name: '[name].[ext]'
           }
-        },
-        {
-          test: /\.json$/,
-          loader: 'file-loader',
-          query: {
-            name: '[name].[ext]'
-          }
         }
       ]
     },
@@ -93,5 +97,87 @@ export default function (config, paths) {
       tls: 'empty'
     }
   }
-  return baseWebpackConfig
+}
+
+export function getBabelOptions (config) {
+  return {
+    babelrc: false,
+    presets: [
+      [require.resolve('babel-preset-es2015'), { modules: false }],
+      require.resolve('babel-preset-stage-2')
+    ].concat(config.extraBabelPresets || []),
+    plugins: [
+      require.resolve('babel-plugin-transform-runtime')
+    ].concat(config.extraBabelPlugins || []),
+    cacheDirectory: './.webpack_cache/'
+  }
+}
+
+export function getPostCSSOptions (config) {
+  return [
+    autoprefixer(config.autoprefixer || {
+      browsers: [
+        '>1%',
+        'last 4 versions',
+        'Firefox ESR',
+        'not ie < 9' // React doesn't support IE8 anyway
+      ]
+    }),
+    ...(config.extraPostCSSPlugins ? config.extraPostCSSPlugins : [])
+  ]
+}
+
+export function getCommonPlugins ({ config, paths, appBuild, NODE_ENV }) {
+  const ret = []
+
+  let defineObj = {
+    'process.env': {
+      NODE_ENV: JSON.stringify(NODE_ENV)
+    }
+  }
+
+  if (config.define) {
+    defineObj = {
+      ...defineObj,
+      ...normalizeDefine(config.define)
+    }
+  }
+
+  ret.push(new webpack.DefinePlugin(defineObj))
+
+  if (existsSync(paths.appPublic)) {
+    ret.push(new CopyWebpackPlugin([
+      {
+        from: paths.appPublic,
+        to: appBuild
+      }
+    ]))
+  }
+
+  if (config.multipage) {
+    ret.push(new webpack.optimize.CommonsChunkPlugin({
+      name: 'common',
+      filename: 'common.js'
+    }))
+  }
+
+  ret.push(new webpack.LoaderOptionsPlugin({
+    options: {
+      babel: getBabelOptions(config),
+      postcss: getPostCSSOptions(config)
+    }
+  }))
+
+  ret.push(new NpmInstallPlugin({
+    // Use --save or --save-dev
+    dev: true,
+    // Install missing peerDependencies
+    peerDependencies: true,
+    // Reduce amount of console logging
+    quiet: false
+  }))
+
+  ret.push(new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/))
+
+  return ret
 }

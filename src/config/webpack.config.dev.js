@@ -1,27 +1,27 @@
-import fs from 'fs'
 import { join } from 'path'
-import autoprefixer from 'autoprefixer'
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin'
 import WatchMissingNodeModulesPlugin from 'react-dev-utils/WatchMissingNodeModulesPlugin'
 import webpack from 'webpack'
 import merge from 'webpack-merge'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
-import NpmInstallPlugin from 'npm-install-webpack-plugin-steamer'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
-import baseWebpackConfig from './webpack.config.base'
+import baseWebpackConfig, {
+  defaultDevtool,
+  getBabelOptions,
+  getPostCSSOptions,
+  getCommonPlugins
+} from './webpack.config.base'
 import getPaths from './paths'
 import getEntry from './../utils/getEntry'
 import getCSSLoaders from './../utils/getCSSLoaders'
 import normalizeDefine from './../utils/normalizeDefine'
 
 export default function (config, cwd) {
-  const env = process.env.NODE_ENV
   const publicPath = '/'
   const {
     library = null,
     libraryTarget = 'var',
-    devtool = '#cheap-module-eval-source-map'
+    devtool = defaultDevtool
   } = config
 
   const paths = getPaths(cwd)
@@ -37,10 +37,9 @@ export default function (config, cwd) {
   const output = {
     path: paths.appBuild,
     filename: '[name].js',
-    pathinfo: true,
+    chunkFilename: '[name].async.js',
     publicPath,
-    libraryTarget,
-    chunkFilename: '[id].async.js'
+    libraryTarget
   }
 
   if (library) output.library = library
@@ -114,45 +113,6 @@ export default function (config, cwd) {
     output,
     plugins: [
       new webpack.NoEmitOnErrorsPlugin(),
-      new webpack.LoaderOptionsPlugin({
-        options: {
-          babel: {
-            babelrc: false,
-            presets: [
-              [require.resolve('babel-preset-es2015'), { modules: false }],
-              require.resolve('babel-preset-stage-2')
-            ].concat(config.extraBabelPresets || []),
-            plugins: [
-              require.resolve('babel-plugin-transform-runtime')
-            ].concat(config.extraBabelPlugins || []),
-            cacheDirectory: './.webpack_cache/'
-          },
-          postcss () {
-            return [
-              autoprefixer(config.autoprefixer || {
-                browsers: [
-                  '>1%',
-                  'last 4 versions',
-                  'not ie <= 8'
-                ]
-              })
-            ].concat(config.extraPostCSSPlugins ? config.extraPostCSSPlugins : [])
-          }
-        }
-      }),
-      new NpmInstallPlugin({
-        // Use --save or --save-dev
-        dev: true,
-        // Install missing peerDependencies
-        peerDependencies: true,
-        // Reduce amount of console logging
-        quiet: false
-      }),
-      new webpack.DefinePlugin({
-        'process.env': {
-          'NODE_ENV': JSON.stringify(env)
-        }
-      }),
       // extract css into its own file
       new ExtractTextPlugin({
         filename: '[name].css',
@@ -168,36 +128,19 @@ export default function (config, cwd) {
       // to restart the development server for Webpack to discover it. This plugin
       // makes the discovery automatic so you don't have to restart.
       new WatchMissingNodeModulesPlugin(paths.appNodeModules),
-      // Moment.js is an extremely popular library that bundles large locale files
-      // by default due to how Webpack interprets its code. This is a practical
-      // solution that requires the user to opt into importing specific locales.
-      // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
-      // You can remove this if you don't use Moment.js:
-      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
-    ].concat(
-      dllPlugins,
-    ).concat(
-      !config.analyze ? [] : new BundleAnalyzerPlugin({
-        analyzerMode: 'static',
-        openAnalyzer: false,
-        reportFilename: paths.resolveOwn(`../reports/${env}.html`)
+      ...dllPlugins,
+      ...getCommonPlugins({
+        config,
+        paths,
+        appBuild: paths.appBuild,
+        NODE_ENV: process.env.NODE_ENV
       })
-    ).concat(
-      !fs.existsSync(paths.appPublic) ? [] : new CopyWebpackPlugin([{
-        from: paths.appPublic,
-        to: paths.appBuild
-      }])
-    ).concat(
-      !config.multipage ? [] : new webpack.optimize.CommonsChunkPlugin({name: 'common', filename: 'common.js'})
-    ).concat(
-      !config.define ? [] : new webpack.DefinePlugin(normalizeDefine(config.define))
-    ),
+    ],
     // 开发环境中没必要开启性能警告提示，反而影响速度.
     performance: {
       hints: false
     },
-    externals: config.externals,
-    watch: true
+    externals: config.externals
   })
   // console.log(webpackConfig)
   // console.log(JSON.stringify(webpackConfig, null, 2))

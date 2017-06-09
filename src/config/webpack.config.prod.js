@@ -1,22 +1,23 @@
 import os from 'os'
-import fs from 'fs'
 import { join } from 'path'
-import autoprefixer from 'autoprefixer'
 import webpack from 'webpack'
 import merge from 'webpack-merge'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import UglifyJsParallelPlugin from 'webpack-uglify-parallel'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
-import NpmInstallPlugin from 'npm-install-webpack-plugin-steamer'
 import WebpackMd5Hash from 'webpack-md5-hash'
 import ManifestPlugin from 'webpack-manifest-plugin'
 import SWPrecacheWebpackPlugin from 'sw-precache-webpack-plugin'
 
 import getEntry from './../utils/getEntry'
-import baseWebpackConfig from './webpack.config.base'
+import baseWebpackConfig, {
+  defaultDevtool,
+  getBabelOptions,
+  getPostCSSOptions,
+  getCommonPlugins
+} from './webpack.config.base'
 import getCSSLoaders from './../utils/getCSSLoaders'
-import normalizeDefine from './../utils/normalizeDefine'
 
 export default function (args, appBuild, config, paths) {
   const env = process.env.NODE_ENV
@@ -27,7 +28,8 @@ export default function (args, appBuild, config, paths) {
   const {
     publicPath = '/',
     library = null,
-    libraryTarget = 'var'
+    libraryTarget = 'var',
+    devtool = debug ? defaultDevtool : false
   } = config
 
   const styleLoaders = getCSSLoaders.styleLoaders(config, {
@@ -41,7 +43,7 @@ export default function (args, appBuild, config, paths) {
   const output = {
     path: appBuild,
     filename: '[name].js',
-    chunkFilename: '[id].async.js',
+    chunkFilename: '[name].async.js',
     publicPath,
     libraryTarget
   }
@@ -129,44 +131,6 @@ export default function (args, appBuild, config, paths) {
     output,
     plugins: [
       new webpack.NoEmitOnErrorsPlugin(),
-      new webpack.LoaderOptionsPlugin({
-        options: {
-          babel: {
-            presets: [
-              [require.resolve('babel-preset-es2015'), { modules: false }],
-              require.resolve('babel-preset-stage-2')
-            ].concat(config.extraBabelPresets || []),
-            plugins: [
-              require.resolve('babel-plugin-transform-runtime')
-            ].concat(config.extraBabelPlugins || []),
-            cacheDirectory: './.webpack_cache/'
-          },
-          postcss () {
-            return [
-              autoprefixer(config.autoprefixer || {
-                browsers: [
-                  '>1%',
-                  'last 4 versions',
-                  'not ie <= 8'
-                ]
-              })
-            ].concat(config.extraPostCSSPlugins ? config.extraPostCSSPlugins : [])
-          }
-        }
-      }),
-      new NpmInstallPlugin({
-        // Use --save or --save-dev
-        dev: true,
-        // Install missing peerDependencies
-        peerDependencies: true,
-        // Reduce amount of console logging
-        quiet: false
-      }),
-      new webpack.DefinePlugin({
-        'process.env': {
-          'NODE_ENV': JSON.stringify(NODE_ENV)
-        }
-      }),
       new WebpackMd5Hash(),
       // extract css into its own file
       new ExtractTextPlugin({
@@ -174,35 +138,13 @@ export default function (args, appBuild, config, paths) {
         allChunks: false,
         disable: false
       }),
-      // Moment.js is an extremely popular library that bundles large locale files
-      // by default due to how Webpack interprets its code. This is a practical
-      // solution that requires the user to opt into importing specific locales.
-      // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
-      // You can remove this if you don't use Moment.js:
-      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
-    ].concat(
-      !config.sw ? [] : new ManifestPlugin({
-        fileName: 'asset-manifest.json'
-      })
-    ).concat(
-      !config.sw ? [] : new SWPrecacheWebpackPlugin({
-        dontCacheBustUrlsMatching: /\.\w{8}\./,
-        filename: 'service-worker.js',
-        logger (message) {
-          if (message.indexOf('Total precache size is') === 0) {
-            return
-          }
-          console.log(message)
-        },
-        minify: true,
-        navigateFallback: '/index.html',
-        navigateFallbackWhitelist: [/^(?!\/__).*/],
-        staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
-        stripPrefix: paths.appBuild.replace(/\\/g, '/') + '/'
-      })
-    )
-    .concat(
-      debug ? [] : new UglifyJsParallelPlugin({
+      ...getCommonPlugins({
+        config,
+        paths,
+        appBuild: paths.appBuild,
+        NODE_ENV: NODE_ENV
+      }),
+      ...(debug ? [] : [new UglifyJsParallelPlugin({
         workers: os.cpus().length,
         compress: {
           screw_ie8: true, // React doesn't support IE8
@@ -217,22 +159,30 @@ export default function (args, appBuild, config, paths) {
           screw_ie8: true
         },
         sourceMap: true
-      })
-    ).concat(
-      !config.analyze ? [] : new BundleAnalyzerPlugin({
+      })]),
+      ...(config.analyze ? [ new BundleAnalyzerPlugin({
         analyzerMode: 'static',
         openAnalyzer: false
-      })
-    ).concat(
-      !fs.existsSync(paths.appPublic) ? [] : new CopyWebpackPlugin([{
-        from: paths.appPublic,
-        to: paths.appBuild
-      }])
-    ).concat(
-      !config.multipage ? [] : new webpack.optimize.CommonsChunkPlugin({name: 'common', filename: 'common.js'})
-    ).concat(
-      !config.define ? [] : new webpack.DefinePlugin(normalizeDefine(config.define))
-    ),
+      })] : []),
+      ...(config.sw ? [new ManifestPlugin({
+        fileName: 'asset-manifest.json'
+      })] : []),
+      ...(config.sw ? [new SWPrecacheWebpackPlugin({
+        dontCacheBustUrlsMatching: /\.\w{8}\./,
+        filename: 'service-worker.js',
+        logger (message) {
+          if (message.indexOf('Total precache size is') === 0) {
+            return
+          }
+          console.log(message)
+        },
+        minify: true,
+        navigateFallback: '/index.html',
+        navigateFallbackWhitelist: [/^(?!\/__).*/],
+        staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
+        stripPrefix: paths.appBuild.replace(/\\/g, '/') + '/'
+      })] : [])
+    ],
     externals: config.externals
   })
   // console.log(webpackConfig)

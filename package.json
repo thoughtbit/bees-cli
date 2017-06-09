@@ -1,6 +1,6 @@
 {
   "name": "bees-cli",
-  "version": "0.6.11-beta.6",
+  "version": "0.6.11-beta.7",
   "description": "A simple CLI for serve and build web app, support JSON pattern config.",
   "bin": {
     "bees": "./bin/bees"
@@ -93,7 +93,7 @@
     "vue-template-compiler": "^2.3.2",
     "typescript": "^2.3.0",
     "ts-loader": "^2.0.3",
-    "image-webpack-loader": "^3.3.0",
+    "image-webpack-loader": "^3.3.1",
     "npm-install-webpack-plugin-steamer": "^4.0.4",
     "sw-precache-webpack-plugin": "^0.9.1",
     "webpack-manifest-plugin": "^1.1.0",

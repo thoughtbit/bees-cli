@@ -490,3 +490,17 @@ import NavBar from '~/components/nav-bar'
 ```bash
 SASS_BINARY_SITE=https://npm.taobao.org/mirrors/node-sass/ npm install node-sass --save-dev
 ```
+### image-webpack-loader 编译问题
+
+libpng issues
+
+Installing on some versions of OSX may raise errors with a missing libpng dependency:
+```
+Module build failed: Error: dyld: Library not loaded: /usr/local/opt/libpng/lib/libpng16.16.dylib
+```
+
+This can be remedied by installing the newest version of libpng with homebrew:
+
+``` bash
+brew install libpng
+```
