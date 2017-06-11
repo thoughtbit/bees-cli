@@ -109,7 +109,6 @@ export default function (config, cwd) {
     entry: getEntry(config, paths),
     output,
     plugins: [
-      new webpack.NoEmitOnErrorsPlugin(),
       // extract css into its own file
       new ExtractTextPlugin({
         filename: '[name].css',

@@ -129,6 +129,7 @@ export function getPostCSSOptions (config) {
 
 export function getCommonPlugins ({ config, paths, appBuild, NODE_ENV }) {
   const ret = [
+    new webpack.NoEmitOnErrorsPlugin(),
     new webpack.LoaderOptionsPlugin({
       options: {
         babel: getBabelOptions(config),

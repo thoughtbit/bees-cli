@@ -128,7 +128,6 @@ export default function (args, appBuild, config, paths) {
     entry: getEntry(config, paths, /* isBuild */ true),
     output,
     plugins: [
-      new webpack.NoEmitOnErrorsPlugin(),
       new WebpackMd5Hash(),
       // extract css into its own file
       new ExtractTextPlugin({
