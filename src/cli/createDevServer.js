@@ -19,7 +19,7 @@ import applyWebpackConfig, { warnIfExists } from './../utils/applyWebpackConfig'
 import WebpackDevConfig from './../config/webpack.config.dev'
 import { applyMock, outputError as outputMockError } from './../utils/mock'
 
-process.noDeprecation = true
+// process.noDeprecation = true
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
 // Tools like Cloud9 rely on this.
