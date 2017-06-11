@@ -1,6 +1,0 @@
-{
-  "devtool": "",
-  "extraBabelPlugins": [
-    "./node_modules/a"
-  ]
-}

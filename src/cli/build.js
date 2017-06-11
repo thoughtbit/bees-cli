@@ -12,7 +12,7 @@ import getConfig from './../utils/getConfig'
 import applyWebpackConfig, { warnIfExists } from './../utils/applyWebpackConfig'
 import WebPackProdConfig from './../config/webpack.config.prod'
 
-// process.noDeprecation = true
+process.noDeprecation = true
 process.env.NODE_ENV = process.env.NODE_ENV || 'production'
 
 const argv = require('yargs')
