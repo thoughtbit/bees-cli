@@ -1,4 +1,3 @@
-import detect from 'detect-port'
 import fs from 'fs'
 import { join } from 'path'
 import clearConsole from 'react-dev-utils/clearConsole'
