@@ -224,8 +224,13 @@ package.json 的 Vue开发配置：
   }
 }
 ```
-
 这样，开发环境下的 extraBabelPlugins 是 `["transform-runtime", "dva-hmr"]`，而生产环境下是 `["transform-runtime"]`。
+
+### extraResolveExtensions
+配置额外的 extensions。
+```
+  "extraResolveExtensions": ['.web.js', '.web.jsx', '.web.ts', '.web.tsx']
+```
 
 ### style
 样式预编译器，默认支持css 和 less. sass[scss] 和 stylus[styl] 由npm-install-webpack-plugin自动安装

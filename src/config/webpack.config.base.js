@@ -19,7 +19,10 @@ export default function baseWebpackConfig (config, paths) {
       // if there are any conflicts. This matches Node resolution mechanism.
       // https://github.com/facebookincubator/create-react-app/issues/253
       modules: [paths.appSrc, 'node_modules', paths.appNodeModules].concat(paths.nodePaths),
-      extensions: ['.js', '.json', '.jsx', '.ts', '.tsx', '.vue'],
+      extensions: [
+        ...(config.extraResolveExtensions || []),
+        '.js', '.json', '.jsx', '.ts', '.tsx', '.vue'
+      ],
       alias: {
         '~': paths.appSrc
       },

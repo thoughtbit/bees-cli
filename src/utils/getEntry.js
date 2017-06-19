@@ -1,6 +1,7 @@
 import { basename, sep } from 'path'
 import assert from 'assert'
 import glob from 'glob'
+import isPlainObject from 'is-plain-object'
 
 function getEntry (filePath, isBuild) {
   const key = basename(filePath).replace(/\.(jsx?|tsx?)$/, '')
@@ -23,6 +24,9 @@ export function getFiles (entry, cwd) {
     const files = glob.sync(entry, {
       cwd
     })
+    // return files.map((file) => {
+    //   return (file.charAt(0) === '.') ? file : `.${sep}${file}`
+    // })
     return files
   }
 }
@@ -36,6 +40,10 @@ export function getEntries (files, isBuild) {
 export default function (config, paths, isBuild) {
   const appDirectory = paths.appDirectory
   const entry = config.entry
+  // support write object for entry
+  if (isPlainObject(entry)) {
+    return entry
+  }
   const files = entry ? getFiles(paths.resolveApp(entry), appDirectory) : [paths.appIndexJs]
   return getEntries(files, isBuild)
 }
