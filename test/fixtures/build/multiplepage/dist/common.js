@@ -117,9 +117,6 @@
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
 /******/
-/******/ 	// identity function for calling harmony imports with the correct context
-/******/ 	__webpack_require__.i = function(value) { return value; };
-/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -158,31 +155,20 @@ if (typeof Promise === 'undefined') {
   // Rejection tracking prevents a common issue where React gets into an
   // inconsistent state due to an error, but it gets swallowed by a Promise,
   // and the user has no idea what causes React's erratic future behavior.
-  __webpack_require__(8).enable()
+  __webpack_require__(4).enable()
   window.Promise = __webpack_require__(7)
 }
 
 // fetch() polyfill for making API calls.
-__webpack_require__(10)
+__webpack_require__(8)
 
 // Object.assign() is commonly used with React.
 // It will use the native implementation if it's present and isn't buggy.
-Object.assign = __webpack_require__(6)
+Object.assign = __webpack_require__(9)
 
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports) {
-
-
-function c() {
-  alert('c');
-}
-
-c();
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -402,8 +388,139 @@ function doResolve(fn, promise) {
 
 
 /***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function c() {
+  alert('c');
+}
+
+c();
+
+/***/ }),
 /* 3 */,
-/* 4 */,
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var Promise = __webpack_require__(1);
+
+var DEFAULT_WHITELIST = [
+  ReferenceError,
+  TypeError,
+  RangeError
+];
+
+var enabled = false;
+exports.disable = disable;
+function disable() {
+  enabled = false;
+  Promise._10 = null;
+  Promise._97 = null;
+}
+
+exports.enable = enable;
+function enable(options) {
+  options = options || {};
+  if (enabled) disable();
+  enabled = true;
+  var id = 0;
+  var displayId = 0;
+  var rejections = {};
+  Promise._10 = function (promise) {
+    if (
+      promise._81 === 2 && // IS REJECTED
+      rejections[promise._72]
+    ) {
+      if (rejections[promise._72].logged) {
+        onHandled(promise._72);
+      } else {
+        clearTimeout(rejections[promise._72].timeout);
+      }
+      delete rejections[promise._72];
+    }
+  };
+  Promise._97 = function (promise, err) {
+    if (promise._45 === 0) { // not yet handled
+      promise._72 = id++;
+      rejections[promise._72] = {
+        displayId: null,
+        error: err,
+        timeout: setTimeout(
+          onUnhandled.bind(null, promise._72),
+          // For reference errors and type errors, this almost always
+          // means the programmer made a mistake, so log them after just
+          // 100ms
+          // otherwise, wait 2 seconds to see if they get handled
+          matchWhitelist(err, DEFAULT_WHITELIST)
+            ? 100
+            : 2000
+        ),
+        logged: false
+      };
+    }
+  };
+  function onUnhandled(id) {
+    if (
+      options.allRejections ||
+      matchWhitelist(
+        rejections[id].error,
+        options.whitelist || DEFAULT_WHITELIST
+      )
+    ) {
+      rejections[id].displayId = displayId++;
+      if (options.onUnhandled) {
+        rejections[id].logged = true;
+        options.onUnhandled(
+          rejections[id].displayId,
+          rejections[id].error
+        );
+      } else {
+        rejections[id].logged = true;
+        logError(
+          rejections[id].displayId,
+          rejections[id].error
+        );
+      }
+    }
+  }
+  function onHandled(id) {
+    if (rejections[id].logged) {
+      if (options.onHandled) {
+        options.onHandled(rejections[id].displayId, rejections[id].error);
+      } else if (!rejections[id].onUnhandled) {
+        console.warn(
+          'Promise Rejection Handled (id: ' + rejections[id].displayId + '):'
+        );
+        console.warn(
+          '  This means you can ignore any previous messages of the form "Possible Unhandled Promise Rejection" with id ' +
+          rejections[id].displayId + '.'
+        );
+      }
+    }
+  }
+}
+
+function logError(id, error) {
+  console.warn('Possible Unhandled Promise Rejection (id: ' + id + '):');
+  var errStr = (error && (error.stack || error)) + '';
+  errStr.split('\n').forEach(function (line) {
+    console.warn('  ' + line);
+  });
+}
+
+function matchWhitelist(error, list) {
+  return list.some(function (cls) {
+    return error instanceof cls;
+  });
+}
+
+/***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -632,103 +749,33 @@ rawAsap.makeRequestCallFromTimer = makeRequestCallFromTimer;
 // back into ASAP proper.
 // https://github.com/tildeio/rsvp.js/blob/cddf7232546a9cf858524b75cde6f9edf72620a7/lib/rsvp/asap.js
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
 /* 6 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-/*
-object-assign
-(c) Sindre Sorhus
-@license MIT
-*/
+var g;
 
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
 
-/* eslint-disable no-unused-vars */
-var getOwnPropertySymbols = Object.getOwnPropertySymbols;
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-var propIsEnumerable = Object.prototype.propertyIsEnumerable;
-
-function toObject(val) {
-	if (val === null || val === undefined) {
-		throw new TypeError('Object.assign cannot be called with null or undefined');
-	}
-
-	return Object(val);
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
 }
 
-function shouldUseNative() {
-	try {
-		if (!Object.assign) {
-			return false;
-		}
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
 
-		// Detect buggy property enumeration order in older V8 versions.
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
-		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
-		test1[5] = 'de';
-		if (Object.getOwnPropertyNames(test1)[0] === '5') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test2 = {};
-		for (var i = 0; i < 10; i++) {
-			test2['_' + String.fromCharCode(i)] = i;
-		}
-		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
-			return test2[n];
-		});
-		if (order2.join('') !== '0123456789') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test3 = {};
-		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
-			test3[letter] = letter;
-		});
-		if (Object.keys(Object.assign({}, test3)).join('') !==
-				'abcdefghijklmnopqrst') {
-			return false;
-		}
-
-		return true;
-	} catch (err) {
-		// We don't expect any of the above to throw, but better to be safe.
-		return false;
-	}
-}
-
-module.exports = shouldUseNative() ? Object.assign : function (target, source) {
-	var from;
-	var to = toObject(target);
-	var symbols;
-
-	for (var s = 1; s < arguments.length; s++) {
-		from = Object(arguments[s]);
-
-		for (var key in from) {
-			if (hasOwnProperty.call(from, key)) {
-				to[key] = from[key];
-			}
-		}
-
-		if (getOwnPropertySymbols) {
-			symbols = getOwnPropertySymbols(from);
-			for (var i = 0; i < symbols.length; i++) {
-				if (propIsEnumerable.call(from, symbols[i])) {
-					to[symbols[i]] = from[symbols[i]];
-				}
-			}
-		}
-	}
-
-	return to;
-};
+module.exports = g;
 
 
 /***/ }),
@@ -740,7 +787,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 //This file contains the ES6 extensions to the core Promises/A+ API
 
-var Promise = __webpack_require__(2);
+var Promise = __webpack_require__(1);
 
 module.exports = Promise;
 
@@ -847,152 +894,6 @@ Promise.prototype['catch'] = function (onRejected) {
 
 /***/ }),
 /* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var Promise = __webpack_require__(2);
-
-var DEFAULT_WHITELIST = [
-  ReferenceError,
-  TypeError,
-  RangeError
-];
-
-var enabled = false;
-exports.disable = disable;
-function disable() {
-  enabled = false;
-  Promise._10 = null;
-  Promise._97 = null;
-}
-
-exports.enable = enable;
-function enable(options) {
-  options = options || {};
-  if (enabled) disable();
-  enabled = true;
-  var id = 0;
-  var displayId = 0;
-  var rejections = {};
-  Promise._10 = function (promise) {
-    if (
-      promise._81 === 2 && // IS REJECTED
-      rejections[promise._72]
-    ) {
-      if (rejections[promise._72].logged) {
-        onHandled(promise._72);
-      } else {
-        clearTimeout(rejections[promise._72].timeout);
-      }
-      delete rejections[promise._72];
-    }
-  };
-  Promise._97 = function (promise, err) {
-    if (promise._45 === 0) { // not yet handled
-      promise._72 = id++;
-      rejections[promise._72] = {
-        displayId: null,
-        error: err,
-        timeout: setTimeout(
-          onUnhandled.bind(null, promise._72),
-          // For reference errors and type errors, this almost always
-          // means the programmer made a mistake, so log them after just
-          // 100ms
-          // otherwise, wait 2 seconds to see if they get handled
-          matchWhitelist(err, DEFAULT_WHITELIST)
-            ? 100
-            : 2000
-        ),
-        logged: false
-      };
-    }
-  };
-  function onUnhandled(id) {
-    if (
-      options.allRejections ||
-      matchWhitelist(
-        rejections[id].error,
-        options.whitelist || DEFAULT_WHITELIST
-      )
-    ) {
-      rejections[id].displayId = displayId++;
-      if (options.onUnhandled) {
-        rejections[id].logged = true;
-        options.onUnhandled(
-          rejections[id].displayId,
-          rejections[id].error
-        );
-      } else {
-        rejections[id].logged = true;
-        logError(
-          rejections[id].displayId,
-          rejections[id].error
-        );
-      }
-    }
-  }
-  function onHandled(id) {
-    if (rejections[id].logged) {
-      if (options.onHandled) {
-        options.onHandled(rejections[id].displayId, rejections[id].error);
-      } else if (!rejections[id].onUnhandled) {
-        console.warn(
-          'Promise Rejection Handled (id: ' + rejections[id].displayId + '):'
-        );
-        console.warn(
-          '  This means you can ignore any previous messages of the form "Possible Unhandled Promise Rejection" with id ' +
-          rejections[id].displayId + '.'
-        );
-      }
-    }
-  }
-}
-
-function logError(id, error) {
-  console.warn('Possible Unhandled Promise Rejection (id: ' + id + '):');
-  var errStr = (error && (error.stack || error)) + '';
-  errStr.split('\n').forEach(function (line) {
-    console.warn('  ' + line);
-  });
-}
-
-function matchWhitelist(error, list) {
-  return list.some(function (cls) {
-    return error instanceof cls;
-  });
-}
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 10 */
 /***/ (function(module, exports) {
 
 (function(self) {
@@ -1456,6 +1357,103 @@ module.exports = g;
   }
   self.fetch.polyfill = true
 })(typeof self !== 'undefined' ? self : this);
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+
+
+/* eslint-disable no-unused-vars */
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+function toObject(val) {
+	if (val === null || val === undefined) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
+
+	return Object(val);
+}
+
+function shouldUseNative() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
+
+		// Detect buggy property enumeration order in older V8 versions.
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
+
+		return true;
+	} catch (err) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
+
+module.exports = shouldUseNative() ? Object.assign : function (target, source) {
+	var from;
+	var to = toObject(target);
+	var symbols;
+
+	for (var s = 1; s < arguments.length; s++) {
+		from = Object(arguments[s]);
+
+		for (var key in from) {
+			if (hasOwnProperty.call(from, key)) {
+				to[key] = from[key];
+			}
+		}
+
+		if (getOwnPropertySymbols) {
+			symbols = getOwnPropertySymbols(from);
+			for (var i = 0; i < symbols.length; i++) {
+				if (propIsEnumerable.call(from, symbols[i])) {
+					to[symbols[i]] = from[symbols[i]];
+				}
+			}
+		}
+	}
+
+	return to;
+};
 
 
 /***/ })
