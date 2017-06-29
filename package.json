@@ -95,7 +95,7 @@
     "ts-loader": "^2.1.0",
     "image-webpack-loader": "^3.3.1",
     "npm-install-webpack-plugin-steamer": "^4.0.6",
-    "sw-precache-webpack-plugin": "^0.9.1",
+    "sw-precache-webpack-plugin": "^0.11.3",
     "webpack-manifest-plugin": "^1.1.0",
     "react-dev-utils": "^3.0.0",
     "object-assign": "4.1.1",
