@@ -147,7 +147,9 @@ export function getCommonPlugins ({ config, paths, appBuild, NODE_ENV }) {
       // Reduce amount of console logging
       quiet: false
     }),
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    // 3.0 新功能 范围提升 （Scope Hoisting )
+    new webpack.optimize.ModuleConcatenationPlugin()
   ]
 
   let defineObj = {
