@@ -3,6 +3,7 @@ import { join } from 'path'
 
 import pullAll from 'lodash.pullall'
 import uniq from 'lodash.uniq'
+import {log} from 'async';
 
 export default function (argv, rcConfig, paths) {
   const appBuild = paths.dllNodeModule
@@ -27,6 +28,7 @@ export default function (argv, rcConfig, paths) {
       rules: []
     },
     plugins: [
+      new webpack.optimize.ModuleConcatenationPlugin(),
       new webpack.DllPlugin({
         path: join(appBuild, '[name].json'),
         name: '[name]',
@@ -34,7 +36,11 @@ export default function (argv, rcConfig, paths) {
       })
     ],
     resolve: {
-      modules: [paths.appSrc, 'node_modules', paths.appNodeModules].concat(paths.nodePaths)
+      modules: [
+        paths.appSrc,
+        'node_modules',
+        paths.appNodeModules
+      ].concat(paths.nodePaths)
     }
   }
 }

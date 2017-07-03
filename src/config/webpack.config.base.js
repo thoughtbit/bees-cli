@@ -132,6 +132,8 @@ export function getPostCSSOptions (config) {
 
 export function getCommonPlugins ({ config, paths, appBuild, NODE_ENV }) {
   const ret = [
+    // 3.0 新功能 范围提升 （Scope Hoisting )
+    new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.LoaderOptionsPlugin({
       options: {
@@ -147,9 +149,7 @@ export function getCommonPlugins ({ config, paths, appBuild, NODE_ENV }) {
       // Reduce amount of console logging
       quiet: false
     }),
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    // 3.0 新功能 范围提升 （Scope Hoisting )
-    new webpack.optimize.ModuleConcatenationPlugin()
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
   ]
 
   let defineObj = {

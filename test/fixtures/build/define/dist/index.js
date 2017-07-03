@@ -1370,8 +1370,6 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
 
 if (true) {
   alert(1);
