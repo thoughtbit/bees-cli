@@ -3,7 +3,6 @@ import { join } from 'path'
 
 import pullAll from 'lodash.pullall'
 import uniq from 'lodash.uniq'
-import {log} from 'async';
 
 export default function (argv, rcConfig, paths) {
   const appBuild = paths.dllNodeModule
