@@ -7,13 +7,12 @@ import UglifyJsParallelPlugin from 'webpack-uglify-parallel'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import WebpackMd5Hash from 'webpack-md5-hash'
-import ManifestPlugin from 'webpack-manifest-plugin'
-import SWPrecacheWebpackPlugin from 'sw-precache-webpack-plugin'
 
 import getEntry from './../utils/getEntry'
 import baseWebpackConfig, {
   defaultDevtool,
-  getCommonPlugins
+  getCommonPlugins,
+  getSWPlugins
 } from './webpack.config.base'
 import getCSSLoaders from './../utils/getCSSLoaders'
 
@@ -161,24 +160,7 @@ export default function (args, appBuild, config, paths) {
         analyzerMode: 'static',
         openAnalyzer: false
       })] : []),
-      ...(config.sw ? [new ManifestPlugin({
-        fileName: 'asset-manifest.json'
-      })] : []),
-      ...(config.sw ? [new SWPrecacheWebpackPlugin({
-        dontCacheBustUrlsMatching: /\.\w{8}\./,
-        filename: 'service-worker.js',
-        logger (message) {
-          if (message.indexOf('Total precache size is') === 0) {
-            return
-          }
-          console.log(message)
-        },
-        minify: true,
-        navigateFallback: '/index.html',
-        navigateFallbackWhitelist: [/^(?!\/__).*/],
-        staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
-        stripPrefix: paths.appBuild.replace(/\\/g, '/') + '/'
-      })] : [])
+      ...getSWPlugins(config, paths)
     ],
     externals: config.externals
   })
