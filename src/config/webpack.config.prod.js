@@ -160,7 +160,7 @@ export default function (args, appBuild, config, paths) {
         analyzerMode: 'static',
         openAnalyzer: false
       })] : []),
-      ...getSWPlugins(config, paths)
+      ...getSWPlugins({config, paths})
     ],
     externals: config.externals
   })

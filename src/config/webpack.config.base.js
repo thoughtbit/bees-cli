@@ -1,6 +1,6 @@
 import webpack from 'webpack'
 import { existsSync } from 'fs'
-import path from 'path'
+import { join } from 'path'
 import ModuleScopePlugin from 'react-dev-utils/ModuleScopePlugin'
 import autoprefixer from 'autoprefixer'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
@@ -191,96 +191,93 @@ export function getCommonPlugins ({ config, paths, appBuild, NODE_ENV }) {
 }
 
 export function getSWPlugins ({ config, paths }) {
-  const ret = []
-  const swPrecache = {
-    cacheId: 'my-vue-app',
-    dontCacheBustUrlsMatching: /\.\w{8}\./,
-    filename: 'service-worker.js',
-    logger (message) {
-      if (message.indexOf('Total precache size is') === 0) {
-        return
-      }
-      if (message.indexOf('Skipping static resource') === 0) {
-        // This message obscures real errors so we ignore it.
-        // https://github.com/facebookincubator/create-react-app/issues/2612
-        return
-      }
-      console.log(message)
-    },
-    /* 需缓存的文件配置
-      需动态缓存的放到runtimeCaching中处理 */
-    staticFileGlobs: [],
+  if (config.serviceWorker) {
+    const appName = require(paths.appPackageJson).name
+    const {
+      cacheId = appName,
+      templateFilePath
+    } = config.serviceWorker
 
-    /* webpack生成的静态资源全部缓存 */
-    mergeStaticsConfig: true,
-
-    /* 忽略的文件 */
-    staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
-
-    /* 需要省略掉的前缀名 */
-    stripPrefix: 'dist/',
-
-    /* 当请求路径不在缓存里的返回，对于单页应用来说，入口点是一样的 */
-    navigateFallback: '/index.html',
-
-    /* 白名单包含所有的.html (for HTML imports) 和
-      路径中含’/data/’(for dynamically-loaded data). */
-    navigateFallbackWhitelist: [/^(?!.*\.html$|\/data\/).*/],
-
-    minify: true, // 是否压缩，默认不压缩
-
-    // maximumFileSizeToCacheInBytes: 4194304, // 最大缓存大小
-
-    /* 生成service-worker.js的文件配置模板，不配置时采用默认的配置
-        本demo做了sw的更新策略，所以在原有模板基础做了相应的修改 */
-    templateFilePath: 'sw.tmpl.js',
-    verbose: true,
-    // 需要根据路由动态处理的文件
-    runtimeCaching: [
-      {
-        urlPattern: /\/material-design-icon/,
-        handler: 'networkFirst'
+    const swPrecache = {
+      cacheId,
+      dontCacheBustUrlsMatching: /\.\w{8}\./,
+      filename: 'service-worker.js',
+      logger (message) {
+        if (message.indexOf('Total precache size is') === 0) {
+          return
+        }
+        if (message.indexOf('Skipping static resource') === 0) {
+          return
+        }
+        console.log(message)
       },
-      {
-        urlPattern: /\/pwa\.baidu\.com/,
-        handler: 'networkFirst'
-      },
-      {
-        urlPattern: /\/vue\//,
-        handler: 'networkFirst'
-      }
-      // ,
-      // 如果在staticFileGlobs中设置相同的缓存路径，可能导致此处不起作用
-      // {
-      //     urlPattern: /\/fonts\//,
-      //     handler: 'networkFirst',
-      //     options: {
-      //         cache: {
-      //             maxEntries: 10,
-      //             name: 'fonts-cache'
-      //         }
-      //     }
-      // }
-    ]
-  }
+      /* 需缓存的文件配置
+        需动态缓存的放到runtimeCaching中处理 */
+      staticFileGlobs: [],
 
-  if (config.sw) {
-    ret.push(
+      /* webpack生成的静态资源全部缓存 */
+      mergeStaticsConfig: true,
+
+      /* 忽略的文件 */
+      staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
+
+      /* 需要省略掉的前缀名 */
+      stripPrefix: 'dist/',
+
+      /* 当请求路径不在缓存里的返回，对于单页应用来说，入口点是一样的 */
+      navigateFallback: '/index.html',
+
+      /* 白名单包含所有的.html (for HTML imports) 和
+        路径中含’/data/’(for dynamically-loaded data). */
+      navigateFallbackWhitelist: [/^(?!.*\.html$|\/data\/).*/],
+
+      minify: true, // 是否压缩，默认不压缩
+
+      // maximumFileSizeToCacheInBytes: 4194304, // 最大缓存大小
+
+      /* 生成service-worker.js的文件配置模板，不配置时采用默认的配置
+          本demo做了sw的更新策略，所以在原有模板基础做了相应的修改 */
+      templateFilePath: paths.resolveApp(templateFilePath),
+      verbose: true,
+      // 需要根据路由动态处理的文件
+      runtimeCaching: [
+        {
+          urlPattern: /\/material-design-icon/,
+          handler: 'networkFirst'
+        },
+        {
+          urlPattern: /\/pwa\.baidu\.com/,
+          handler: 'networkFirst'
+        },
+        {
+          urlPattern: /\/vue\//,
+          handler: 'networkFirst'
+        }
+        // ,
+        // 如果在staticFileGlobs中设置相同的缓存路径，可能导致此处不起作用
+        // {
+        //     urlPattern: /\/fonts\//,
+        //     handler: 'networkFirst',
+        //     options: {
+        //         cache: {
+        //             maxEntries: 10,
+        //             name: 'fonts-cache'
+        //         }
+        //     }
+        // }
+      ]
+    }
+
+    return [
       new ManifestPlugin({
         fileName: 'asset-manifest.json'
-      })
-    )
-
-    ret.push(
+      }),
       new SWPrecacheWebpackPlugin(swPrecache)
-    )
-
-    ret.push(
-      new SwRegisterWebpackPlugin({
-        filePath: path.resolve(__dirname, '../src/service-worker.js')
-      })
-    )
+      // new SwRegisterWebpackPlugin({
+      //   filePath: join(paths.appBuild, 'service-worker.js')
+      // })
+    ]
+  } else {
+    return []
   }
-
-  return ret
 }
