@@ -222,7 +222,7 @@ export function getSWPlugins ({ config, paths }) {
       staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
 
       /* 需要省略掉的前缀名 */
-      stripPrefix: 'dist/',
+      // stripPrefix: 'dist/',
 
       /* 当请求路径不在缓存里的返回，对于单页应用来说，入口点是一样的 */
       navigateFallback: '/index.html',
@@ -242,29 +242,20 @@ export function getSWPlugins ({ config, paths }) {
       // 需要根据路由动态处理的文件
       runtimeCaching: [
         {
-          urlPattern: /\/material-design-icon/,
-          handler: 'networkFirst'
-        },
-        {
-          urlPattern: /\/pwa\.baidu\.com/,
-          handler: 'networkFirst'
-        },
-        {
           urlPattern: /\/vue\//,
           handler: 'networkFirst'
-        }
-        // ,
+        },
         // 如果在staticFileGlobs中设置相同的缓存路径，可能导致此处不起作用
-        // {
-        //     urlPattern: /\/fonts\//,
-        //     handler: 'networkFirst',
-        //     options: {
-        //         cache: {
-        //             maxEntries: 10,
-        //             name: 'fonts-cache'
-        //         }
-        //     }
-        // }
+        {
+          urlPattern: /\/fonts\//,
+          handler: 'networkFirst',
+          options: {
+            cache: {
+              maxEntries: 10,
+              name: 'fonts-cache'
+            }
+          }
+        }
       ]
     }
 
