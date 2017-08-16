@@ -109,6 +109,8 @@ export default function (config, cwd) {
     entry: getEntry(config, paths),
     output,
     plugins: [
+      // Add module names to factory functions so they appear in browser profiler.
+      new webpack.NamedModulesPlugin(),
       // extract css into its own file
       new ExtractTextPlugin({
         filename: '[name].css',

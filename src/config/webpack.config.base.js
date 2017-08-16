@@ -110,11 +110,38 @@ export function getBabelOptions (config) {
   return {
     babelrc: false,
     presets: [
-      [require.resolve('babel-preset-es2015'), { modules: false }],
-      require.resolve('babel-preset-stage-2')
+      // Latest stable ECMAScript features
+      [
+        require.resolve('babel-preset-env'),
+        {
+          targets: {
+            // React parses on ie 9, so we should too
+            ie: 9,
+            // We currently minify with uglify
+            // Remove after https://github.com/mishoo/UglifyJS2/issues/448
+            uglify: true
+          },
+          // Disable polyfill transforms
+          useBuiltIns: false,
+          // Do not transform modules to CJS
+          modules: false
+        }
+      ],
+      require.resolve('babel-preset-stage-0')
     ].concat(config.extraBabelPresets || []),
     plugins: [
-      require.resolve('babel-plugin-transform-runtime')
+      // class { handleClick = () => { } }
+      require.resolve('babel-plugin-transform-class-properties'),
+      // Polyfills the runtime needed for async/await and generators
+      [
+        require.resolve('babel-plugin-transform-runtime'),
+        {
+          helpers: false,
+          polyfill: false,
+          regenerator: true
+        }
+      ],
+      require.resolve('babel-plugin-syntax-dynamic-import')
     ].concat(config.extraBabelPlugins || []),
     cacheDirectory: './.webpack_cache/'
   }
@@ -136,8 +163,6 @@ export function getPostCSSOptions (config) {
 
 export function getCommonPlugins ({ config, paths, appBuild, NODE_ENV }) {
   const ret = [
-    // 3.0 新功能 范围提升 （Scope Hoisting )
-    new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.LoaderOptionsPlugin({
       options: {
@@ -181,9 +206,11 @@ export function getCommonPlugins ({ config, paths, appBuild, NODE_ENV }) {
   }
 
   if (config.multipage) {
+    // Support hash
+    const name = config.hash ? 'common.[hash]' : 'common'
     ret.push(new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
-      filename: 'common.js'
+      filename: `${name}.js`
     }))
   }
 

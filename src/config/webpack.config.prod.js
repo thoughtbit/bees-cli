@@ -37,10 +37,12 @@ export default function (args, appBuild, config, paths) {
     sourceMap: config.cssSourceMap
   })
 
+  // Support hash
+  const name = config.hash ? '[name].[chunkhash]' : '[name]'
   const output = {
     path: appBuild,
-    filename: '[name].js',
-    chunkFilename: '[name].async.js',
+    filename: `${name}.js`,
+    chunkFilename: `${name}.async.js`,
     publicPath,
     libraryTarget
   }

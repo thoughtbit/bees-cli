@@ -54,7 +54,7 @@ function createProxy (method, path, target) {
       return method ? req.method.toLowerCase() === method.toLowerCase() : true
     },
     forwardPath (req) {
-      let matchPath = req.baseUrl
+      let matchPath = req.originalUrl
       const matches = matchPath.match(path)
       if (matches.length > 1) {
         matchPath = matches[1]

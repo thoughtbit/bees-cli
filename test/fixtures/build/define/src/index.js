@@ -1,6 +1,6 @@
 
 if (a) {
-  alert(a);
+  alert(a)
 } else {
-  require('./b');
+  require('./b')
 }

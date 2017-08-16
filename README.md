@@ -94,6 +94,7 @@ export default {
   "extraBabelPresets": [],
   "extraBabelPlugins": [],
   "extraPostCSSPlugins": [],
+  "hash": false,
   "disableCSSModules": false,
   "cssSourceMap": false,
   "analyze": false,
@@ -255,6 +256,15 @@ extraPostCSSPlugins: [
     propWhiteList: [],
   }),
 ],
+```
+
+
+### hash
+
+使用 hash 文件名。
+
+```
+"hash": true
 ```
 
 ### autoprefixer

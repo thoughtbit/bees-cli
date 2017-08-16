@@ -42,7 +42,17 @@ export default function (config, paths, isBuild) {
   const entry = config.entry
   // support write object for entry
   if (isPlainObject(entry)) {
-    return entry
+    if (isBuild) {
+      return entry
+    }
+
+    return Object.keys(entry).reduce((memo, key) => ({
+      ...memo,
+      [key]: [
+        require.resolve('react-dev-utils/webpackHotDevClient'),
+        entry[key]
+      ]
+    }), {})
   }
   const files = entry ? getFiles(paths.resolveApp(entry), appDirectory) : [paths.appIndexJs]
   return getEntries(files, isBuild)

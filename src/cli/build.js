@@ -8,6 +8,7 @@ import recursive from 'recursive-readdir'
 import stripAnsi from 'strip-ansi'
 import ora from 'ora'
 import getPaths from './../config/paths'
+import runArray from './utils/runArray'
 import getConfig from './../utils/getConfig'
 import applyWebpackConfig, { warnIfExists } from './../utils/applyWebpackConfig'
 import WebPackProdConfig from './../config/webpack.config.prod'
@@ -166,35 +167,37 @@ function printErrors (summary, errors) {
 }
 
 function doneHandler (previousSizeMap, argv, resolve, err, stats) {
-  spinner.stop()
   if (err) {
     printErrors('Failed to compile.', [err])
-    process.exit(1)
+    if (!argv.watch) {
+      process.exit(1)
+    }
+    resolve()
+    return
   }
 
-  if (stats.compilation.errors.length) {
-    printErrors('Failed to compile.', stats.compilation.errors)
-    process.exit(1)
-  }
+  runArray (stats.stats || stats, (item) => {
+    if (item.compilation.errors.length) {
+      printErrors('Failed to compile.', item.compilation.errors)
+      if (!argv.watch) {
+        process.exit(1)
+      }
+    }
+  })
 
   warnIfExists()
 
-  // const jsonStats = stats.toJson()
-  // print asset stats
-  // fs.writeFileSync("stats.txt", JSON.stringify(jsonStats, " " , 4))
-  console.log(chalk.green(`Compiled successfully in ${(stats.toJson().time / 1000).toFixed(1)}s.`))
-  // console.log(stats.toString({
-  //   cached: true,
-  //   chunks: false, // Makes the dist much quieter
-  //   colors: true,
-  //   children: false // supress some plugin output
-  // }))
-  console.log()
+  if (stats.stats) {
+    console.log(chalk.green('Compiled successfully.'))
+  } else {
+    console.log(chalk.green(`Compiled successfully in ${(stats.toJson().time / 1000).toFixed(1)}s.`))
+    console.log()
 
-  console.log('File sizes after gzip:')
-  console.log()
-  printFileSizes(stats, previousSizeMap)
-  console.log()
+    console.log('File sizes after gzip:')
+    console.log()
+    printFileSizes(stats, previousSizeMap)
+    console.log()
+  }
   resolve()
 }
 
