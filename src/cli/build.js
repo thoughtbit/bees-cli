@@ -176,7 +176,7 @@ function doneHandler (previousSizeMap, argv, resolve, err, stats) {
     return
   }
 
-  runArray (stats.stats || stats, (item) => {
+  runArray(stats.stats || stats, (item) => {
     if (item.compilation.errors.length) {
       printErrors('Failed to compile.', item.compilation.errors)
       if (!argv.watch) {
